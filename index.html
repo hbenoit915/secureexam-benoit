@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SecureExam — Classroom Assessment Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Instrument Sans',sans-serif;background:#f5f3ee;color:#0d0e12;min-height:100vh}
+:root{--ink:#0d0e12;--paper:#f5f3ee;--cream:#ede9e1;--rule:#d8d4cb;--slate:#5a5f72;--muted:#9097aa;
+  --red:#c84b2f;--blue:#2a5fbf;--green:#1a7a4a;--orange:#b85c00;--danger:#c0192b}
+
+/* ── SCREENS ── */
+.screen{display:none;min-height:100vh;flex-direction:column}
+.screen.on{display:flex}
+
+/* ── LANDING ── */
+#s-land{background:var(--ink);align-items:center;justify-content:center;padding:2rem}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:2.4rem;color:#fff;text-align:center}
+.logo span{color:var(--red)}
+.land-cards{display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center;margin-top:2.5rem}
+.lcard{background:#fff;border-radius:14px;padding:2.5rem 2rem;width:260px;text-align:center;cursor:pointer;border:3px solid transparent;transition:all .2s}
+.lcard:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,.4)}
+.lcard.tc:hover{border-color:var(--red)}
+.lcard.sc:hover{border-color:var(--blue)}
+.lcard h2{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;margin:.75rem 0 .4rem}
+.lcard p{font-size:.82rem;color:var(--slate);line-height:1.5;margin-bottom:1.5rem}
+.land-foot{color:var(--muted);font-size:.72rem;margin-top:2.5rem;font-family:'DM Mono',monospace}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--ink);color:#fff;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;flex-shrink:0}
+.topbar b{font-family:'Syne',sans-serif;font-size:1rem}
+.topbar b span{color:var(--red)}
+.topbar button{background:transparent;border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:4px;padding:.3rem .75rem;font-size:.82rem;cursor:pointer;margin-left:.4rem}
+.topbar button:hover{background:rgba(255,255,255,.12)}
+
+/* ── TEACHER LAYOUT ── */
+#s-teacher{flex-direction:column}
+.t-body{flex:1;display:flex;overflow:hidden}
+.sidebar{width:215px;background:#2a2d3a;flex-shrink:0;overflow-y:auto;padding:1rem 0}
+.sb-lbl{font-size:.62rem;font-family:'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;padding:.75rem 1.1rem .25rem}
+.sb-btn{display:flex;align-items:center;gap:.55rem;padding:.5rem 1.1rem;cursor:pointer;font-size:.875rem;color:#bcc0ce;border-left:3px solid transparent;transition:all .12s;user-select:none}
+.sb-btn:hover{background:rgba(255,255,255,.06);color:#fff}
+.sb-btn.on{background:rgba(200,75,47,.18);color:#fff;border-left-color:var(--red)}
+.sb-n{margin-left:auto;background:var(--red);color:#fff;font-size:.62rem;font-family:'DM Mono',monospace;border-radius:10px;padding:.1rem .4rem}
+.sb-n.w{background:var(--orange)}
+.tpage{flex:1;overflow-y:auto;padding:2rem}
+
+/* ── TEACHER PAGE ELEMENTS ── */
+.ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.75rem}
+.pt{font-family:'Syne',sans-serif;font-weight:800;font-size:1.5rem}
+.ps{color:var(--slate);font-size:.875rem;margin-top:.2rem}
+.card{background:#fff;border:1px solid var(--rule);border-radius:8px;padding:1.5rem;margin-bottom:1rem}
+.ct{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;margin-bottom:.6rem}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.75rem;margin-bottom:1.5rem}
+.sc{background:#fff;border:1px solid var(--rule);border-radius:8px;padding:1.1rem}
+.sc .n{font-family:'Syne',sans-serif;font-weight:800;font-size:2rem;line-height:1}
+.sc .l{font-size:.72rem;color:var(--slate);margin-top:.25rem;text-transform:uppercase;letter-spacing:.04em;font-family:'DM Mono',monospace}
+.sc.cr{border-left:4px solid var(--red)}.sc.cb{border-left:4px solid var(--blue)}.sc.cg{border-left:4px solid var(--green)}.sc.co{border-left:4px solid var(--orange)}
+.tw{background:#fff;border:1px solid var(--rule);border-radius:8px;overflow:hidden;margin-bottom:1rem}
+table{width:100%;border-collapse:collapse}
+th{background:var(--ink);color:#fff;text-align:left;padding:.65rem 1rem;font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.05em;text-transform:uppercase}
+td{padding:.7rem 1rem;font-size:.875rem;border-bottom:1px solid var(--rule)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf8}
+.bdg{display:inline-block;padding:.15rem .55rem;border-radius:4px;font-family:'DM Mono',monospace;font-size:.65rem;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+.bg{background:#e6f5ec;color:var(--green)}.bo{background:#fef3e6;color:var(--orange)}.br{background:#fce8ea;color:var(--danger)}.bb{background:#e6ecfb;color:var(--blue)}.bgr{background:#f0f0f0;color:var(--slate)}
+.al{padding:.7rem 1rem;border-radius:6px;font-size:.875rem;display:flex;align-items:flex-start;gap:.5rem;margin-bottom:1rem;line-height:1.5}
+.al-w{background:#fff8e6;border:1px solid #f0d070;color:#7a5200}
+.al-d{background:#fce8ea;border:1px solid #f0b0b8;color:var(--danger)}
+.al-i{background:#e6ecfb;border:1px solid #b0c0f0;color:var(--blue)}
+.al-s{background:#e6f5ec;border:1px solid #90d0aa;color:var(--green)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.fg{margin-bottom:.9rem}
+label{display:block;font-size:.82rem;font-weight:600;color:#2a2d3a;margin-bottom:.3rem}
+input,select,textarea{width:100%;padding:.5rem .75rem;border:1.5px solid var(--rule);border-radius:5px;font-family:'Instrument Sans',sans-serif;font-size:.9rem;color:var(--ink);background:#fff}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue)}
+textarea{resize:vertical;min-height:80px}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.48rem 1.1rem;border-radius:5px;border:none;cursor:pointer;font-family:'Instrument Sans',sans-serif;font-weight:600;font-size:.875rem;transition:all .15s}
+.btn-r{background:var(--red);color:#fff}.btn-r:hover{background:#b33d24}.btn-r:disabled{background:#ccc;cursor:not-allowed}
+.btn-b{background:var(--blue);color:#fff}.btn-b:hover{background:#224fa0}
+.btn-g{background:var(--green);color:#fff}.btn-g:hover{background:#145f3a}
+.btn-o{background:transparent;color:var(--ink);border:1.5px solid var(--rule)}.btn-o:hover{border-color:var(--ink)}
+.btn-gh{background:transparent;color:var(--slate);border:none;padding:.35rem .65rem}.btn-gh:hover{color:var(--ink);background:var(--cream)}
+.btn-danger{background:var(--danger);color:#fff}
+.sm{padding:.28rem .65rem;font-size:.8rem}
+.full{width:100%;justify-content:center}
+.type-btn{flex:1;padding:.65rem;border:2px solid var(--rule);border-radius:7px;background:var(--cream);cursor:pointer;font-family:'Instrument Sans',sans-serif;font-size:.9rem;font-weight:600;color:var(--slate);text-align:center}
+.type-btn.on{border-color:var(--blue);background:#e6ecfb;color:var(--blue)}
+
+/* ── UPLOAD STEPS ── */
+.steps{display:flex;border-bottom:2px solid var(--rule);margin-bottom:1.75rem}
+.step{padding:.55rem 1.2rem;font-size:.82rem;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px}
+.step.done{color:var(--green)}.step.now{color:var(--blue);border-bottom-color:var(--blue)}
+.uz{border:2px dashed var(--rule);border-radius:8px;padding:2.5rem;text-align:center;cursor:pointer;background:var(--cream)}
+.uz:hover{border-color:var(--blue);background:#fff}
+.dot-row{display:flex;justify-content:center;gap:6px;margin-top:1.25rem}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--blue);animation:blink 1.2s ease-in-out infinite}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,100%{opacity:.2;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
+.qcard{background:#fff;border:1px solid var(--rule);border-radius:6px;padding:1rem 1.2rem;margin-bottom:.7rem;position:relative}
+.qcard:hover{border-color:#99a}
+.qact{position:absolute;top:.75rem;right:.75rem;display:flex;gap:.3rem}
+.qn{font-family:'DM Mono',monospace;font-size:.7rem;color:var(--muted);margin-bottom:.4rem}
+.qp{font-size:.9rem;margin-bottom:.65rem}
+.opts{display:flex;flex-direction:column;gap:.3rem}
+.opt{display:flex;align-items:center;gap:.5rem;font-size:.85rem;padding:.2rem 0}
+.olet{width:22px;height:22px;border-radius:3px;border:1.5px solid var(--rule);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:.7rem;flex-shrink:0}
+.olet.ok{background:var(--green);color:#fff;border-color:var(--green)}
+.pts-in{width:60px!important;padding:.25rem .4rem!important;font-size:.8rem!important;display:inline-block!important}
+.tog-r{display:flex;align-items:center;justify-content:space-between;padding:.55rem 0;border-bottom:1px solid var(--rule)}
+.tog-r:last-child{border-bottom:none}
+.tog{position:relative;width:38px;height:21px;background:var(--rule);border-radius:11px;cursor:pointer;border:none;flex-shrink:0;transition:background .2s}
+.tog.on{background:var(--green)}.tog::after{content:'';position:absolute;top:3px;left:3px;width:15px;height:15px;background:#fff;border-radius:50%;transition:transform .2s}
+.tog.on::after{transform:translateX(17px)}
+
+/* ── LOGIN ── */
+#s-tlogin{background:var(--ink);align-items:center;justify-content:center;padding:1rem}
+.lcrd{background:#fff;border-radius:12px;padding:3rem;width:100%;max-width:400px}
+.lcrd h1{font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem}
+.lcrd h1 span{color:var(--red)}
+.lcrd .sub{color:var(--slate);font-size:.85rem;margin-bottom:2rem;margin-top:.2rem}
+.pw-w{position:relative}.pw-w input{padding-right:3rem}
+.pw-tog{position:absolute;right:.6rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:.82rem}
+
+/* ── STUDENT SCREENS ── */
+.scenter{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--paper);padding:1.5rem}
+.scrd{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:2.25rem;width:100%;max-width:520px;box-shadow:0 4px 24px rgba(0,0,0,.08)}
+.slogo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;text-align:center}
+.slogo span{color:var(--red)}
+.wcard{background:#fff8f6;border:2px solid var(--red);border-radius:12px;padding:2.25rem;width:100%;max-width:600px}
+.wrule{display:flex;gap:.6rem;align-items:flex-start;padding:.55rem 0;border-bottom:1px solid #f0d8d2;font-size:.875rem;color:#2a2d3a}
+.wrule:last-of-type{border-bottom:none}
+.exam-lcard{background:#fff;border:1px solid var(--rule);border-radius:10px;padding:1.25rem;margin-bottom:.75rem;cursor:pointer;border-left:5px solid var(--red);transition:box-shadow .15s}
+.exam-lcard:hover{box-shadow:0 4px 16px rgba(0,0,0,.1)}
+
+/* ── EXAM SCREEN ── */
+#s-exam{background:#1a1c23;color:#e8e6e0}
+.etop{background:#0d0e12;padding:.7rem 1.75rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0}
+.etitle{font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem}
+.etimer{font-family:'DM Mono',monospace;font-size:1.05rem;color:var(--red);background:rgba(200,75,47,.12);border:1px solid rgba(200,75,47,.25);padding:.28rem .7rem;border-radius:4px}
+.ebody{flex:1;display:flex;align-items:center;justify-content:center;padding:2rem 1rem;overflow-y:auto}
+.eqbox{background:#22252f;border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:1.75rem;width:100%;max-width:660px}
+.eqnum{font-family:'DM Mono',monospace;font-size:.72rem;color:rgba(255,255,255,.35);margin-bottom:.65rem}
+.eqtext{font-size:1rem;line-height:1.6;margin-bottom:1.35rem}
+.eopt{display:flex;align-items:center;gap:.7rem;padding:.7rem .9rem;border-radius:6px;border:1.5px solid rgba(255,255,255,.08);margin-bottom:.45rem;cursor:pointer;font-size:.9rem;user-select:none;transition:all .15s}
+.eopt:hover{border-color:rgba(255,255,255,.25);background:rgba(255,255,255,.04)}
+.eopt.sel{border-color:var(--blue);background:rgba(42,95,191,.14)}
+.eol{width:26px;height:26px;border-radius:4px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:.72rem;flex-shrink:0}
+.eopt.sel .eol{background:var(--blue);border-color:var(--blue);color:#fff}
+.enav{display:flex;justify-content:space-between;align-items:center;margin-top:1.35rem}
+.epb{background:rgba(255,255,255,.08);border-radius:4px;height:4px;width:100%;margin-top:1rem}
+.epbf{background:var(--blue);border-radius:4px;height:4px;transition:width .3s}
+.eal{padding:.45rem 1.75rem;font-size:.8rem;color:#f0a090;background:rgba(200,75,47,.14);border-bottom:1px solid rgba(200,75,47,.25);flex-shrink:0}
+
+/* ── RESULTS SCREEN ── */
+#s-done{background:var(--paper);overflow-y:auto}
+.rpage{max-width:580px;margin:0 auto;padding:2rem 1.5rem}
+.rscore{text-align:center;padding:1.75rem;border-radius:12px;border:3px solid #ccc;margin-bottom:1.25rem}
+.rscore .big{font-family:'Syne',sans-serif;font-weight:800;font-size:3.5rem;line-height:1}
+.rrow{display:flex;align-items:flex-start;gap:.6rem;padding:.45rem 0;border-bottom:1px solid var(--rule);font-size:.82rem}
+.rrow:last-child{border-bottom:none}
+.essay-box{background:#fff8e6;border:2px solid var(--orange);border-radius:10px;padding:1.25rem;margin-bottom:1.25rem}
+
+/* ── EVENT LOG ── */
+.evlog{font-family:'DM Mono',monospace;font-size:.76rem}
+.evrow{display:flex;gap:.75rem;padding:.35rem 0;border-bottom:1px solid var(--rule)}
+.evt{color:var(--muted);width:78px;flex-shrink:0}.evty{color:var(--red);width:145px;flex-shrink:0}.evd{color:var(--slate)}
+
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--rule);border-radius:3px}
+@media(max-width:700px){.sidebar{display:none}.g2{grid-template-columns:1fr}.land-cards{flex-direction:column;align-items:center}}
+</style>
+</head>
+<body>
+
+<!-- LANDING -->
+<div id="s-land" class="screen on">
+  <div class="logo">Secure<span>Exam</span></div>
+  <p style="color:var(--muted);font-size:.9rem;margin-top:.4rem;text-align:center">Classroom Assessment Platform · El Paso ISD</p>
+  <div class="land-cards">
+    <div class="lcard tc" onclick="G.show('s-tlogin')">
+      <div style="font-size:3rem">🎓</div>
+      <h2>Teacher</h2>
+      <p>Create exams, upload documents, grade responses, and review student attempts</p>
+      <button class="btn btn-r full">Teacher Login →</button>
+    </div>
+    <div class="lcard sc" onclick="G.show('s-sstart')">
+      <div style="font-size:3rem">📝</div>
+      <h2>Student</h2>
+      <p>Enter your name, student ID, and class to access your assigned assessments</p>
+      <button class="btn btn-b full">Student Login →</button>
+    </div>
+  </div>
+  <div class="land-foot">SecureExam v2.0 · SCEB Platform</div>
+</div>
+
+<!-- TEACHER LOGIN -->
+<div id="s-tlogin" class="screen">
+  <div class="scenter" style="background:var(--ink)">
+    <div class="lcrd">
+      <h1>Secure<span>Exam</span></h1>
+      <div class="sub">Teacher Portal · Sign In</div>
+      <div id="lerr" class="al al-d" style="display:none">⚠️ <span id="lerr-msg"></span></div>
+      <div class="fg"><label>Username</label><input type="text" id="lu" placeholder="Enter username" autocomplete="username"></div>
+      <div class="fg"><label>Password</label><div class="pw-w"><input type="password" id="lp" placeholder="Enter password" autocomplete="current-password"><button class="pw-tog" id="pwtog" onclick="G.togglePw()">Show</button></div></div>
+      <button class="btn btn-r full" style="margin-top:.6rem" onclick="G.login()">Sign In</button>
+      <button class="btn btn-gh full" style="margin-top:.4rem" onclick="G.show('s-land')">← Back</button>
+      <p style="text-align:center;font-size:.76rem;color:var(--muted);margin-top:1.25rem">SecureExam v2.0 · El Paso ISD</p>
+    </div>
+  </div>
+</div>
+
+<!-- TEACHER SHELL -->
+<div id="s-teacher" class="screen">
+  <div class="topbar">
+    <b>Secure<span>Exam</span> · <span id="tname-disp" style="font-weight:400;font-size:.9rem"></span></b>
+    <div>
+      <button onclick="G.show('s-land')">← Home</button>
+      <button onclick="G.logout()">Sign Out</button>
+    </div>
+  </div>
+  <div class="t-body">
+    <div class="sidebar" id="sidebar"></div>
+    <div class="tpage" id="tpage"></div>
+  </div>
+</div>
+
+<!-- STUDENT START -->
+<div id="s-sstart" class="screen">
+  <div class="scenter">
+    <div class="scrd">
+      <div class="slogo">Secure<span>Exam</span></div>
+      <p style="text-align:center;font-size:.82rem;color:var(--muted);margin:.3rem 0 1.75rem">Student Assessment Portal</p>
+      <div id="s-err" class="al al-d" style="display:none">⚠️ Please complete all fields.</div>
+      <div class="fg"><label>Full Name</label><input type="text" id="s-name" placeholder="First and Last Name"></div>
+      <div class="fg"><label>Student ID</label><input type="text" id="s-sid" placeholder="e.g. 14421"></div>
+      <div class="fg"><label>Select Your Class</label>
+        <select id="s-cls">
+          <option value="">— Choose class —</option>
+          <option>Practicum M</option><option>Practicum A</option>
+          <option>Law Enforcement 2</option><option>Court Systems</option>
+          <option>Law Enforcement 1</option><option>Criminal Justice</option>
+        </select>
+      </div>
+      <button class="btn btn-b full" onclick="G.studentGo()">Continue →</button>
+      <button class="btn btn-gh full" style="margin-top:.4rem" onclick="G.show('s-land')">← Back</button>
+    </div>
+  </div>
+</div>
+
+<!-- STUDENT EXAM LIST -->
+<div id="s-slist" class="screen">
+  <div class="scenter">
+    <div style="width:100%;max-width:560px">
+      <div class="slogo" style="margin-bottom:.3rem">Secure<span>Exam</span></div>
+      <p id="s-welcome" style="text-align:center;font-size:.9rem;color:var(--slate);margin-bottom:1.5rem"></p>
+      <div id="s-examlist"></div>
+      <div style="text-align:center;margin-top:1rem">
+        <button class="btn btn-gh sm" onclick="G.show('s-sstart')">← Change Info</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WARNING -->
+<div id="s-warn" class="screen">
+  <div class="scenter" style="background:#fff8f6">
+    <div class="wcard">
+      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem">
+        <span style="font-size:2rem">⚠️</span>
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.35rem;color:var(--red)">Exam Integrity Notice</div>
+          <div id="w-sub" style="font-size:.82rem;color:var(--slate);margin-top:.2rem"></div>
+        </div>
+      </div>
+      <div class="wrule"><b style="color:var(--red);flex-shrink:0">—</b> Once the exam begins, you must stay on this page the entire time.</div>
+      <div class="wrule"><b style="color:var(--red);flex-shrink:0">—</b> Switching tabs, opening other websites, or leaving will be detected and logged.</div>
+      <div class="wrule"><b style="color:var(--red);flex-shrink:0">—</b> Copy and paste are disabled in all answer fields.</div>
+      <div class="wrule"><b style="color:var(--red);flex-shrink:0">—</b> Right-clicking is disabled in exam areas.</div>
+      <div class="wrule"><b style="color:var(--red);flex-shrink:0">—</b> All suspicious events are logged and reviewed by your teacher.</div>
+      <div style="background:#fff0ec;border:1px solid #f0c0b0;border-radius:6px;padding:.7rem .9rem;margin-top:.9rem;font-size:.82rem;color:var(--orange)">
+        <b>Note:</b> This exam detects when you leave the page but cannot identify which external site you opened.
+      </div>
+      <div style="display:flex;align-items:center;gap:.5rem;margin:1.1rem 0">
+        <input type="checkbox" id="w-agree" style="width:17px;height:17px">
+        <label for="w-agree" style="font-size:.9rem;font-weight:600;cursor:pointer">I have read and understand the exam rules.</label>
+      </div>
+      <button id="w-begin" class="btn btn-r full" disabled onclick="G.beginExam()">I understand and want to begin →</button>
+    </div>
+  </div>
+</div>
+
+<!-- EXAM -->
+<div id="s-exam" class="screen">
+  <div class="etop">
+    <div class="etitle" id="e-title"></div>
+    <div style="display:flex;align-items:center;gap:.9rem">
+      <span style="font-family:'DM Mono',monospace;font-size:.76rem;color:rgba(255,255,255,.45)" id="e-prog"></span>
+      <div class="etimer" id="e-timer">45:00</div>
+    </div>
+  </div>
+  <div id="e-alert" class="eal" style="display:none"></div>
+  <div class="ebody">
+    <div class="eqbox" id="e-qbox"></div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="s-done" class="screen">
+  <div class="rpage" id="r-content"></div>
+</div>
+
+<!-- Hidden Netlify Form — DO NOT REMOVE — captures exam scores → Zapier → Google Sheets -->
+<form name="exam-scores" netlify netlify-honeypot="bot-field" hidden>
+  <input type="hidden" name="form-name" value="exam-scores">
+  <input type="text"   name="bot-field"> <!-- honeypot spam trap -->
+  <input type="text"   name="student-name">
+  <input type="text"   name="student-id">
+  <input type="text"   name="class">
+  <input type="text"   name="exam-title">
+  <input type="text"   name="exam-type">
+  <input type="text"   name="score-percent">
+  <input type="text"   name="points-earned">
+  <input type="text"   name="has-essay">
+  <input type="text"   name="submitted-at">
+</form>
+
+<script>
+// ══════════════════════════════════════════════
+// ALL APPLICATION LOGIC IN ONE OBJECT
+// ══════════════════════════════════════════════
+var G = (function(){
+
+  // ── ACCOUNTS ──
+  var ACCOUNTS = {
+    hbenoit: {pw:'benoit47', name:'Mr. Benoit'},
+    EPISD:   {pw:'TEA2026',  name:'EPISD Admin'}
+  };
+
+  // ── CLASSES ──
+  var CLASSES = ['Practicum M','Practicum A','Law Enforcement 2','Court Systems','Law Enforcement 1','Criminal Justice'];
+
+  // ── SAMPLE QUESTIONS ──
+  var SQ = [
+    {id:1,type:'mc',prompt:'Which amendment protects citizens against unreasonable searches and seizures?',choices:['Second Amendment','Fourth Amendment','Fifth Amendment','Eighth Amendment'],correct:1,points:2,topic:'Constitutional Law'},
+    {id:2,type:'mc',prompt:'The Miranda warning must be given before which of the following?',choices:['Being fingerprinted','A custodial interrogation','A traffic stop','Being photographed'],correct:1,points:2,topic:'Criminal Procedure'},
+    {id:3,type:'mc',prompt:'Which standard of proof is required for a criminal conviction?',choices:['Preponderance of the evidence','Clear and convincing evidence','Beyond a reasonable doubt','Probable cause'],correct:2,points:2,topic:'Criminal Procedure'}
+  ];
+
+  // ── LIVE EXAM LIST ──
+  var EXAMS = [
+    {id:1,title:'Criminal Procedure Mid-Term',atype:'exam',classes:['Law Enforcement 1','Law Enforcement 2'],status:'published',questions:SQ,due:'Mar 21, 2026',timeLimit:45},
+    {id:2,title:'Court Systems Unit 3 Quiz',  atype:'quiz', classes:['Court Systems'],                      status:'published',questions:SQ,due:'Mar 20, 2026',timeLimit:30},
+    {id:3,title:'Practicum Review',            atype:'assignment',classes:['Practicum M','Practicum A'],    status:'draft',   questions:SQ,due:'—',timeLimit:60}
+  ];
+  var nextEID = 4;
+
+  // ── STUDENT LOGIN LOG ──
+  var LOGINS = [];
+
+  // ── LIVE ATTEMPTS (grows as students submit) ──
+  var ATTEMPTS = [];
+  var nextAID = 1;
+
+  // ── SAMPLE ATTEMPTS (demo data) ──
+  var SA = [
+    {name:'Marcus Torres', sid:'14421',cls:'Law Enforcement 1',exam:'Criminal Procedure Mid-Term',score:88,flags:0,status:'graded'},
+    {name:'Aaliyah Brooks',sid:'14437',cls:'Law Enforcement 2',exam:'Criminal Procedure Mid-Term',score:null,flags:3,status:'flagged'},
+    {name:'Devon Walsh',   sid:'14450',cls:'Court Systems',     exam:'Court Systems Unit 3 Quiz', score:100,flags:0,status:'graded'}
+  ];
+  var SEV = [
+    {t:'09:07:21',ty:'page_hidden',d:'Exam window lost focus'},
+    {t:'09:12:44',ty:'fullscreen_exit',d:'Student exited fullscreen'},
+    {t:'09:22:17',ty:'paste_blocked',d:'Paste attempt intercepted'}
+  ];
+
+  // ── UPLOAD STATE ──
+  var UP = {};
+
+  // ── EXAM STATE ──
+  var SI = null; // student info
+  var SE = null; // selected exam
+  var EQ = [];   // exam questions
+  var EA = {};   // MC answers  {qid: choiceIndex}
+  var EEA = {};  // essay answers {qid: text}
+  var EEV = [];  // events
+  var ETI = null;// timer interval
+  var ETL = 0;   // time left seconds
+  var ECQ = 0;   // current question index
+
+  // ── TEACHER STATE ──
+  var TNAME = '';
+  var SETTINGS = {timer:true,timeLimit:45,fullscreen:true,pasteBlock:true,strictRestart:false};
+
+  // ── HELPERS ──
+  function show(id){
+    var screens = document.querySelectorAll('.screen');
+    for(var i=0;i<screens.length;i++) screens[i].classList.remove('on');
+    var el = document.getElementById(id);
+    if(el) el.classList.add('on');
+  }
+  function esc(s){
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function el(id){ return document.getElementById(id); }
+  function bdg(t,c){ return '<span class="bdg '+c+'">'+t+'</span>'; }
+  function atLabel(t){ return t==='exam'?'Exam':t==='quiz'?'Quiz':'Assignment'; }
+  function atBdg(t){ return t==='exam'?bdg('Exam','br'):t==='quiz'?bdg('Quiz','bb'):bdg('Assignment','bo'); }
+  function atColor(t){ return t==='exam'?'var(--red)':t==='quiz'?'var(--blue)':'var(--orange)'; }
+
+  // ══════════════════════════════
+  // TEACHER LOGIN
+  // ══════════════════════════════
+  function togglePw(){
+    var inp = el('lp');
+    var btn = el('pwtog');
+    inp.type = inp.type==='password'?'text':'password';
+    btn.textContent = inp.type==='password'?'Show':'Hide';
+  }
+
+  function login(){
+    var u = (el('lu').value||'').trim();
+    var p = el('lp').value||'';
+    var errEl = el('lerr');
+    var msgEl = el('lerr-msg');
+    if(!u||!p){ msgEl.textContent='Please enter your username and password.'; errEl.style.display='flex'; return; }
+    var acct = ACCOUNTS[u];
+    if(!acct||acct.pw!==p){ msgEl.textContent='Invalid username or password.'; errEl.style.display='flex'; return; }
+    errEl.style.display='none';
+    TNAME = acct.name;
+    el('tname-disp').textContent = acct.name;
+    buildSidebar();
+    show('s-teacher');
+    navTo('dash');
+  }
+
+  function logout(){
+    el('lu').value=''; el('lp').value='';
+    el('lerr').style.display='none';
+    show('s-land');
+  }
+
+  // ══════════════════════════════
+  // SIDEBAR
+  // ══════════════════════════════
+  function buildSidebar(){
+    var items = [
+      {p:'dash',  lbl:'🏠 Dashboard'},
+      {p:'upload',lbl:'📤 Upload Document'},
+      {p:'bank',  lbl:'📚 Question Bank'},
+      {p:'exams', lbl:'📋 Assessments'},
+      {p:'atlog', lbl:'✅ Attempt Log', n:SA.length},
+      {p:'grade', lbl:'✏️ Grading Queue', n:2, w:true},
+      {p:'flags', lbl:'🚩 Suspicious Activity', n:1, w:true},
+      {p:'reports',lbl:'📊 Reports'}
+    ];
+    var h = '<div class="sb-lbl">Overview</div>';
+    for(var i=0;i<items.length;i++){
+      var it=items[i];
+      if(it.p==='reports') h+='<div class="sb-lbl">Analysis</div>';
+      h+='<div class="sb-btn" id="sb-'+it.p+'" onclick="G.navTo(\''+it.p+'\')">'+it.lbl;
+      if(it.n){ h+='<span class="sb-n'+(it.w?' w':'')+'">'+(typeof it.n==='function'?it.n():it.n)+'</span>'; }
+      h+='</div>';
+    }
+    el('sidebar').innerHTML = h;
+  }
+
+  function navTo(p){
+    var btns = document.querySelectorAll('.sb-btn');
+    for(var i=0;i<btns.length;i++) btns[i].classList.remove('on');
+    var sb = el('sb-'+p);
+    if(sb) sb.classList.add('on');
+    el('tpage').innerHTML = '';
+    var pages = {dash:pgDash,upload:pgUpload,bank:pgBank,exams:pgExams,atlog:pgAtlog,grade:pgGrade,flags:pgFlags,reports:pgReports};
+    if(pages[p]) pages[p]();
+  }
+
+  // ══════════════════════════════
+  // DASHBOARD
+  // ══════════════════════════════
+  function pgDash(){
+    var pg = el('tpage');
+    var openCount = 0;
+    for(var i=0;i<EXAMS.length;i++) if(EXAMS[i].status==='published') openCount++;
+
+    var h = '';
+    h += '<div class="ph"><div><div class="pt">Dashboard</div><div class="ps">Spring Semester 2026</div></div>';
+    h += '<button class="btn btn-r" onclick="G.navTo(\'upload\')">📤 Upload Document</button></div>';
+    h += '<div class="sg">';
+    h += '<div class="sc cr"><div class="n">'+openCount+'</div><div class="l">Open Assessments</div></div>';
+    h += '<div class="sc cb"><div class="n">'+LOGINS.length+'</div><div class="l">Student Logins</div></div>';
+    h += '<div class="sc co"><div class="n">2</div><div class="l">Essays Pending</div></div>';
+    h += '<div class="sc cg"><div class="n">6</div><div class="l">Classes</div></div>';
+    h += '</div>';
+
+    // Student login log
+    h += '<div class="card"><div class="ct">👤 Student Login Activity</div>';
+    if(LOGINS.length===0){
+      h += '<p style="color:var(--muted);font-size:.875rem;padding:.5rem 0">No students have logged in yet. This updates live.</p>';
+    } else {
+      h += '<div class="tw"><table><thead><tr><th>Student</th><th>ID</th><th>Class</th><th>Time</th><th>Action</th></tr></thead><tbody>';
+      var show_logins = LOGINS.slice().reverse();
+      for(var i=0;i<show_logins.length;i++){
+        var lg = show_logins[i];
+        h += '<tr><td><b>'+esc(lg.name)+'</b></td><td style="font-family:\'DM Mono\',monospace">'+esc(lg.sid)+'</td>';
+        h += '<td style="font-size:.82rem">'+esc(lg.cls)+'</td>';
+        h += '<td style="font-size:.78rem;font-family:\'DM Mono\',monospace">'+esc(lg.time)+'</td>';
+        h += '<td style="font-size:.82rem">'+esc(lg.action)+'</td></tr>';
+      }
+      h += '</tbody></table></div>';
+    }
+    h += '</div>';
+
+    // Assessments with close/open
+    h += '<div class="card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem"><div class="ct" style="margin:0">📋 Assessments</div><button class="btn btn-r sm" onclick="G.navTo(\'exams\')">Manage →</button></div>';
+    h += '<div class="tw"><table><thead><tr><th>Title</th><th>Type</th><th>Classes</th><th>Status</th><th>Due</th><th>Actions</th></tr></thead><tbody>';
+    for(var i=0;i<EXAMS.length;i++){
+      var e=EXAMS[i];
+      var statBdg = e.status==='published'?'<span class="bdg bg">🟢 Open</span>':e.status==='closed'?'<span class="bdg br">🔴 Closed</span>':'<span class="bdg bgr">Draft</span>';
+      var actionBtn = e.status==='published'
+        ? '<button class="btn btn-danger sm" onclick="G.toggleStatus('+e.id+',\'dash\')">🔒 Close</button>'
+        : e.status==='closed'
+        ? '<button class="btn btn-g sm" onclick="G.toggleStatus('+e.id+',\'dash\')">🔓 Reopen</button>'
+        : '<button class="btn btn-r sm" onclick="G.toggleStatus('+e.id+',\'dash\')">🚀 Publish</button>';
+      h += '<tr><td><b>'+esc(e.title)+'</b></td><td>'+atBdg(e.atype)+'</td><td style="font-size:.8rem">'+e.classes.join(', ')+'</td>';
+      h += '<td>'+statBdg+'</td><td style="font-family:\'DM Mono\',monospace;font-size:.8rem">'+esc(e.due)+'</td>';
+      h += '<td style="display:flex;gap:.3rem">'+actionBtn+'<button class="btn btn-gh sm" onclick="G.navTo(\'atlog\')">👁</button></td></tr>';
+    }
+    h += '</tbody></table></div></div>';
+
+    // Recent attempts — live submissions appear here in real time
+    var liveAttempts = ATTEMPTS.slice().reverse();
+    h += '<div class="card">';
+    h += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem"><div class="ct" style="margin:0">Recent Attempts</div>';
+    h += '<span class="bdg bb">'+ATTEMPTS.length+' submitted</span></div>';
+    h += '<div class="tw"><table><thead><tr><th>Student</th><th>ID</th><th>Class</th><th>Assessment</th><th>Score</th><th>Status</th><th></th></tr></thead><tbody>';
+    if(liveAttempts.length === 0){
+      for(var i=0;i<SA.length;i++){
+        var a=SA[i];
+        h += '<tr><td><b>'+esc(a.name)+'</b></td><td style="font-family:\'DM Mono\',monospace;font-size:.8rem">'+esc(a.sid)+'</td>';
+        h += '<td style="font-size:.82rem">'+esc(a.cls)+'</td><td style="font-size:.82rem">'+esc(a.exam)+'</td>';
+        h += '<td style="font-family:\'DM Mono\',monospace">'+(a.score!==null?a.score+'%':'—')+'</td>';
+        h += '<td>'+(a.status==='graded'?bdg('graded','bg'):a.status==='flagged'?bdg('flagged','br'):bdg(a.status,'bo'))+'</td><td></td></tr>';
+      }
+    } else {
+      for(var i=0;i<liveAttempts.length;i++){
+        var a=liveAttempts[i];
+        var scoreDisp = a.score!==null ? a.score+'%' : (a.hasEssay?'essay pending':'—');
+        var scolor = a.score!==null?(a.score>=90?'var(--green)':a.score>=70?'var(--orange)':'var(--danger)'):'var(--muted)';
+        var statBdg = a.status==='graded'?bdg('graded','bg'):a.status==='pending-essay'?bdg('pending essay','bo'):bdg(a.status,'br');
+        h += '<tr><td><b>'+esc(a.name)+'</b></td><td style="font-family:\'DM Mono\',monospace;font-size:.8rem">'+esc(a.sid)+'</td>';
+        h += '<td style="font-size:.82rem">'+esc(a.cls)+'</td><td style="font-size:.82rem">'+esc(a.examTitle)+'</td>';
+        h += '<td style="font-family:\'DM Mono\',monospace;font-weight:600;color:'+scolor+'">'+scoreDisp+'</td>';
+        h += '<td>'+statBdg+'</td>';
+        h += '<td><button class="btn btn-gh sm" onclick="G.viewAttempt('+a.id+')">👁 View</button></td></tr>';
+      }
+    }
+    h += '</tbody></table></div></div>';
+
+    pg.innerHTML = h;
+  }
+
+  // ══════════════════════════════
+  // TOGGLE EXAM OPEN/CLOSE
+  // ══════════════════════════════
+  function toggleStatus(id, returnPage){
+    for(var i=0;i<EXAMS.length;i++){
+      if(EXAMS[i].id===id){
+        var e = EXAMS[i];
+        if(e.status==='published') e.status='closed';
+        else if(e.status==='closed') e.status='published';
+        else e.status='published';
+        break;
+      }
+    }
+    navTo(returnPage||'exams');
+  }
+
+  // ══════════════════════════════
+  // UPLOAD — 4 STEPS
+  // ══════════════════════════════
+  function pgUpload(){
+    UP = {title:'',atype:'exam',classes:[],mcPts:2,essayPts:10,due:'Mar 21, 2026 11:59 PM',questions:[],fileName:''};
+    window._boldLines = null;
+    var pg = el('tpage');
+    pg.innerHTML =
+      '<div class="ph"><div><div class="pt">Upload Document</div><div class="ps">Step 1 of 4 — Assessment Details</div></div></div>'+
+      '<div class="steps"><span class="step now" id="step-1">1. Details</span><span class="step" id="step-2">2. Upload PDF</span><span class="step" id="step-3">3. Review</span><span class="step" id="step-4">4. Publish</span></div>'+
+      '<div id="u-s1"></div><div id="u-s2" style="display:none"></div><div id="u-s3" style="display:none"></div><div id="u-s4" style="display:none"></div>';
+    renderStep1();
+  }
+
+  function setStep(n){
+    for(var i=1;i<=4;i++){
+      var se = el('step-'+i); if(!se) continue;
+      se.className = 'step'+(i<n?' done':i===n?' now':'');
+      var div = el('u-s'+i); if(div) div.style.display=(i===n?'block':'none');
+    }
+    var ps = el('tpage').querySelector('.ps');
+    if(ps){ var lbls=['Assessment Details','Upload your PDF','Review Questions','Publish to Students']; ps.textContent='Step '+n+' of 4 — '+lbls[n-1]; }
+  }
+
+  function renderStep1(){
+    var h = '<div class="g2"><div>';
+    h += '<div class="card"><div class="ct">📋 Assessment Details</div>';
+    h += '<div class="fg" style="margin-top:.5rem"><label>Title <span style="color:var(--danger)">*</span></label><input type="text" id="u-title" placeholder="e.g. Traffic Accidents Unit 1 — Arrival Assessment"></div>';
+    h += '<div class="fg"><label>Type <span style="color:var(--danger)">*</span></label><div style="display:flex;gap:.65rem;margin-top:.3rem">';
+    h += '<button class="type-btn on" id="tb-exam" onclick="G.setAT(\'exam\')">📝 Exam</button>';
+    h += '<button class="type-btn" id="tb-quiz" onclick="G.setAT(\'quiz\')">📋 Quiz</button>';
+    h += '<button class="type-btn" id="tb-assignment" onclick="G.setAT(\'assignment\')">📄 Assignment</button>';
+    h += '</div></div></div>';
+    h += '<div class="card"><div class="ct">⏱️ Availability</div>';
+    h += '<div class="fg" style="margin-top:.5rem"><label>Due Date</label><input type="text" id="u-due" value="Mar 21, 2026 11:59 PM"></div></div>';
+    h += '</div><div>';
+    h += '<div class="card"><div class="ct">🏫 Assign to Class(es) <span style="color:var(--danger)">*</span></div><p style="font-size:.82rem;color:var(--muted);margin-bottom:.65rem">Select which class(es) receive this assessment.</p>';
+    for(var i=0;i<CLASSES.length;i++){
+      h += '<label style="display:flex;align-items:center;gap:.6rem;cursor:pointer;font-weight:normal;font-size:.9rem;padding:.35rem;border-radius:5px">';
+      h += '<input type="checkbox" value="'+CLASSES[i]+'" style="width:15px;height:15px" onchange="G.toggleCls(\''+CLASSES[i]+'\',this.checked)"> '+CLASSES[i]+'</label>';
+    }
+    h += '</div>';
+    h += '<div class="card"><div class="ct">🔢 Default Points</div>';
+    h += '<div class="fg" style="margin-top:.5rem"><label>Multiple Choice</label><input type="number" id="u-mcp" value="2" min="1" max="100"></div>';
+    h += '<div class="fg"><label>Essay / Open-Ended</label><input type="number" id="u-esp" value="10" min="1" max="100"></div></div>';
+    h += '</div></div>';
+    h += '<div id="u-s1-err" class="al al-d" style="display:none;margin-top:.5rem"></div>';
+    h += '<div style="text-align:right;margin-top:.75rem"><button class="btn btn-r" style="padding:.6rem 2rem;font-size:1rem" onclick="G.step1next()">Next: Upload PDF →</button></div>';
+    el('u-s1').innerHTML = h;
+  }
+
+  function setAT(t){
+    UP.atype=t;
+    var types=['exam','quiz','assignment'];
+    for(var i=0;i<types.length;i++){
+      var b=el('tb-'+types[i]); if(b) b.className='type-btn'+(types[i]===t?' on':'');
+    }
+  }
+  function toggleCls(c,checked){
+    var idx=UP.classes.indexOf(c);
+    if(checked&&idx===-1) UP.classes.push(c);
+    else if(!checked&&idx>-1) UP.classes.splice(idx,1);
+  }
+
+  function step1next(){
+    var t=(el('u-title').value||'').trim();
+    var errEl=el('u-s1-err');
+    if(!t){ errEl.textContent='⚠️ Please enter an assessment title.'; errEl.style.display='flex'; return; }
+    if(UP.classes.length===0){ errEl.textContent='⚠️ Please select at least one class.'; errEl.style.display='flex'; return; }
+    errEl.style.display='none';
+    UP.title=t;
+    UP.due=(el('u-due').value||'TBD');
+    UP.mcPts=+(el('u-mcp').value)||2;
+    UP.essayPts=+(el('u-esp').value)||10;
+    setStep(2);
+    renderStep2();
+  }
+
+  function renderStep2(){
+    var h='<div class="al al-i">📋 <b>'+esc(UP.title)+'</b> · '+atLabel(UP.atype)+' · Assigned to: <b>'+UP.classes.join(', ')+'</b> · MC: '+UP.mcPts+'pts · Essay: '+UP.essayPts+'pts &nbsp;<button class="btn btn-gh sm" onclick="G.setStep(1);G.renderStep1()">✏️ Change</button></div>';
+    h+='<div id="u-s2-err" class="al al-d" style="display:none"></div>';
+    h+='<div id="u-upload-zone"><div class="card"><div class="uz" onclick="document.getElementById(\'u-file\').click()">';
+    h+='<div style="font-size:2.5rem;margin-bottom:.5rem">📄</div>';
+    h+='<div style="font-size:1rem;font-weight:600;color:#2a2d3a">Click to upload your PDF</div>';
+    h+='<div style="font-size:.82rem;color:var(--muted);margin-top:.35rem">Supports .pdf — questions and bold correct answers extracted automatically</div>';
+    h+='<input type="file" id="u-file" accept=".pdf,.docx" style="display:none" onchange="G.handleFile(this.files[0])">';
+    h+='</div></div></div>';
+    h+='<div id="u-loading" style="display:none"><div class="card" style="text-align:center;padding:3rem">';
+    h+='<div style="font-size:2rem;margin-bottom:.75rem" id="u-load-icon">📄</div>';
+    h+='<div class="pt" style="font-size:1.3rem;margin-bottom:.4rem" id="u-load-title">Reading PDF…</div>';
+    h+='<div style="color:var(--slate);font-size:.9rem" id="u-load-msg">Extracting text…</div>';
+    h+='<div class="dot-row"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div></div>';
+    h+='<button class="btn btn-gh sm" style="margin-top:.75rem" onclick="G.setStep(1);G.renderStep1()">← Back to Details</button>';
+    el('u-s2').innerHTML=h;
+  }
+
+  async function handleFile(file){
+    if(!file) return;
+    UP.fileName=file.name;
+    el('u-s2-err').style.display='none';
+    el('u-upload-zone').style.display='none';
+    el('u-loading').style.display='block';
+    try{
+      if(file.name.toLowerCase().endsWith('.pdf')){
+        await readPDF(file);
+      } else {
+        var text=await readText(file);
+        UP.rawText=text;
+        window._boldLines=new Set();
+      }
+      parseAndNext();
+    }catch(err){
+      el('u-s2-err').textContent='⚠️ Could not read file: '+err.message; el('u-s2-err').style.display='flex';
+      el('u-loading').style.display='none'; el('u-upload-zone').style.display='block';
+    }
+  }
+
+  async function readPDF(file){
+    el('u-load-title').textContent='Reading PDF…'; el('u-load-msg').textContent='Extracting text and detecting bold answers…';
+    if(!window.pdfjsLib){
+      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+    var buf=await file.arrayBuffer();
+    var pdf=await window.pdfjsLib.getDocument({data:buf}).promise;
+    var plainText='';
+    var boldLines=new Set();
+    for(var p=1;p<=pdf.numPages;p++){
+      var page=await pdf.getPage(p);
+      var content=await page.getTextContent({includeMarkedContent:false});
+      // Find dominant font size
+      var sizes={};
+      for(var ii=0;ii<content.items.length;ii++){
+        var it=content.items[ii];
+        if(!it.str.trim()) continue;
+        var sz=Math.round(Math.abs(it.transform[0])*10)/10;
+        sizes[sz]=(sizes[sz]||0)+it.str.length;
+      }
+      var bodySize=12;
+      var maxLen=0;
+      for(var sz in sizes){ if(sizes[sz]>maxLen){maxLen=sizes[sz];bodySize=parseFloat(sz);} }
+      var lastY=null, lineItems=[];
+      var flushLine=function(){
+        if(!lineItems.length) return;
+        var lineText=''; var isBold=false;
+        for(var li=0;li<lineItems.length;li++){
+          var it=lineItems[li];
+          lineText+=it.str;
+          var fname=(it.fontName||'').toLowerCase();
+          var bName=fname.indexOf('bold')>-1||fname.indexOf('heavy')>-1||fname.indexOf('black')>-1;
+          var bSize=Math.abs(it.transform[0])>bodySize*1.08;
+          if(bName||bSize) isBold=true;
+        }
+        lineText=lineText.trim();
+        if(lineText){ plainText+=lineText+'\n'; if(isBold) boldLines.add(lineText); }
+        lineItems=[];
+      };
+      for(var ii=0;ii<content.items.length;ii++){
+        var item=content.items[ii];
+        if(!item.str) continue;
+        var y=Math.round(item.transform[5]);
+        if(lastY!==null&&Math.abs(y-lastY)>3) flushLine();
+        lineItems.push(item); lastY=y;
+      }
+      flushLine();
+      plainText+='\n';
+    }
+    if(!plainText.trim()) throw new Error('No readable text found. PDF may be a scanned image.');
+    UP.rawText=plainText;
+    window._boldLines=boldLines;
+  }
+
+  function readText(file){
+    return new Promise(function(res,rej){
+      var r=new FileReader(); r.onload=function(e){res(e.target.result);}; r.onerror=function(){rej(new Error('Read failed'));}; r.readAsText(file);
+    });
+  }
+  function loadScript(src){
+    return new Promise(function(res,rej){
+      if(document.querySelector('script[src="'+src+'"]')){res();return;}
+      var s=document.createElement('script'); s.src=src; s.onload=res; s.onerror=function(){rej(new Error('Failed to load '+src));}; document.head.appendChild(s);
+    });
+  }
+
+  function parseAndNext(){
+    el('u-load-icon').textContent='✨'; el('u-load-title').textContent='Extracting Questions…'; el('u-load-msg').textContent='Identifying questions and bold correct answers…';
+    setTimeout(function(){
+      try{
+        var qs=parseQuestions(UP.rawText,UP.mcPts,UP.essayPts,window._boldLines||new Set());
+        if(!qs.length) throw new Error('No numbered questions found. Make sure questions are formatted as: 1. Question text');
+        UP.questions=qs;
+        setStep(3); renderStep3();
+      }catch(err){
+        el('u-s2-err').textContent='⚠️ '+err.message; el('u-s2-err').style.display='flex';
+        el('u-loading').style.display='none'; el('u-upload-zone').style.display='block';
+        setStep(2);
+      }
+    },100);
+  }
+
+  function parseQuestions(raw,mcPts,essayPts,boldSet){
+    var lines=raw.split('\n');
+    var trimmed=[];
+    for(var i=0;i<lines.length;i++){var l=lines[i].trim(); if(l) trimmed.push(l);}
+    var qs=[];
+    var i=0;
+    var qRe=/^(\d+)[.)]\s+(.+)/;
+    var cRe=/^([A-Da-d])[.)]\s+(.+)/;
+    while(i<trimmed.length){
+      var qm=trimmed[i].match(qRe);
+      if(!qm){i++;continue;}
+      var prompt=qm[2]; i++;
+      while(i<trimmed.length&&!trimmed[i].match(qRe)&&!trimmed[i].match(cRe)){prompt+=' '+trimmed[i];i++;}
+      prompt=prompt.replace(/\s+/g,' ').trim();
+      if(prompt.length<4) continue;
+      var choices=[]; var choiceLines=[];
+      while(i<trimmed.length&&choices.length<5){
+        var cm=trimmed[i].match(cRe); if(!cm) break;
+        var ct=cm[2]; choiceLines.push(trimmed[i]); i++;
+        while(i<trimmed.length&&!trimmed[i].match(cRe)&&!trimmed[i].match(qRe)){ct+=' '+trimmed[i];i++;}
+        choices.push(ct.replace(/\s+/g,' ').trim());
+      }
+      var correct=null;
+      if(boldSet.size>0){
+        for(var ci=0;ci<choices.length;ci++){
+          var cl=choiceLines[ci]||'';
+          var ct2=choices[ci];
+          if(boldSet.has(cl)||boldSet.has(ct2)){correct=ci;break;}
+          boldSet.forEach(function(b){if(correct===null&&b.indexOf(ct2)>-1&&ct2.length>4) correct=ci;});
+        }
+      }
+      var type=choices.length>=2?'mc':'essay';
+      qs.push({id:qs.length+1,type:type,prompt:prompt,choices:type==='mc'?choices:[],correct:correct,points:type==='mc'?mcPts:essayPts,topic:'General'});
+    }
+    return qs;
+  }
+
+  function renderStep3(){
+    var qs=UP.questions;
+    var noAns=0; for(var i=0;i<qs.length;i++) if(qs[i].type==='mc'&&(qs[i].correct===null||qs[i].correct===undefined)) noAns++;
+    var h='<div class="al al-s">✅ <b>'+qs.length+' question'+(qs.length!==1?'s':'')+' imported</b> from <b>'+esc(UP.fileName)+'</b>. Assigned to: <b>'+UP.classes.join(', ')+'</b></div>';
+    if(noAns>0) h+='<div class="al al-w">⚠️ <b>'+noAns+' question'+(noAns!==1?'s':'')+' have no correct answer detected</b>. Click ✏️ to set manually.</div>';
+    h+='<div id="s3-qlist">';
+    for(var i=0;i<qs.length;i++) h+=renderQCard(qs[i],i);
+    h+='</div>';
+    h+='<div style="display:flex;justify-content:space-between;margin-top:1rem">';
+    h+='<button class="btn btn-gh" onclick="G.setStep(2);G.renderStep2()">← Upload Different File</button>';
+    h+='<button class="btn btn-r" style="padding:.6rem 2rem;font-size:1rem" onclick="G.setStep(4);G.renderStep4()">Next: Publish Settings →</button>';
+    h+='</div>';
+    el('u-s3').innerHTML=h;
+  }
+
+  function renderQCard(q,i){
+    var L='ABCDE';
+    var body='';
+    if(q.type==='mc'){
+      body='<div class="opts">';
+      for(var ci=0;ci<q.choices.length;ci++){
+        body+='<div class="opt"><div class="olet'+(ci===q.correct?' ok':'')+'">'+L[ci]+'</div>'+esc(q.choices[ci]);
+        if(ci===q.correct) body+=' <span class="bdg bg" style="margin-left:auto">✓ Correct</span>';
+        body+='</div>';
+      }
+      body+='</div>';
+      if(q.correct===null||q.correct===undefined) body+='<div style="font-size:.78rem;color:var(--orange);margin-top:.35rem">⚠️ No correct answer set — click ✏️</div>';
+    } else {
+      body='<div style="background:var(--cream);border-radius:4px;padding:.5rem .75rem;font-size:.82rem;color:var(--slate)">Open-ended — manually graded · '+q.points+' pts</div>';
+    }
+    return '<div class="qcard" id="qc-'+q.id+'">'+
+      '<div class="qact"><button class="btn btn-gh sm" onclick="G.editQ('+q.id+')">✏️ Edit</button><button class="btn btn-gh sm" onclick="G.delQ('+q.id+')">🗑️</button></div>'+
+      '<div class="qn">Q'+(i+1)+' · <span class="bdg '+(q.type==='mc'?'bb':'bo')+'">'+(q.type==='mc'?'Multiple Choice':'Essay')+'</span>'+
+      ' &nbsp;Points: <input type="number" class="pts-in" value="'+q.points+'" min="1" max="100" onchange="G.upQ('+q.id+',\'points\',+this.value)"></div>'+
+      '<div class="qp">'+esc(q.prompt)+'</div>'+body+'</div>';
+  }
+
+  function delQ(id){ UP.questions=UP.questions.filter(function(q){return q.id!==id;}); renderStep3(); }
+  function upQ(id,f,v){ for(var i=0;i<UP.questions.length;i++) if(UP.questions[i].id===id){UP.questions[i][f]=v;break;} }
+
+  function editQ(id){
+    var q=null; for(var i=0;i<UP.questions.length;i++) if(UP.questions[i].id===id){q=UP.questions[i];break;}
+    if(!q) return;
+    var L='ABCDE';
+    var choiceF='';
+    if(q.type==='mc'){
+      for(var ci=0;ci<q.choices.length;ci++){
+        choiceF+='<div style="display:flex;gap:.5rem;align-items:center;margin-bottom:.45rem">';
+        choiceF+='<button onclick="G.setCorrect('+id+','+ci+')" style="width:26px;height:26px;border-radius:4px;border:2px solid '+(q.correct===ci?'var(--green)':'var(--rule)')+';background:'+(q.correct===ci?'var(--green)':'#fff')+';color:'+(q.correct===ci?'#fff':'var(--slate)')+';cursor:pointer;font-family:\'DM Mono\',monospace;font-size:.7rem;flex-shrink:0" title="Set as correct">'+L[ci]+'</button>';
+        choiceF+='<input type="text" value="'+esc(q.choices[ci])+'" onchange="G.upChoice('+id+','+ci+',this.value)" style="flex:1">';
+        if(q.correct===ci) choiceF+='<span class="bdg bg">✓</span>';
+        choiceF+='</div>';
+      }
+      choiceF+='<p style="font-size:.76rem;color:var(--muted)">Click letter button to mark correct answer.</p>';
+    }
+    var h='<div class="qn" style="margin-bottom:.6rem">Editing Q'+(UP.questions.indexOf(q)+1)+'</div>';
+    h+='<div class="fg"><label>Question Prompt</label><textarea onchange="G.upQ('+id+',\'prompt\',this.value)" style="min-height:65px">'+esc(q.prompt)+'</textarea></div>';
+    h+='<div class="fg"><label>Type</label><select onchange="G.upQ('+id+',\'type\',this.value)"><option value="mc"'+(q.type==='mc'?' selected':'')+'>Multiple Choice</option><option value="essay"'+(q.type==='essay'?' selected':'')+'>Essay</option></select></div>';
+    if(q.type==='mc') h+='<div class="fg"><label>Answer Choices</label>'+choiceF+'</div>';
+    h+='<div class="fg"><label>Points</label><input type="number" value="'+q.points+'" min="1" max="100" onchange="G.upQ('+id+',\'points\',+this.value)" style="width:90px"></div>';
+    h+='<div style="display:flex;gap:.5rem;margin-top:.25rem"><button class="btn btn-g sm" onclick="G.saveQ()">✅ Save</button><button class="btn btn-gh sm" onclick="G.renderStep3()">Cancel</button></div>';
+    el('qc-'+id).innerHTML=h;
+  }
+  function upChoice(id,ci,v){ for(var i=0;i<UP.questions.length;i++) if(UP.questions[i].id===id){UP.questions[i].choices[ci]=v;break;} }
+  function setCorrect(id,ci){ for(var i=0;i<UP.questions.length;i++) if(UP.questions[i].id===id){UP.questions[i].correct=ci;break;} editQ(id); }
+  function saveQ(){ renderStep3(); }
+
+  function renderStep4(){
+    var totalPts=0; for(var i=0;i<UP.questions.length;i++) totalPts+=UP.questions[i].points;
+    var mcCount=0,essCount=0; for(var i=0;i<UP.questions.length;i++){if(UP.questions[i].type==='mc') mcCount++; else essCount++;}
+    var h='<div class="al al-s">✅ Ready to publish <b>'+esc(UP.title)+'</b> · '+UP.questions.length+' questions · '+atLabel(UP.atype)+' → <b>'+UP.classes.join(', ')+'</b></div>';
+    h+='<div class="g2"><div>';
+    h+='<div class="card"><div class="ct">📋 Summary</div>';
+    h+='<div style="font-size:.875rem;color:var(--slate);line-height:2">';
+    h+='<div><b>Title:</b> '+esc(UP.title)+'</div>';
+    h+='<div><b>Type:</b> '+atLabel(UP.atype)+'</div>';
+    h+='<div><b>Questions:</b> '+UP.questions.length+' ('+mcCount+' MC, '+essCount+' Essay)</div>';
+    h+='<div><b>Total Points:</b> '+totalPts+'</div>';
+    h+='<div><b>Due:</b> '+esc(UP.due)+'</div>';
+    h+='<div><b>Classes:</b> '+UP.classes.join(', ')+'</div>';
+    h+='</div></div>';
+    h+='<div class="card"><div class="ct">⏱️ Timer</div>';
+    h+='<div class="fg" style="margin-top:.5rem"><label>Time Limit (minutes)</label><input type="number" id="u-tl" value="45" style="width:100px"></div></div>';
+    h+='</div><div>';
+    h+='<div class="card"><div class="ct">🔒 Security</div>';
+    var toggs=[{k:'fullscreen',l:'Require Fullscreen'},{k:'pasteBlock',l:'Block Paste'},{k:'strictRestart',l:'Strict Restart on Exit'},{k:'timer',l:'Enable Timer'}];
+    for(var i=0;i<toggs.length;i++){
+      var t=toggs[i];
+      h+='<div class="tog-r"><span style="font-size:.875rem;color:#2a2d3a">'+t.l+'</span><button class="tog'+(SETTINGS[t.k]?' on':'')+'" id="ptog-'+t.k+'" onclick="G.togSet(\''+t.k+'\')"></button></div>';
+    }
+    h+='</div></div></div>';
+    h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-top:1.25rem">';
+    h+='<button class="btn btn-gh" onclick="G.setStep(3);G.renderStep3()">← Back to Review</button>';
+    h+='<button class="btn btn-r" style="padding:.7rem 2.5rem;font-size:1.05rem" onclick="G.doPublish()">🚀 Publish to Students Now</button>';
+    h+='</div>';
+    el('u-s4').innerHTML=h;
+  }
+  function togSet(k){ SETTINGS[k]=!SETTINGS[k]; var b=el('ptog-'+k); if(b) b.classList.toggle('on',SETTINGS[k]); }
+
+  function doPublish(){
+    var tl=el('u-tl'); var timeLimit=tl?+tl.value:45;
+    var payload={title:UP.title,atype:UP.atype,classes:UP.classes.slice(),status:'published',questions:UP.questions.slice(),due:UP.due,timeLimit:timeLimit};
+    fetch('/api/exams?action=save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(data.ok){
+        EXAMS.push(data.exam);
+        navTo('exams');
+        setTimeout(function(){
+          var pg=el('tpage'); if(!pg) return;
+          var b=document.createElement('div'); b.className='al al-s'; b.style.fontSize='.95rem';
+          b.innerHTML='✅ <b>'+esc(data.exam.title)+'</b> published to <b>'+data.exam.classes.join(', ')+'</b> — <b>saved permanently, will not disappear on refresh.</b>';
+          pg.insertBefore(b,pg.firstChild); setTimeout(function(){b.remove();},9000);
+        },50);
+      } else { alert('Save error: '+data.error); }
+    })
+    .catch(function(err){ alert('Network error — check connection: '+err.message); });
+  }
+
+  // ══════════════════════════════
+  // OTHER TEACHER PAGES
+  // ══════════════════════════════
+  function pgBank(){
+    var pg=el('tpage');
+    var h='<div class="ph"><div class="pt">Question Bank</div><button class="btn btn-r">➕ Add Question</button></div>';
+    for(var i=0;i<SQ.length;i++){
+      var q=SQ[i];
+      h+='<div class="qcard"><div class="qn">Q'+(i+1)+' · <span class="bdg bb">MC</span> · '+q.points+' pts · '+esc(q.topic)+'</div><div class="qp">'+esc(q.prompt)+'</div>';
+      h+='<div class="opts">';
+      for(var ci=0;ci<q.choices.length;ci++) h+='<div class="opt"><div class="olet'+(ci===q.correct?' ok':'')+'">'+('ABCD'[ci])+'</div>'+esc(q.choices[ci])+'</div>';
+      h+='</div></div>';
+    }
+    pg.innerHTML=h;
+  }
+
+  function pgExams(){
+    var pg=el('tpage');
+    pg.innerHTML='<div class="ph"><div><div class="pt">Assessments</div><div class="ps">Loading from database…</div></div><button class="btn btn-r" onclick="G.navTo(\'upload\')">➕ New</button></div><div style="text-align:center;padding:3rem;color:var(--muted)">⏳ Fetching your saved assessments…</div>';
+    fetch('/api/exams?action=list')
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(data.ok) EXAMS=data.exams;
+      var h='<div class="ph"><div><div class="pt">Assessments</div><div class="ps">'+EXAMS.length+' saved permanently in database</div></div><button class="btn btn-r" onclick="G.navTo(\'upload\')">➕ New</button></div>';
+      if(!EXAMS.length){
+        h+='<div class="card" style="text-align:center;padding:2.5rem;color:var(--muted)">No assessments yet. Click ➕ New to upload a PDF and create your first exam, quiz, or assignment.</div>';
+      } else {
+        h+='<div class="tw"><table><thead><tr><th>Title</th><th>Type</th><th>Classes</th><th>Status</th><th>Questions</th><th>Due</th><th>Actions</th></tr></thead><tbody>';
+        for(var i=0;i<EXAMS.length;i++){
+          var e=EXAMS[i];
+          var statBdg=e.status==='published'?'<span class="bdg bg">🟢 Open</span>':e.status==='closed'?'<span class="bdg br">🔴 Closed</span>':'<span class="bdg bgr">Draft</span>';
+          var ab=e.status==='published'
+            ?'<button class="btn btn-danger sm" onclick="G.toggleStatus('+e.id+',\'exams\')">🔒 Close</button>'
+            :e.status==='closed'
+            ?'<button class="btn btn-g sm" onclick="G.toggleStatus('+e.id+',\'exams\')">🔓 Reopen</button>'
+            :'<button class="btn btn-r sm" onclick="G.toggleStatus('+e.id+',\'exams\')">🚀 Publish</button>';
+          h+='<tr><td><b>'+esc(e.title)+'</b></td><td>'+atBdg(e.atype)+'</td><td style="font-size:.8rem">'+e.classes.join(', ')+'</td>';
+          h+='<td>'+statBdg+'</td><td style="font-family:\'DM Mono\',monospace">'+(Array.isArray(e.questions)?e.questions.length:e.questions)+'</td>';
+          h+='<td style="font-size:.8rem">'+esc(e.due)+'</td>';
+          h+='<td style="display:flex;gap:.3rem">'+ab+'<button class="btn btn-gh sm" onclick="G.navTo(\'atlog\')">👁</button></td></tr>';
+        }
+        h+='</tbody></table></div>';
+      }
+      pg.innerHTML=h;
+    })
+    .catch(function(){ pg.innerHTML='<div class="al al-d">⚠️ Could not load assessments. Check your connection.</div>'; });
+  }
+
+  function toggleStatus(id,returnPage){
+    fetch('/api/exams?action=toggle',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.ok){ for(var i=0;i<EXAMS.length;i++) if(EXAMS[i].id===id){EXAMS[i].status=d.exam.status;break;} }
+      navTo(returnPage||'exams');
+    })
+    .catch(function(){ navTo(returnPage||'exams'); });
+  }
+
+  function pgAtlog(){
+    var pg=el('tpage');
+    pg.innerHTML='<div class="ph"><div class="pt">Attempt Log</div></div><div style="text-align:center;padding:3rem;color:var(--muted)">⏳ Loading submissions…</div>';
+    fetch('/api/attempts?action=list')
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(data.ok) ATTEMPTS=data.attempts;
+      var h='<div class="ph"><div><div class="pt">Attempt Log</div><div class="ps">'+ATTEMPTS.length+' submission'+(ATTEMPTS.length!==1?'s':'')+' — saved permanently</div></div></div>';
+      if(!ATTEMPTS.length){
+        h+='<div class="card" style="text-align:center;padding:2.5rem;color:var(--muted)">No student submissions yet. When students complete an exam it will appear here — permanently saved.</div>';
+      } else {
+        h+='<div class="tw"><table><thead><tr><th>Student</th><th>ID</th><th>Class</th><th>Assessment</th><th>Type</th><th>Submitted</th><th>Score</th><th>Status</th><th></th></tr></thead><tbody>';
+        for(var i=0;i<ATTEMPTS.length;i++){
+          var a=ATTEMPTS[i];
+          var scoreDisp=a.score!==null?a.score+'%':(a.hasEssay?'essay pending':'—');
+          var scolor=a.score!==null?(a.score>=90?'var(--green)':a.score>=70?'var(--orange)':'var(--danger)'):'var(--muted)';
+          var statBdg=a.status==='graded'?bdg('graded','bg'):a.status==='pending-essay'?bdg('pending essay','bo'):bdg(a.status,'br');
+          h+='<tr>';
+          h+='<td><b>'+esc(a.name)+'</b></td>';
+          h+='<td style="font-family:\'DM Mono\',monospace;font-size:.8rem">'+esc(a.sid)+'</td>';
+          h+='<td style="font-size:.82rem">'+esc(a.cls)+'</td>';
+          h+='<td style="font-size:.82rem">'+esc(a.examTitle)+'</td>';
+          h+='<td>'+atBdg(a.atype)+'</td>';
+          h+='<td style="font-size:.76rem;font-family:\'DM Mono\',monospace">'+esc(a.submittedAt)+'</td>';
+          h+='<td style="font-family:\'DM Mono\',monospace;font-weight:600;color:'+scolor+'">'+scoreDisp+'</td>';
+          h+='<td>'+statBdg+'</td>';
+          h+='<td><button class="btn btn-b sm" onclick="G.viewAttempt('+a.id+')">👁 View</button></td>';
+          h+='</tr>';
+        }
+        h+='</tbody></table></div>';
+      }
+      pg.innerHTML=h;
+    })
+    .catch(function(){ pg.innerHTML='<div class="al al-d">⚠️ Could not load attempts. Check your connection.</div>'; });
+  }
+
+  function viewAttempt(id){
+    var attempt=null;
+    for(var i=0;i<ATTEMPTS.length;i++) if(ATTEMPTS[i].id===id){attempt=ATTEMPTS[i];break;}
+    if(!attempt) return;
+    var L='ABCDE';
+    var pg=el('tpage');
+    var h='';
+    h+='<div class="ph"><div>';
+    h+='<button class="btn btn-gh" onclick="G.pgAtlog()">← Back to Attempt Log</button>';
+    h+='<div class="pt" style="margin-top:.5rem">'+esc(attempt.name)+' · '+esc(attempt.examTitle)+'</div>';
+    h+='<div class="ps">'+esc(attempt.cls)+' · '+esc(attempt.atype.toUpperCase())+' · Submitted: '+esc(attempt.submittedAt)+'</div></div>';
+    if(attempt.score!==null){
+      var sc=attempt.score>=90?'var(--green)':attempt.score>=70?'var(--orange)':'var(--danger)';
+      h+='<div style="text-align:center;border:3px solid '+sc+';border-radius:10px;padding:.75rem 1.5rem;background:#fff">';
+      h+='<div style="font-family:\'Syne\',sans-serif;font-weight:800;font-size:2.5rem;color:'+sc+'">'+attempt.score+'%</div>';
+      h+='<div style="font-size:.85rem;color:var(--slate)">'+attempt.earned+' / '+attempt.mcPossible+' pts</div></div>';
+    }
+    h+='</div>';
+
+    // Summary cards
+    h+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.25rem">';
+    var summaryItems=[
+      ['Score',attempt.score!==null?attempt.score+'%':'Essay Pending'],
+      ['Student',attempt.name],
+      ['ID',attempt.sid],
+      ['Class',attempt.cls]
+    ];
+    for(var i=0;i<summaryItems.length;i++){
+      h+='<div style="background:#fff;border:1px solid var(--rule);border-radius:8px;padding:.9rem">';
+      h+='<div style="font-family:\'DM Mono\',monospace;font-size:.66rem;color:var(--muted);text-transform:uppercase;margin-bottom:.25rem">'+summaryItems[i][0]+'</div>';
+      h+='<div style="font-weight:700;font-size:1rem">'+esc(String(summaryItems[i][1]))+'</div></div>';
+    }
+    h+='</div>';
+
+    // MC answers — teacher sees everything including correct answer
+    var mcResults=[];
+    for(var i=0;i<attempt.results.length;i++) if(attempt.results[i].type==='mc') mcResults.push(attempt.results[i]);
+    if(mcResults.length>0){
+      h+='<div class="card"><div class="ct">Multiple Choice Responses</div>';
+      for(var i=0;i<mcResults.length;i++){
+        var r=mcResults[i];
+        var icon=r.ok?'✅':(r.ans===undefined?'⬜':'❌');
+        var chosenTxt=r.ans!==undefined?L[r.ans]+' — '+esc(r.q.choices[r.ans]||''):'Not answered';
+        var correctTxt=r.q.correct!==null&&r.q.correct!==undefined?L[r.q.correct]+' — '+esc(r.q.choices[r.q.correct]||''):'Not set';
+        h+='<div style="padding:.65rem 0;border-bottom:1px solid var(--rule)">';
+        h+='<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem">';
+        h+='<span>'+icon+'</span><b style="font-size:.875rem">Q'+(i+1)+': '+esc(r.q.prompt.length>70?r.q.prompt.slice(0,70)+'…':r.q.prompt)+'</b></div>';
+        h+='<div style="font-size:.82rem;color:var(--muted);padding-left:1.5rem">';
+        h+='Student answered: <b style="color:'+(r.ok?'var(--green)':'var(--danger)')+'">'+chosenTxt+'</b>';
+        if(!r.ok) h+=' &nbsp;|&nbsp; Correct answer: <b style="color:var(--green)">'+correctTxt+'</b>';
+        h+='</div></div>';
+      }
+      h+='</div>';
+    }
+
+    // Essay responses — teacher can grade
+    var essayResults=[];
+    for(var i=0;i<attempt.results.length;i++) if(attempt.results[i].type==='essay') essayResults.push(attempt.results[i]);
+    if(essayResults.length>0){
+      h+='<div class="card"><div class="ct">✏️ Essay Responses — Grading</div>';
+      for(var i=0;i<essayResults.length;i++){
+        var r=essayResults[i];
+        h+='<div style="margin-bottom:1.25rem;padding-bottom:1.25rem;border-bottom:1px solid var(--rule)">';
+        h+='<div style="font-family:\'DM Mono\',monospace;font-size:.72rem;color:var(--muted);margin-bottom:.35rem">Essay Q · '+r.q.points+' pts max</div>';
+        h+='<div style="font-weight:600;margin-bottom:.5rem;font-size:.9rem">'+esc(r.q.prompt)+'</div>';
+        h+='<div style="background:var(--cream);border-radius:6px;padding:.9rem;font-size:.9rem;line-height:1.6;color:#2a2d3a;margin-bottom:.65rem;min-height:3rem">';
+        h+=r.resp?esc(r.resp):'<span style="color:var(--muted);font-style:italic">No response submitted</span>';
+        h+='</div>';
+        h+='<div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">';
+        h+='<label style="font-size:.82rem;font-weight:600">Score:</label>';
+        h+='<input type="number" min="0" max="'+r.q.points+'" placeholder="0–'+r.q.points+'" style="width:90px;padding:.35rem .5rem;font-size:.9rem">';
+        h+='<span style="font-size:.82rem;color:var(--muted)">out of '+r.q.points+' pts</span>';
+        h+='<input type="text" placeholder="Optional comment…" style="flex:1;min-width:180px;padding:.35rem .6rem;font-size:.85rem">';
+        h+='<button class="btn btn-g sm">Save</button>';
+        h+='</div></div>';
+      }
+      h+='</div>';
+    }
+
+    // Security events
+    if(attempt.events && attempt.events.length>0){
+      h+='<div class="card"><div class="ct">🚩 Security Events ('+attempt.events.length+')</div>';
+      h+='<div class="evlog" style="margin-top:.5rem">';
+      for(var i=0;i<attempt.events.length;i++){
+        var ev=attempt.events[i];
+        h+='<div class="evrow"><div class="evt">'+esc(ev.t)+'</div><div class="evty">'+esc(ev.ty)+'</div><div class="evd">'+esc(ev.d)+'</div></div>';
+      }
+      h+='</div></div>';
+    }
+
+    pg.innerHTML=h;
+
+    // Wire pgAtlog back button
+    var backBtn=pg.querySelector('button');
+    if(backBtn) backBtn.onclick=function(){ pgAtlog(); };
+  }
+
+  function pgGrade(){
+    var pg=el('tpage');
+    var h='<div class="ph"><div class="pt">Grading Queue</div></div><div class="al al-w">⚠️ 2 attempts have essay responses awaiting grading.</div>';
+    for(var i=0;i<SA.length;i++){
+      if(SA[i].status==='pending'||SA[i].essays){
+        h+='<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem"><div><b>'+esc(SA[i].name)+'</b> · <span style="font-size:.82rem;color:var(--slate)">'+esc(SA[i].cls)+'</span></div><span class="bdg bo">1 essay pending</span></div><button class="btn btn-r sm">Grade →</button></div>';
+      }
+    }
+    pg.innerHTML=h;
+  }
+
+  function pgFlags(){
+    var pg=el('tpage');
+    var h='<div class="ph"><div class="pt">Suspicious Activity</div></div><div class="al al-d">🚩 1 attempt flagged for review.</div>';
+    h+='<div class="card"><div style="display:flex;justify-content:space-between;margin-bottom:.75rem"><div><div class="ct">Aaliyah Brooks — Law Enforcement 2</div><div style="font-size:.82rem;color:var(--slate)">Criminal Procedure Mid-Term · Mar 18 · 42 min</div></div><span class="bdg br">3 Events</span></div>';
+    h+='<div class="evlog">';
+    for(var i=0;i<SEV.length;i++) h+='<div class="evrow"><div class="evt">'+SEV[i].t+'</div><div class="evty">'+SEV[i].ty+'</div><div class="evd">'+SEV[i].d+'</div></div>';
+    h+='</div><div style="display:flex;gap:.5rem;margin-top:.75rem"><button class="btn btn-r sm">Mark Reviewed</button><button class="btn btn-o sm">Invalidate</button><button class="btn btn-gh sm">Dismiss</button></div></div>';
+    h+='<div class="card" style="background:var(--cream)"><div class="ct">About Detection</div><p style="font-size:.875rem;color:var(--slate);line-height:1.6;margin-top:.4rem">Standard security detects tab switching, fullscreen exits, paste attempts, and focus loss. It <b>cannot</b> identify specific external sites or apps. Safe Exam Browser integration coming soon.</p></div>';
+    pg.innerHTML=h;
+  }
+
+  function pgReports(){
+    var pg=el('tpage');
+    var h='<div class="ph"><div class="pt">Reports</div><div style="display:flex;gap:.5rem"><button class="btn btn-o sm">↗️ CSV</button><button class="btn btn-o sm">🖨 Print</button></div></div>';
+    h+='<div class="sg"><div class="sc cr"><div class="n">78%</div><div class="l">LE1 Avg</div></div><div class="sc cb"><div class="n">84%</div><div class="l">Court Avg</div></div><div class="sc cg"><div class="n">92%</div><div class="l">Highest</div></div><div class="sc co"><div class="n">58%</div><div class="l">Lowest</div></div></div>';
+    h+='<div class="card"><div class="ct">Class Performance</div><div class="tw" style="margin-top:.6rem"><table><thead><tr><th>Class</th><th>Students</th><th>Attempts</th><th>Avg</th></tr></thead><tbody>';
+    var rows=[['Law Enforcement 1','28','22','78%'],['Law Enforcement 2','26','20','81%'],['Court Systems','30','24','84%'],['Practicum M','18','0','—'],['Practicum A','20','0','—'],['Criminal Justice','22','0','—']];
+    for(var i=0;i<rows.length;i++) h+='<tr><td><b>'+rows[i][0]+'</b></td><td>'+rows[i][1]+'</td><td>'+rows[i][2]+'</td><td>'+rows[i][3]+'</td></tr>';
+    h+='</tbody></table></div></div>';
+    pg.innerHTML=h;
+  }
+
+  // ══════════════════════════════
+  // STUDENT FLOW
+  // ══════════════════════════════
+  function studentGo(){
+    var n=(el('s-name').value||'').trim();
+    var sid=(el('s-sid').value||'').trim();
+    var cls=el('s-cls').value;
+    if(!n||!sid||!cls){ el('s-err').style.display='flex'; return; }
+    el('s-err').style.display='none';
+    SI={name:n,sid:sid,cls:cls};
+    LOGINS.push({name:n,sid:sid,cls:cls,time:new Date().toLocaleString(),action:'Logged in'});
+    showExamList();
+  }
+
+  function showExamList(){
+    el('s-welcome').innerHTML='Welcome, <b>'+esc(SI.name)+'</b> · '+esc(SI.cls);
+    el('s-examlist').innerHTML='<div style="text-align:center;padding:2rem;color:var(--muted)">⏳ Loading available assessments…</div>';
+    show('s-slist');
+    fetch('/api/exams?action=list')
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(data.ok) EXAMS=data.exams;
+      var avail=[];
+      for(var i=0;i<EXAMS.length;i++) if(EXAMS[i].status==='published'&&EXAMS[i].classes.indexOf(SI.cls)>-1) avail.push(EXAMS[i]);
+      var h='';
+      if(!avail.length){
+        h='<div class="card" style="text-align:center;padding:2rem"><div style="font-size:1.5rem;margin-bottom:.5rem">📋</div><b style="color:var(--slate)">No assessments assigned to your class yet.</b><p style="font-size:.82rem;color:var(--muted);margin-top:.5rem">Ask your teacher if an exam has been published for <b>'+esc(SI.cls)+'</b>.</p></div>';
+      } else {
+        for(var i=0;i<avail.length;i++){
+          var e=avail[i];
+          h+='<div class="exam-lcard" style="border-left-color:'+atColor(e.atype)+'" onclick="G.selectExam('+e.id+')">';
+          h+='<div style="display:flex;justify-content:space-between;align-items:flex-start">';
+          h+='<div><div style="font-size:.7rem;font-family:\'DM Mono\',monospace;color:var(--muted);text-transform:uppercase;margin-bottom:.25rem">'+e.atype+' 📝</div>';
+          h+='<div style="font-family:\'Syne\',sans-serif;font-weight:700;font-size:1.05rem">'+esc(e.title)+'</div>';
+          h+='<div style="font-size:.82rem;color:var(--slate);margin-top:.2rem">'+(Array.isArray(e.questions)?e.questions.length:e.questions)+' questions · Due '+esc(e.due)+'</div></div>';
+          h+='<span class="bdg bg">Available</span></div>';
+          h+='<button class="btn btn-b sm" style="margin-top:.9rem">Begin '+atLabel(e.atype)+' →</button>';
+          h+='</div>';
+        }
+      }
+      el('s-examlist').innerHTML=h;
+    })
+    .catch(function(){
+      el('s-examlist').innerHTML='<div class="card" style="text-align:center;padding:2rem;color:var(--muted)">Could not load assessments. Check your internet connection and try again.</div>';
+    });
+  }
+
+  function selectExam(id){
+    SE=null;
+    for(var i=0;i<EXAMS.length;i++) if(EXAMS[i].id===id){SE=EXAMS[i];break;}
+    if(!SE) return;
+    el('w-sub').textContent=SE.title+' · '+atLabel(SE.atype)+' · '+SI.cls;
+    el('w-agree').checked=false;
+    el('w-begin').disabled=true;
+    show('s-warn');
+  }
+
+  // ══════════════════════════════
+  // EXAM ENGINE
+  // ══════════════════════════════
+  function beginExam(){
+    EQ = Array.isArray(SE.questions)?SE.questions.slice():SQ.slice();
+    EA={}; EEA={}; EEV=[]; ECQ=0;
+    ETL = (SE.timeLimit||45)*60;
+    el('e-title').textContent = SE.title+' · '+atLabel(SE.atype)+' · '+SI.name;
+    el('e-alert').style.display='none';
+    show('s-exam');
+    drawQ();
+    clearInterval(ETI);
+    ETI=setInterval(function(){
+      if(ETL>0){
+        ETL--;
+        var m=String(Math.floor(ETL/60)).padStart(2,'0');
+        var s=String(ETL%60).padStart(2,'0');
+        el('e-timer').textContent=m+':'+s;
+      } else {
+        clearInterval(ETI);
+        finishExam();
+      }
+    },1000);
+    document.addEventListener('visibilitychange',visChange);
+  }
+
+  function visChange(){
+    var msg=document.hidden?'Exam window lost focus':'Exam window regained focus';
+    var type=document.hidden?'page_hidden':'page_visible';
+    EEV.push({t:new Date().toLocaleTimeString(),ty:type,d:msg});
+    var b=el('e-alert'); b.textContent='⚠️ '+msg; b.style.display='block';
+    setTimeout(function(){b.style.display='none';},4000);
+  }
+
+  function drawQ(){
+    var q=EQ[ECQ];
+    var tot=EQ.length;
+    var pct=Math.round((ECQ+1)/tot*100);
+    el('e-prog').textContent='Q '+(ECQ+1)+' of '+tot;
+
+    var ans='';
+    if(q.type==='mc'){
+      var L='ABCDE';
+      for(var ci=0;ci<q.choices.length;ci++){
+        var sel=(EA[q.id]===ci)?'sel':'';
+        ans+='<div class="eopt '+sel+'" data-qid="'+q.id+'" data-ci="'+ci+'"><div class="eol">'+L[ci]+'</div>'+esc(q.choices[ci])+'</div>';
+      }
+    } else {
+      ans='<textarea id="eq-ta" style="width:100%;min-height:130px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:6px;color:#e8e6e0;padding:.7rem;font-family:\'Instrument Sans\',sans-serif;font-size:.9rem;resize:vertical" placeholder="Type your response here…">'+esc(EEA[q.id]||'')+'</textarea>';
+    }
+
+    var isLast=(ECQ===tot-1);
+    var navBtn=isLast
+      ? '<button id="submit-exam-btn" class="btn btn-g" style="padding:.6rem 1.6rem;font-size:1rem">Submit '+atLabel(SE.atype)+' ✓</button>'
+      : '<button id="next-btn" class="btn btn-b">Next →</button>';
+
+    el('e-qbox').innerHTML=
+      '<div class="eqnum">Question '+(ECQ+1)+' of '+tot+' · '+q.points+' pts</div>'+
+      '<div class="eqtext">'+esc(q.prompt)+'</div>'+
+      ans+
+      '<div class="enav">'+
+        '<button id="prev-btn" class="btn btn-o" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#e8e6e0"'+(ECQ===0?' disabled':'')+'>← Prev</button>'+
+        navBtn+
+      '</div>'+
+      '<div class="epb"><div class="epbf" style="width:'+pct+'%"></div></div>';
+
+    // Wire buttons with direct DOM references — no inline onclick
+    var prevBtn=document.getElementById('prev-btn');
+    if(prevBtn) prevBtn.onclick=function(){ if(ECQ>0){ECQ--;drawQ();} };
+
+    var nextBtn=document.getElementById('next-btn');
+    if(nextBtn) nextBtn.onclick=function(){ if(ECQ<EQ.length-1){ECQ++;drawQ();} };
+
+    var submitBtn=document.getElementById('submit-exam-btn');
+    if(submitBtn) submitBtn.onclick=function(){ finishExam(); };
+
+    // MC click handlers
+    var opts=el('e-qbox').querySelectorAll('.eopt');
+    for(var i=0;i<opts.length;i++){
+      opts[i].addEventListener('click',function(){
+        var qid=+this.getAttribute('data-qid');
+        var ci=+this.getAttribute('data-ci');
+        EA[qid]=ci;
+        drawQ();
+      });
+    }
+
+    // Essay auto-save
+    var ta=document.getElementById('eq-ta');
+    if(ta){
+      ta.onpaste=function(e){ e.preventDefault(); EEV.push({t:new Date().toLocaleTimeString(),ty:'paste_blocked',d:'Paste intercepted'}); };
+      ta.oncontextmenu=function(e){ e.preventDefault(); };
+      ta.oninput=function(){ EEA[q.id]=this.value; };
+    }
+  }
+
+  // ══════════════════════════════
+  // FINISH / RESULTS
+  // ══════════════════════════════
+  function finishExam(){
+    clearInterval(ETI);
+    document.removeEventListener('visibilitychange',visChange);
+
+    // ── Grade ──────────────────────────────────────────
+    var L='ABCDE';
+    var earned=0, mcPossible=0, essayCount=0;
+    var results=[];
+    for(var i=0;i<EQ.length;i++){
+      var q=EQ[i];
+      if(q.type==='mc'){
+        var ans=EA[q.id];
+        var ok=(ans!==undefined && ans===q.correct);
+        var pts=ok?q.points:0;
+        earned+=pts; mcPossible+=q.points;
+        results.push({q:q,ans:ans,ok:ok,pts:pts,type:'mc'});
+      } else {
+        essayCount++;
+        results.push({q:q,resp:EEA[q.id]||'',type:'essay'});
+      }
+    }
+    var pct=mcPossible>0?Math.round(earned/mcPossible*100):null;
+    var hasEssay=essayCount>0;
+    var submittedAt=new Date().toLocaleString();
+    var aLabel=atLabel(SE.atype);
+    var scoreColor=pct===null?'var(--blue)':pct>=90?'var(--green)':pct>=70?'var(--orange)':'var(--danger)';
+
+    // ── Save attempt permanently to database ──────────
+    var attemptPayload = {
+      name: SI.name, sid: SI.sid, cls: SI.cls,
+      examId: SE.id, examTitle: SE.title, atype: SE.atype,
+      submittedAt: submittedAt,
+      score: pct, earned: earned, mcPossible: mcPossible,
+      hasEssay: hasEssay, essayCount: essayCount,
+      results: results, events: EEV.slice(),
+      status: hasEssay ? 'pending-essay' : 'graded'
+    };
+    // Save to API (permanent) — also keep in local array for this session
+    fetch('/api/attempts?action=save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(attemptPayload)})
+    .then(function(r){return r.json();})
+    .then(function(d){ if(d.ok) ATTEMPTS.push(d.attempt); })
+    .catch(function(){}); // silent — Netlify Forms backup still captures score
+    LOGINS.push({name:SI.name,sid:SI.sid,cls:SI.cls,time:submittedAt,action:'Submitted: '+SE.title+(pct!==null?' — Score: '+pct+'%':'')});
+
+    // ── Send score to Netlify Forms → Zapier → Google Sheets ──
+    // This fires silently in the background — student never sees it
+    try {
+      var formData = new FormData();
+      formData.append('form-name',      'exam-scores');
+      formData.append('student-name',   SI.name);
+      formData.append('student-id',     SI.sid);
+      formData.append('class',          SI.cls);
+      formData.append('exam-title',     SE.title);
+      formData.append('exam-type',      atLabel(SE.atype));
+      formData.append('score-percent',  pct !== null ? pct + '%' : 'Essay Pending');
+      formData.append('points-earned',  earned + ' / ' + mcPossible);
+      formData.append('has-essay',      hasEssay ? 'Yes' : 'No');
+      formData.append('submitted-at',   submittedAt);
+      fetch('/', { method: 'POST', body: formData });
+    } catch(e) { /* silent — never interrupt the student */ }
+
+    // ── Build student results page ─────────────────────
+    var h='';
+    h+='<div style="text-align:center;margin-bottom:1.5rem;padding-top:.5rem">';
+    h+='<div style="font-size:2.8rem;margin-bottom:.4rem">✅</div>';
+    h+='<div style="font-family:\'Syne\',sans-serif;font-weight:800;font-size:1.5rem">'+aLabel+' Submitted!</div>';
+    h+='<div style="color:var(--slate);font-size:.88rem;margin-top:.25rem">'+esc(SE.title)+'</div>';
+    h+='</div>';
+
+    // Submission info
+    h+='<div style="background:var(--cream);border-radius:8px;padding:1rem;margin-bottom:1.25rem">';
+    h+='<div style="font-family:\'DM Mono\',monospace;font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem">Submission Details</div>';
+    var details=[['Student',SI.name],['ID',SI.sid],['Class',SI.cls],['Assessment',SE.title],['Submitted',submittedAt]];
+    for(var i=0;i<details.length;i++){
+      h+='<div style="display:flex;justify-content:space-between;padding:.3rem 0;border-bottom:1px solid var(--rule);font-size:.875rem">';
+      h+='<span style="color:var(--muted)">'+details[i][0]+'</span><b>'+esc(String(details[i][1]))+'</b></div>';
+    }
+    h+='</div>';
+
+    // Score box
+    if(mcPossible>0){
+      h+='<div style="text-align:center;background:#fff;border:3px solid '+scoreColor+';border-radius:12px;padding:1.5rem;margin-bottom:1.25rem">';
+      h+='<div style="font-family:\'DM Mono\',monospace;font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.35rem">Your Score</div>';
+      h+='<div style="font-family:\'Syne\',sans-serif;font-weight:800;font-size:3.5rem;color:'+scoreColor+';line-height:1">'+pct+'%</div>';
+      h+='<div style="font-size:.9rem;color:var(--slate);margin-top:.35rem">'+earned+' out of '+mcPossible+' points</div>';
+      if(pct>=90) h+='<div style="color:var(--green);font-weight:600;margin-top:.4rem">🌟 Excellent work!</div>';
+      else if(pct>=70) h+='<div style="color:var(--orange);font-weight:600;margin-top:.4rem">👍 Good job — keep it up!</div>';
+      else h+='<div style="color:var(--danger);font-weight:600;margin-top:.4rem">📚 Keep studying — you can do this!</div>';
+      h+='</div>';
+
+      // Per-question: show ✅/❌ and student's own answer ONLY — NO correct answer shown
+      h+='<div style="margin-bottom:1.25rem">';
+      h+='<div style="font-family:\'DM Mono\',monospace;font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.45rem">Your Answers</div>';
+      var qn=0;
+      for(var i=0;i<results.length;i++){
+        var r=results[i]; if(r.type!=='mc') continue; qn++;
+        var icon=r.ok?'✅':(r.ans===undefined?'⬜':'❌');
+        var shortP=r.q.prompt.length>72?r.q.prompt.slice(0,72)+'…':r.q.prompt;
+        var chosenTxt=r.ans!==undefined?L[r.ans]+' — '+esc(r.q.choices[r.ans]||''):'Not answered';
+        var chosenColor=r.ok?'var(--green)':(r.ans===undefined?'var(--muted)':'var(--danger)');
+        h+='<div style="display:flex;align-items:flex-start;gap:.55rem;padding:.45rem 0;border-bottom:1px solid var(--rule);font-size:.82rem">';
+        h+='<span style="flex-shrink:0;font-size:.95rem">'+icon+'</span>';
+        h+='<div style="flex:1">';
+        h+='<div style="color:#2a2d3a;margin-bottom:.15rem">Q'+qn+': '+esc(shortP)+'</div>';
+        // Only show the student's own answer — never the correct answer
+        h+='<div style="color:var(--muted)">You answered: <b style="color:'+chosenColor+'">'+chosenTxt+'</b></div>';
+        h+='</div>';
+        h+='<div style="font-family:\'DM Mono\',monospace;flex-shrink:0;color:'+(r.ok?'var(--green)':'var(--danger)')+'">+'+r.pts+'/'+r.q.points+'</div>';
+        h+='</div>';
+      }
+      h+='</div>';
+    }
+
+    // Essay message
+    if(hasEssay){
+      h+='<div class="essay-box">';
+      h+='<div style="text-align:center;font-size:1.6rem;margin-bottom:.5rem">📝</div>';
+      h+='<div style="text-align:center;font-family:\'Syne\',sans-serif;font-weight:700;color:var(--orange);margin-bottom:.65rem">Open-Ended Question'+(essayCount>1?'s':'')+' — Teacher Review Needed</div>';
+      h+='<p style="font-size:.9rem;color:#2a2d3a;line-height:1.7;text-align:center">';
+      h+='You answered <b>'+essayCount+'</b> open-ended question'+(essayCount>1?'s':'')+'. ';
+      h+='Your response'+(essayCount>1?'s have':' has')+' been recorded and will be carefully reviewed by your teacher.<br><br>';
+      h+='<b style="font-size:1rem">Thank you for doing your best!</b><br>';
+      h+='Your teacher will read your answer and award the appropriate points. ';
+      h+='Your final total score will be updated once grading is complete.';
+      h+='</p>';
+      if(mcPossible>0){
+        h+='<p style="font-size:.8rem;color:var(--muted);text-align:center;margin-top:.65rem;border-top:1px solid #f0d8a0;padding-top:.65rem">';
+        h+='The multiple choice score above is your partial score. Essay points will be added by your teacher.';
+        h+='</p>';
+      } else {
+        h+='<p style="font-size:.8rem;color:var(--muted);text-align:center;margin-top:.65rem;border-top:1px solid #f0d8a0;padding-top:.65rem">';
+        h+='Your score will be available once your teacher has graded your response'+(essayCount>1?'s':'')+'.';
+        h+='</p>';
+      }
+      h+='</div>';
+    }
+
+    // Buttons
+    h+='<div style="display:flex;flex-direction:column;gap:.65rem;margin-top:1rem;padding-bottom:2rem">';
+    h+='<button id="back-to-list-btn" class="btn btn-b full" style="padding:.75rem;font-size:1rem">← Back to My Assessments</button>';
+    h+='<button id="back-to-home-btn" class="btn btn-o full" style="padding:.65rem">Return to Home Screen</button>';
+    h+='</div>';
+
+    el('r-content').innerHTML=h;
+    show('s-done');
+
+    var backList=document.getElementById('back-to-list-btn');
+    if(backList) backList.onclick=function(){ if(SI) showExamList(); else show('s-sstart'); };
+    var backHome=document.getElementById('back-to-home-btn');
+    if(backHome) backHome.onclick=function(){ show('s-land'); };
+  }
+
+  // Public API
+  return {
+    show:show, togglePw:togglePw, login:login, logout:logout,
+    navTo:navTo, buildSidebar:buildSidebar,
+    pgUpload:pgUpload, setAT:setAT, toggleCls:toggleCls, step1next:step1next,
+    setStep:setStep, renderStep1:renderStep1, renderStep2:renderStep2, renderStep3:renderStep3,
+    handleFile:handleFile, upQ:upQ, upChoice:upChoice, setCorrect:setCorrect, delQ:delQ, editQ:editQ, saveQ:saveQ,
+    renderStep4:renderStep4, togSet:togSet, doPublish:doPublish,
+    toggleStatus:toggleStatus,
+    studentGo:studentGo, showExamList:showExamList, selectExam:selectExam, beginExam:beginExam,
+    viewAttempt:viewAttempt, pgAtlog:pgAtlog
+  };
+})();
+
+// Wire warning checkbox
+document.getElementById('w-agree').onchange=function(){
+  document.getElementById('w-begin').disabled=!this.checked;
+};
+
+// Enter key on login
+document.getElementById('lp').onkeydown=function(e){ if(e.key==='Enter') G.login(); };
+document.getElementById('lu').onkeydown=function(e){ if(e.key==='Enter') G.login(); };
+</script>
+</body>
+</html>
