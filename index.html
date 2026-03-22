@@ -351,12 +351,8 @@ var G = (function(){
   ];
 
   // ── LIVE EXAM LIST ──
-  var EXAMS = [
-    {id:1,title:'Criminal Procedure Mid-Term',atype:'exam',classes:['Law Enforcement 1','Law Enforcement 2'],status:'published',questions:SQ,due:'Mar 21, 2026',timeLimit:45},
-    {id:2,title:'Court Systems Unit 3 Quiz',  atype:'quiz', classes:['Court Systems'],                      status:'published',questions:SQ,due:'Mar 20, 2026',timeLimit:30},
-    {id:3,title:'Practicum Review',            atype:'assignment',classes:['Practicum M','Practicum A'],    status:'draft',   questions:SQ,due:'—',timeLimit:60}
-  ];
-  var nextEID = 4;
+  var EXAMS = [];
+  var nextEID = 100;
 
   // ── STUDENT LOGIN LOG ──
   var LOGINS = [];
@@ -376,6 +372,31 @@ var G = (function(){
     {t:'09:12:44',ty:'fullscreen_exit',d:'Student exited fullscreen'},
     {t:'09:22:17',ty:'paste_blocked',d:'Paste attempt intercepted'}
   ];
+
+  // ── PERSISTENT STORAGE — saves to browser localStorage ──
+  // Exams and attempts survive page refresh, closing browser, coming back next week
+  function dbSave(){
+    try{
+      localStorage.setItem('se_exams', JSON.stringify(EXAMS));
+      localStorage.setItem('se_eid', String(nextEID));
+      localStorage.setItem('se_attempts', JSON.stringify(ATTEMPTS));
+      localStorage.setItem('se_aid', String(nextAID));
+    }catch(e){}
+  }
+  function dbLoad(){
+    try{
+      var ex=localStorage.getItem('se_exams');
+      var at=localStorage.getItem('se_attempts');
+      if(ex){ EXAMS=JSON.parse(ex); }
+      if(at){ ATTEMPTS=JSON.parse(at); }
+      var eid=localStorage.getItem('se_eid');
+      var aid=localStorage.getItem('se_aid');
+      if(eid) nextEID=+eid;
+      if(aid) nextAID=+aid;
+    }catch(e){}
+  }
+  // Load saved data immediately on startup
+  dbLoad();
 
   // ── UPLOAD STATE ──
   var UP = {};
@@ -576,6 +597,7 @@ var G = (function(){
         break;
       }
     }
+    dbSave();
     navTo(returnPage||'exams');
   }
 
@@ -917,22 +939,16 @@ var G = (function(){
 
   function doPublish(){
     var tl=el('u-tl'); var timeLimit=tl?+tl.value:45;
-    var payload={title:UP.title,atype:UP.atype,classes:UP.classes.slice(),status:'published',questions:UP.questions.slice(),due:UP.due,timeLimit:timeLimit};
-    fetch('/api/exams?action=save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
-    .then(function(r){return r.json();})
-    .then(function(data){
-      if(data.ok){
-        EXAMS.push(data.exam);
-        navTo('exams');
-        setTimeout(function(){
-          var pg=el('tpage'); if(!pg) return;
-          var b=document.createElement('div'); b.className='al al-s'; b.style.fontSize='.95rem';
-          b.innerHTML='✅ <b>'+esc(data.exam.title)+'</b> published to <b>'+data.exam.classes.join(', ')+'</b> — <b>saved permanently, will not disappear on refresh.</b>';
-          pg.insertBefore(b,pg.firstChild); setTimeout(function(){b.remove();},9000);
-        },50);
-      } else { alert('Save error: '+data.error); }
-    })
-    .catch(function(err){ alert('Network error — check connection: '+err.message); });
+    var newExam={id:nextEID++,title:UP.title,atype:UP.atype,classes:UP.classes.slice(),status:'published',questions:UP.questions.slice(),due:UP.due,timeLimit:timeLimit};
+    EXAMS.push(newExam);
+    dbSave();
+    navTo('exams');
+    setTimeout(function(){
+      var pg=el('tpage'); if(!pg) return;
+      var b=document.createElement('div'); b.className='al al-s'; b.style.fontSize='.95rem';
+      b.innerHTML='✅ <b>'+esc(newExam.title)+'</b> published as <b>'+atLabel(newExam.atype)+'</b> to <b>'+newExam.classes.join(', ')+'</b>. Students can now see it.';
+      pg.insertBefore(b,pg.firstChild); setTimeout(function(){b.remove();},7000);
+    },50);
   }
 
   // ══════════════════════════════
@@ -953,80 +969,56 @@ var G = (function(){
 
   function pgExams(){
     var pg=el('tpage');
-    pg.innerHTML='<div class="ph"><div><div class="pt">Assessments</div><div class="ps">Loading from database…</div></div><button class="btn btn-r" onclick="G.navTo(\'upload\')">➕ New</button></div><div style="text-align:center;padding:3rem;color:var(--muted)">⏳ Fetching your saved assessments…</div>';
-    fetch('/api/exams?action=list')
-    .then(function(r){return r.json();})
-    .then(function(data){
-      if(data.ok) EXAMS=data.exams;
-      var h='<div class="ph"><div><div class="pt">Assessments</div><div class="ps">'+EXAMS.length+' saved permanently in database</div></div><button class="btn btn-r" onclick="G.navTo(\'upload\')">➕ New</button></div>';
-      if(!EXAMS.length){
-        h+='<div class="card" style="text-align:center;padding:2.5rem;color:var(--muted)">No assessments yet. Click ➕ New to upload a PDF and create your first exam, quiz, or assignment.</div>';
-      } else {
-        h+='<div class="tw"><table><thead><tr><th>Title</th><th>Type</th><th>Classes</th><th>Status</th><th>Questions</th><th>Due</th><th>Actions</th></tr></thead><tbody>';
-        for(var i=0;i<EXAMS.length;i++){
-          var e=EXAMS[i];
-          var statBdg=e.status==='published'?'<span class="bdg bg">🟢 Open</span>':e.status==='closed'?'<span class="bdg br">🔴 Closed</span>':'<span class="bdg bgr">Draft</span>';
-          var ab=e.status==='published'
-            ?'<button class="btn btn-danger sm" onclick="G.toggleStatus('+e.id+',\'exams\')">🔒 Close</button>'
-            :e.status==='closed'
-            ?'<button class="btn btn-g sm" onclick="G.toggleStatus('+e.id+',\'exams\')">🔓 Reopen</button>'
-            :'<button class="btn btn-r sm" onclick="G.toggleStatus('+e.id+',\'exams\')">🚀 Publish</button>';
-          h+='<tr><td><b>'+esc(e.title)+'</b></td><td>'+atBdg(e.atype)+'</td><td style="font-size:.8rem">'+e.classes.join(', ')+'</td>';
-          h+='<td>'+statBdg+'</td><td style="font-family:\'DM Mono\',monospace">'+(Array.isArray(e.questions)?e.questions.length:e.questions)+'</td>';
-          h+='<td style="font-size:.8rem">'+esc(e.due)+'</td>';
-          h+='<td style="display:flex;gap:.3rem">'+ab+'<button class="btn btn-gh sm" onclick="G.navTo(\'atlog\')">👁</button></td></tr>';
-        }
-        h+='</tbody></table></div>';
-      }
-      pg.innerHTML=h;
-    })
-    .catch(function(){ pg.innerHTML='<div class="al al-d">⚠️ Could not load assessments. Check your connection.</div>'; });
-  }
-
-  function toggleStatus(id,returnPage){
-    fetch('/api/exams?action=toggle',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})})
-    .then(function(r){return r.json();})
-    .then(function(d){
-      if(d.ok){ for(var i=0;i<EXAMS.length;i++) if(EXAMS[i].id===id){EXAMS[i].status=d.exam.status;break;} }
-      navTo(returnPage||'exams');
-    })
-    .catch(function(){ navTo(returnPage||'exams'); });
+    var h='<div class="ph"><div class="pt">Assessments</div><button class="btn btn-r" onclick="G.navTo(\'upload\')">➕ New</button></div>';
+    h+='<div class="tw"><table><thead><tr><th>Title</th><th>Type</th><th>Classes</th><th>Status</th><th>Questions</th><th>Due</th><th>Actions</th></tr></thead><tbody>';
+    for(var i=0;i<EXAMS.length;i++){
+      var e=EXAMS[i];
+      var statBdg=e.status==='published'?'<span class="bdg bg">🟢 Open</span>':e.status==='closed'?'<span class="bdg br">🔴 Closed</span>':'<span class="bdg bgr">Draft</span>';
+      var ab=e.status==='published'?'<button class="btn btn-danger sm" onclick="G.toggleStatus('+e.id+',\'exams\')">🔒 Close</button>':e.status==='closed'?'<button class="btn btn-g sm" onclick="G.toggleStatus('+e.id+',\'exams\')">🔓 Reopen</button>':'<button class="btn btn-r sm" onclick="G.toggleStatus('+e.id+',\'exams\')">🚀 Publish</button>';
+      h+='<tr><td><b>'+esc(e.title)+'</b></td><td>'+atBdg(e.atype)+'</td><td style="font-size:.8rem">'+e.classes.join(', ')+'</td><td>'+statBdg+'</td><td style="font-family:\'DM Mono\',monospace">'+(Array.isArray(e.questions)?e.questions.length:e.questions)+'</td><td style="font-size:.8rem">'+esc(e.due)+'</td><td style="display:flex;gap:.3rem">'+ab+'<button class="btn btn-gh sm" onclick="G.navTo(\'atlog\')">👁</button></td></tr>';
+    }
+    h+='</tbody></table></div>';
+    pg.innerHTML=h;
   }
 
   function pgAtlog(){
     var pg=el('tpage');
-    pg.innerHTML='<div class="ph"><div class="pt">Attempt Log</div></div><div style="text-align:center;padding:3rem;color:var(--muted)">⏳ Loading submissions…</div>';
-    fetch('/api/attempts?action=list')
-    .then(function(r){return r.json();})
-    .then(function(data){
-      if(data.ok) ATTEMPTS=data.attempts;
-      var h='<div class="ph"><div><div class="pt">Attempt Log</div><div class="ps">'+ATTEMPTS.length+' submission'+(ATTEMPTS.length!==1?'s':'')+' — saved permanently</div></div></div>';
-      if(!ATTEMPTS.length){
-        h+='<div class="card" style="text-align:center;padding:2.5rem;color:var(--muted)">No student submissions yet. When students complete an exam it will appear here — permanently saved.</div>';
-      } else {
-        h+='<div class="tw"><table><thead><tr><th>Student</th><th>ID</th><th>Class</th><th>Assessment</th><th>Type</th><th>Submitted</th><th>Score</th><th>Status</th><th></th></tr></thead><tbody>';
-        for(var i=0;i<ATTEMPTS.length;i++){
-          var a=ATTEMPTS[i];
-          var scoreDisp=a.score!==null?a.score+'%':(a.hasEssay?'essay pending':'—');
-          var scolor=a.score!==null?(a.score>=90?'var(--green)':a.score>=70?'var(--orange)':'var(--danger)'):'var(--muted)';
-          var statBdg=a.status==='graded'?bdg('graded','bg'):a.status==='pending-essay'?bdg('pending essay','bo'):bdg(a.status,'br');
-          h+='<tr>';
-          h+='<td><b>'+esc(a.name)+'</b></td>';
-          h+='<td style="font-family:\'DM Mono\',monospace;font-size:.8rem">'+esc(a.sid)+'</td>';
-          h+='<td style="font-size:.82rem">'+esc(a.cls)+'</td>';
-          h+='<td style="font-size:.82rem">'+esc(a.examTitle)+'</td>';
-          h+='<td>'+atBdg(a.atype)+'</td>';
-          h+='<td style="font-size:.76rem;font-family:\'DM Mono\',monospace">'+esc(a.submittedAt)+'</td>';
-          h+='<td style="font-family:\'DM Mono\',monospace;font-weight:600;color:'+scolor+'">'+scoreDisp+'</td>';
-          h+='<td>'+statBdg+'</td>';
-          h+='<td><button class="btn btn-b sm" onclick="G.viewAttempt('+a.id+')">👁 View</button></td>';
-          h+='</tr>';
-        }
-        h+='</tbody></table></div>';
+    var liveAttempts=ATTEMPTS.slice().reverse();
+    var h='<div class="ph"><div><div class="pt">Attempt Log</div><div class="ps">'+ATTEMPTS.length+' student submission'+(ATTEMPTS.length!==1?'s':'')+' recorded</div></div></div>';
+
+    if(liveAttempts.length===0){
+      h+='<div style="background:#fff;border:1px solid var(--rule);border-radius:8px;padding:2rem;text-align:center;color:var(--muted)">No submissions yet. Submitted exams will appear here in real time.</div>';
+      h+='<div class="card" style="margin-top:1rem"><div class="ct">Demo Attempts (Sample Data)</div>';
+      h+='<div class="tw"><table><thead><tr><th>Student</th><th>Class</th><th>Exam</th><th>Score</th><th>Status</th></tr></thead><tbody>';
+      for(var i=0;i<SA.length;i++){
+        var a=SA[i];
+        h+='<tr><td><b>'+esc(a.name)+'</b></td><td style="font-size:.82rem">'+esc(a.cls)+'</td><td style="font-size:.82rem">'+esc(a.exam)+'</td>';
+        h+='<td style="font-family:\'DM Mono\',monospace">'+(a.score!==null?a.score+'%':'—')+'</td>';
+        h+='<td>'+(a.status==='graded'?bdg('graded','bg'):a.status==='flagged'?bdg('flagged','br'):bdg(a.status,'bo'))+'</td></tr>';
       }
-      pg.innerHTML=h;
-    })
-    .catch(function(){ pg.innerHTML='<div class="al al-d">⚠️ Could not load attempts. Check your connection.</div>'; });
+      h+='</tbody></table></div></div>';
+    } else {
+      h+='<div class="tw"><table><thead><tr><th>Student</th><th>ID</th><th>Class</th><th>Assessment</th><th>Type</th><th>Submitted</th><th>Score</th><th>Status</th><th></th></tr></thead><tbody>';
+      for(var i=0;i<liveAttempts.length;i++){
+        var a=liveAttempts[i];
+        var scoreDisp=a.score!==null?a.score+'%':(a.hasEssay?'essay pending':'—');
+        var scolor=a.score!==null?(a.score>=90?'var(--green)':a.score>=70?'var(--orange)':'var(--danger)'):'var(--muted)';
+        var statBdg=a.status==='graded'?bdg('graded','bg'):a.status==='pending-essay'?bdg('pending essay','bo'):bdg(a.status,'br');
+        h+='<tr>';
+        h+='<td><b>'+esc(a.name)+'</b></td>';
+        h+='<td style="font-family:\'DM Mono\',monospace;font-size:.8rem">'+esc(a.sid)+'</td>';
+        h+='<td style="font-size:.82rem">'+esc(a.cls)+'</td>';
+        h+='<td style="font-size:.82rem">'+esc(a.examTitle)+'</td>';
+        h+='<td>'+atBdg(a.atype)+'</td>';
+        h+='<td style="font-size:.78rem;font-family:\'DM Mono\',monospace">'+esc(a.submittedAt)+'</td>';
+        h+='<td style="font-family:\'DM Mono\',monospace;font-weight:600;color:'+scolor+'">'+scoreDisp+'</td>';
+        h+='<td>'+statBdg+'</td>';
+        h+='<td><button class="btn btn-b sm" onclick="G.viewAttempt('+a.id+')">👁 View</button></td>';
+        h+='</tr>';
+      }
+      h+='</tbody></table></div>';
+    }
+    pg.innerHTML=h;
   }
 
   function viewAttempt(id){
@@ -1174,36 +1166,27 @@ var G = (function(){
   }
 
   function showExamList(){
+    var avail=[];
+    for(var i=0;i<EXAMS.length;i++) if(EXAMS[i].status==='published'&&EXAMS[i].classes.indexOf(SI.cls)>-1) avail.push(EXAMS[i]);
     el('s-welcome').innerHTML='Welcome, <b>'+esc(SI.name)+'</b> · '+esc(SI.cls);
-    el('s-examlist').innerHTML='<div style="text-align:center;padding:2rem;color:var(--muted)">⏳ Loading available assessments…</div>';
-    show('s-slist');
-    fetch('/api/exams?action=list')
-    .then(function(r){return r.json();})
-    .then(function(data){
-      if(data.ok) EXAMS=data.exams;
-      var avail=[];
-      for(var i=0;i<EXAMS.length;i++) if(EXAMS[i].status==='published'&&EXAMS[i].classes.indexOf(SI.cls)>-1) avail.push(EXAMS[i]);
-      var h='';
-      if(!avail.length){
-        h='<div class="card" style="text-align:center;padding:2rem"><div style="font-size:1.5rem;margin-bottom:.5rem">📋</div><b style="color:var(--slate)">No assessments assigned to your class yet.</b><p style="font-size:.82rem;color:var(--muted);margin-top:.5rem">Ask your teacher if an exam has been published for <b>'+esc(SI.cls)+'</b>.</p></div>';
-      } else {
-        for(var i=0;i<avail.length;i++){
-          var e=avail[i];
-          h+='<div class="exam-lcard" style="border-left-color:'+atColor(e.atype)+'" onclick="G.selectExam('+e.id+')">';
-          h+='<div style="display:flex;justify-content:space-between;align-items:flex-start">';
-          h+='<div><div style="font-size:.7rem;font-family:\'DM Mono\',monospace;color:var(--muted);text-transform:uppercase;margin-bottom:.25rem">'+e.atype+' 📝</div>';
-          h+='<div style="font-family:\'Syne\',sans-serif;font-weight:700;font-size:1.05rem">'+esc(e.title)+'</div>';
-          h+='<div style="font-size:.82rem;color:var(--slate);margin-top:.2rem">'+(Array.isArray(e.questions)?e.questions.length:e.questions)+' questions · Due '+esc(e.due)+'</div></div>';
-          h+='<span class="bdg bg">Available</span></div>';
-          h+='<button class="btn btn-b sm" style="margin-top:.9rem">Begin '+atLabel(e.atype)+' →</button>';
-          h+='</div>';
-        }
+    var h='';
+    if(!avail.length){
+      h='<div class="card" style="text-align:center;padding:2rem"><div style="font-size:1.5rem;margin-bottom:.5rem">📋</div><b style="color:var(--slate)">No assessments assigned to your class.</b><p style="font-size:.82rem;color:var(--muted);margin-top:.5rem">Ask your teacher if an exam has been published for <b>'+esc(SI.cls)+'</b>.</p></div>';
+    } else {
+      for(var i=0;i<avail.length;i++){
+        var e=avail[i];
+        h+='<div class="exam-lcard" style="border-left-color:'+atColor(e.atype)+'" onclick="G.selectExam('+e.id+')">';
+        h+='<div style="display:flex;justify-content:space-between;align-items:flex-start">';
+        h+='<div><div style="font-size:.7rem;font-family:\'DM Mono\',monospace;color:var(--muted);text-transform:uppercase;margin-bottom:.25rem">'+e.atype+' 📝</div>';
+        h+='<div style="font-family:\'Syne\',sans-serif;font-weight:700;font-size:1.05rem">'+esc(e.title)+'</div>';
+        h+='<div style="font-size:.82rem;color:var(--slate);margin-top:.2rem">'+(Array.isArray(e.questions)?e.questions.length:e.questions)+' questions · Due '+esc(e.due)+'</div></div>';
+        h+='<span class="bdg bg">Available</span></div>';
+        h+='<button class="btn btn-b sm" style="margin-top:.9rem">Begin '+atLabel(e.atype)+' →</button>';
+        h+='</div>';
       }
-      el('s-examlist').innerHTML=h;
-    })
-    .catch(function(){
-      el('s-examlist').innerHTML='<div class="card" style="text-align:center;padding:2rem;color:var(--muted)">Could not load assessments. Check your internet connection and try again.</div>';
-    });
+    }
+    el('s-examlist').innerHTML=h;
+    show('s-slist');
   }
 
   function selectExam(id){
@@ -1342,21 +1325,27 @@ var G = (function(){
     var aLabel=atLabel(SE.atype);
     var scoreColor=pct===null?'var(--blue)':pct>=90?'var(--green)':pct>=70?'var(--orange)':'var(--danger)';
 
-    // ── Save attempt permanently to database ──────────
-    var attemptPayload = {
-      name: SI.name, sid: SI.sid, cls: SI.cls,
-      examId: SE.id, examTitle: SE.title, atype: SE.atype,
+    // ── Save attempt to live ATTEMPTS array ───────────
+    var attempt = {
+      id: nextAID++,
+      name: SI.name,
+      sid: SI.sid,
+      cls: SI.cls,
+      examId: SE.id,
+      examTitle: SE.title,
+      atype: SE.atype,
       submittedAt: submittedAt,
-      score: pct, earned: earned, mcPossible: mcPossible,
-      hasEssay: hasEssay, essayCount: essayCount,
-      results: results, events: EEV.slice(),
+      score: pct,
+      earned: earned,
+      mcPossible: mcPossible,
+      hasEssay: hasEssay,
+      essayCount: essayCount,
+      results: results,
+      events: EEV.slice(),
       status: hasEssay ? 'pending-essay' : 'graded'
     };
-    // Save to API (permanent) — also keep in local array for this session
-    fetch('/api/attempts?action=save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(attemptPayload)})
-    .then(function(r){return r.json();})
-    .then(function(d){ if(d.ok) ATTEMPTS.push(d.attempt); })
-    .catch(function(){}); // silent — Netlify Forms backup still captures score
+    ATTEMPTS.push(attempt);
+    dbSave();
     LOGINS.push({name:SI.name,sid:SI.sid,cls:SI.cls,time:submittedAt,action:'Submitted: '+SE.title+(pct!==null?' — Score: '+pct+'%':'')});
 
     // ── Send score to Netlify Forms → Zapier → Google Sheets ──
