@@ -373,30 +373,63 @@ var G = (function(){
     {t:'09:22:17',ty:'paste_blocked',d:'Paste attempt intercepted'}
   ];
 
-  // ── PERSISTENT STORAGE — saves to browser localStorage ──
-  // Exams and attempts survive page refresh, closing browser, coming back next week
+  // ── PERSISTENT STORAGE — shared database via Netlify Blobs API ──
+  // ALL teachers and students share the same data — works across all browsers/devices
   function dbSave(){
-    try{
-      localStorage.setItem('se_exams', JSON.stringify(EXAMS));
-      localStorage.setItem('se_eid', String(nextEID));
-      localStorage.setItem('se_attempts', JSON.stringify(ATTEMPTS));
-      localStorage.setItem('se_aid', String(nextAID));
-    }catch(e){}
+    // No-op — saving is now done via API calls in doPublish, toggleStatus, finishExam
   }
   function dbLoad(){
-    try{
-      var ex=localStorage.getItem('se_exams');
-      var at=localStorage.getItem('se_attempts');
-      if(ex){ EXAMS=JSON.parse(ex); }
-      if(at){ ATTEMPTS=JSON.parse(at); }
-      var eid=localStorage.getItem('se_eid');
-      var aid=localStorage.getItem('se_aid');
-      if(eid) nextEID=+eid;
-      if(aid) nextAID=+aid;
-    }catch(e){}
+    // No-op — loading is now done via API calls in pgExams, pgAtlog, showExamList
   }
-  // Load saved data immediately on startup
-  dbLoad();
+
+  // Load exams from shared database — called when teacher views exams or student logs in
+  function apiLoadExams(cb){
+    fetch('/api/exams?action=list')
+      .then(function(r){ return r.json(); })
+      .then(function(d){ if(d.ok && d.exams){ EXAMS = d.exams; } if(cb) cb(); })
+      .catch(function(){ if(cb) cb(); });
+  }
+
+  // Load attempts from shared database — called when teacher views attempt log
+  function apiLoadAttempts(cb){
+    fetch('/api/attempts?action=list')
+      .then(function(r){ return r.json(); })
+      .then(function(d){ if(d.ok && d.attempts){ ATTEMPTS = d.attempts; } if(cb) cb(); })
+      .catch(function(){ if(cb) cb(); });
+  }
+
+  // Save exam to shared database
+  function apiSaveExam(examData, cb){
+    fetch('/api/exams?action=save', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(examData)
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(d){ if(cb) cb(d.ok ? d.exam : null); })
+    .catch(function(){ if(cb) cb(null); });
+  }
+
+  // Toggle exam open/closed in shared database
+  function apiToggleExam(id, cb){
+    fetch('/api/exams?action=toggle', {
+      method: 'PATCH',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({id: id})
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(d){ if(cb) cb(d.ok ? d.exam : null); })
+    .catch(function(){ if(cb) cb(null); });
+  }
+
+  // Save student attempt to shared database
+  function apiSaveAttempt(attemptData){
+    fetch('/api/attempts?action=save', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(attemptData)
+    }).catch(function(){});
+  }
 
   // ── UPLOAD STATE ──
   var UP = {};
@@ -588,17 +621,14 @@ var G = (function(){
   // TOGGLE EXAM OPEN/CLOSE
   // ══════════════════════════════
   function toggleStatus(id, returnPage){
-    for(var i=0;i<EXAMS.length;i++){
-      if(EXAMS[i].id===id){
-        var e = EXAMS[i];
-        if(e.status==='published') e.status='closed';
-        else if(e.status==='closed') e.status='published';
-        else e.status='published';
-        break;
+    apiToggleExam(id, function(exam){
+      if(exam){
+        for(var i=0;i<EXAMS.length;i++){
+          if(EXAMS[i].id===id){ EXAMS[i].status=exam.status; break; }
+        }
       }
-    }
-    dbSave();
-    navTo(returnPage||'exams');
+      navTo(returnPage||'exams');
+    });
   }
 
   // ══════════════════════════════
@@ -939,16 +969,24 @@ var G = (function(){
 
   function doPublish(){
     var tl=el('u-tl'); var timeLimit=tl?+tl.value:45;
-    var newExam={id:nextEID++,title:UP.title,atype:UP.atype,classes:UP.classes.slice(),status:'published',questions:UP.questions.slice(),due:UP.due,timeLimit:timeLimit};
-    EXAMS.push(newExam);
-    dbSave();
-    navTo('exams');
-    setTimeout(function(){
-      var pg=el('tpage'); if(!pg) return;
-      var b=document.createElement('div'); b.className='al al-s'; b.style.fontSize='.95rem';
-      b.innerHTML='✅ <b>'+esc(newExam.title)+'</b> published as <b>'+atLabel(newExam.atype)+'</b> to <b>'+newExam.classes.join(', ')+'</b>. Students can now see it.';
-      pg.insertBefore(b,pg.firstChild); setTimeout(function(){b.remove();},7000);
-    },50);
+    var payload={title:UP.title,atype:UP.atype,classes:UP.classes.slice(),status:'published',questions:UP.questions.slice(),due:UP.due,timeLimit:timeLimit};
+    var btn=el('u-s4') ? el('u-s4').querySelector('button.btn-r') : null;
+    if(btn){ btn.textContent='Publishing…'; btn.disabled=true; }
+    apiSaveExam(payload, function(exam){
+      if(exam){
+        EXAMS.push(exam);
+        navTo('exams');
+        setTimeout(function(){
+          var pg=el('tpage'); if(!pg) return;
+          var b=document.createElement('div'); b.className='al al-s'; b.style.fontSize='.95rem';
+          b.innerHTML='✅ <b>'+esc(exam.title)+'</b> published to <b>'+exam.classes.join(', ')+'</b> — saved permanently in shared database.';
+          pg.insertBefore(b,pg.firstChild); setTimeout(function(){b.remove();},9000);
+        },50);
+      } else {
+        alert('Could not save exam. Check your internet connection.');
+        if(btn){ btn.textContent='🚀 Publish to Students Now'; btn.disabled=false; }
+      }
+    });
   }
 
   // ══════════════════════════════
@@ -969,56 +1007,56 @@ var G = (function(){
 
   function pgExams(){
     var pg=el('tpage');
-    var h='<div class="ph"><div class="pt">Assessments</div><button class="btn btn-r" onclick="G.navTo(\'upload\')">➕ New</button></div>';
-    h+='<div class="tw"><table><thead><tr><th>Title</th><th>Type</th><th>Classes</th><th>Status</th><th>Questions</th><th>Due</th><th>Actions</th></tr></thead><tbody>';
-    for(var i=0;i<EXAMS.length;i++){
-      var e=EXAMS[i];
-      var statBdg=e.status==='published'?'<span class="bdg bg">🟢 Open</span>':e.status==='closed'?'<span class="bdg br">🔴 Closed</span>':'<span class="bdg bgr">Draft</span>';
-      var ab=e.status==='published'?'<button class="btn btn-danger sm" onclick="G.toggleStatus('+e.id+',\'exams\')">🔒 Close</button>':e.status==='closed'?'<button class="btn btn-g sm" onclick="G.toggleStatus('+e.id+',\'exams\')">🔓 Reopen</button>':'<button class="btn btn-r sm" onclick="G.toggleStatus('+e.id+',\'exams\')">🚀 Publish</button>';
-      h+='<tr><td><b>'+esc(e.title)+'</b></td><td>'+atBdg(e.atype)+'</td><td style="font-size:.8rem">'+e.classes.join(', ')+'</td><td>'+statBdg+'</td><td style="font-family:\'DM Mono\',monospace">'+(Array.isArray(e.questions)?e.questions.length:e.questions)+'</td><td style="font-size:.8rem">'+esc(e.due)+'</td><td style="display:flex;gap:.3rem">'+ab+'<button class="btn btn-gh sm" onclick="G.navTo(\'atlog\')">👁</button></td></tr>';
-    }
-    h+='</tbody></table></div>';
-    pg.innerHTML=h;
+    pg.innerHTML='<div class="ph"><div><div class="pt">Assessments</div><div class="ps">Loading from database…</div></div><button class="btn btn-r" onclick="G.navTo(\'upload\')">➕ New</button></div><div style="text-align:center;padding:3rem;color:var(--muted)">⏳ Loading your saved assessments…</div>';
+    apiLoadExams(function(){
+      var h='<div class="ph"><div><div class="pt">Assessments</div><div class="ps">'+EXAMS.length+' assessment'+(EXAMS.length!==1?'s':'')+' saved in shared database</div></div><button class="btn btn-r" onclick="G.navTo(\'upload\')">➕ New</button></div>';
+      if(!EXAMS.length){
+        h+='<div class="card" style="text-align:center;padding:2.5rem;color:var(--muted)">No assessments yet. Click ➕ New to create your first exam, quiz, or assignment.</div>';
+      } else {
+        h+='<div class="tw"><table><thead><tr><th>Title</th><th>Type</th><th>Classes</th><th>Status</th><th>Questions</th><th>Due</th><th>Actions</th></tr></thead><tbody>';
+        for(var i=0;i<EXAMS.length;i++){
+          var e=EXAMS[i];
+          var statBdg=e.status==='published'?'<span class="bdg bg">🟢 Open</span>':e.status==='closed'?'<span class="bdg br">🔴 Closed</span>':'<span class="bdg bgr">Draft</span>';
+          var ab=e.status==='published'?'<button class="btn btn-danger sm" onclick="G.toggleStatus('+e.id+',\'exams\')">🔒 Close</button>':e.status==='closed'?'<button class="btn btn-g sm" onclick="G.toggleStatus('+e.id+',\'exams\')">🔓 Reopen</button>':'<button class="btn btn-r sm" onclick="G.toggleStatus('+e.id+',\'exams\')">🚀 Publish</button>';
+          h+='<tr><td><b>'+esc(e.title)+'</b></td><td>'+atBdg(e.atype)+'</td><td style="font-size:.8rem">'+e.classes.join(', ')+'</td><td>'+statBdg+'</td><td style="font-family:\'DM Mono\',monospace">'+(Array.isArray(e.questions)?e.questions.length:e.questions)+'</td><td style="font-size:.8rem">'+esc(e.due)+'</td><td style="display:flex;gap:.3rem">'+ab+'<button class="btn btn-gh sm" onclick="G.navTo(\'atlog\')">👁</button></td></tr>';
+        }
+        h+='</tbody></table></div>';
+      }
+      pg.innerHTML=h;
+    });
   }
 
   function pgAtlog(){
     var pg=el('tpage');
-    var liveAttempts=ATTEMPTS.slice().reverse();
-    var h='<div class="ph"><div><div class="pt">Attempt Log</div><div class="ps">'+ATTEMPTS.length+' student submission'+(ATTEMPTS.length!==1?'s':'')+' recorded</div></div></div>';
-
-    if(liveAttempts.length===0){
-      h+='<div style="background:#fff;border:1px solid var(--rule);border-radius:8px;padding:2rem;text-align:center;color:var(--muted)">No submissions yet. Submitted exams will appear here in real time.</div>';
-      h+='<div class="card" style="margin-top:1rem"><div class="ct">Demo Attempts (Sample Data)</div>';
-      h+='<div class="tw"><table><thead><tr><th>Student</th><th>Class</th><th>Exam</th><th>Score</th><th>Status</th></tr></thead><tbody>';
-      for(var i=0;i<SA.length;i++){
-        var a=SA[i];
-        h+='<tr><td><b>'+esc(a.name)+'</b></td><td style="font-size:.82rem">'+esc(a.cls)+'</td><td style="font-size:.82rem">'+esc(a.exam)+'</td>';
-        h+='<td style="font-family:\'DM Mono\',monospace">'+(a.score!==null?a.score+'%':'—')+'</td>';
-        h+='<td>'+(a.status==='graded'?bdg('graded','bg'):a.status==='flagged'?bdg('flagged','br'):bdg(a.status,'bo'))+'</td></tr>';
+    pg.innerHTML='<div class="ph"><div><div class="pt">Attempt Log</div><div class="ps">Loading…</div></div></div><div style="text-align:center;padding:3rem;color:var(--muted)">⏳ Loading student submissions…</div>';
+    apiLoadAttempts(function(){
+      var h='<div class="ph"><div><div class="pt">Attempt Log</div><div class="ps">'+ATTEMPTS.length+' submission'+(ATTEMPTS.length!==1?'s':'')+' — saved permanently</div></div></div>';
+      if(!ATTEMPTS.length){
+        h+='<div class="card" style="text-align:center;padding:2.5rem;color:var(--muted)">No student submissions yet. When a student completes an exam it will appear here permanently.</div>';
+      } else {
+        h+='<div class="tw"><table><thead><tr><th>Student</th><th>ID</th><th>Class</th><th>Assessment</th><th>Type</th><th>Submitted</th><th>Score</th><th>Status</th><th></th></tr></thead><tbody>';
+        for(var i=0;i<ATTEMPTS.length;i++){
+          var a=ATTEMPTS[i];
+          var scoreDisp=a.score!==null?a.score+'%':(a.hasEssay?'essay pending':'—');
+          var scolor=a.score!==null?(a.score>=90?'var(--green)':a.score>=70?'var(--orange)':'var(--danger)'):'var(--muted)';
+          var statBdg=a.status==='graded'?bdg('graded','bg'):a.status==='pending-essay'?bdg('pending essay','bo'):bdg(a.status,'br');
+          var ts = a.submittedAt ? (typeof a.submittedAt === 'number' ? new Date(a.submittedAt).toLocaleString() : a.submittedAt) : '—';
+          h+='<tr>';
+          h+='<td><b>'+esc(a.name)+'</b></td>';
+          h+='<td style="font-family:\'DM Mono\',monospace;font-size:.8rem">'+esc(a.sid)+'</td>';
+          h+='<td style="font-size:.82rem">'+esc(a.cls)+'</td>';
+          h+='<td style="font-size:.82rem">'+esc(a.examTitle)+'</td>';
+          h+='<td>'+atBdg(a.atype)+'</td>';
+          h+='<td style="font-size:.78rem;font-family:\'DM Mono\',monospace">'+esc(ts)+'</td>';
+          h+='<td style="font-family:\'DM Mono\',monospace;font-weight:600;color:'+scolor+'">'+scoreDisp+'</td>';
+          h+='<td>'+statBdg+'</td>';
+          h+='<td><button class="btn btn-b sm" onclick="G.viewAttempt('+a.id+')">👁 View</button></td>';
+          h+='</tr>';
+        }
+        h+='</tbody></table></div>';
       }
-      h+='</tbody></table></div></div>';
-    } else {
-      h+='<div class="tw"><table><thead><tr><th>Student</th><th>ID</th><th>Class</th><th>Assessment</th><th>Type</th><th>Submitted</th><th>Score</th><th>Status</th><th></th></tr></thead><tbody>';
-      for(var i=0;i<liveAttempts.length;i++){
-        var a=liveAttempts[i];
-        var scoreDisp=a.score!==null?a.score+'%':(a.hasEssay?'essay pending':'—');
-        var scolor=a.score!==null?(a.score>=90?'var(--green)':a.score>=70?'var(--orange)':'var(--danger)'):'var(--muted)';
-        var statBdg=a.status==='graded'?bdg('graded','bg'):a.status==='pending-essay'?bdg('pending essay','bo'):bdg(a.status,'br');
-        h+='<tr>';
-        h+='<td><b>'+esc(a.name)+'</b></td>';
-        h+='<td style="font-family:\'DM Mono\',monospace;font-size:.8rem">'+esc(a.sid)+'</td>';
-        h+='<td style="font-size:.82rem">'+esc(a.cls)+'</td>';
-        h+='<td style="font-size:.82rem">'+esc(a.examTitle)+'</td>';
-        h+='<td>'+atBdg(a.atype)+'</td>';
-        h+='<td style="font-size:.78rem;font-family:\'DM Mono\',monospace">'+esc(a.submittedAt)+'</td>';
-        h+='<td style="font-family:\'DM Mono\',monospace;font-weight:600;color:'+scolor+'">'+scoreDisp+'</td>';
-        h+='<td>'+statBdg+'</td>';
-        h+='<td><button class="btn btn-b sm" onclick="G.viewAttempt('+a.id+')">👁 View</button></td>';
-        h+='</tr>';
-      }
-      h+='</tbody></table></div>';
-    }
-    pg.innerHTML=h;
+      pg.innerHTML=h;
+    });
   }
 
   function viewAttempt(id){
@@ -1166,27 +1204,30 @@ var G = (function(){
   }
 
   function showExamList(){
-    var avail=[];
-    for(var i=0;i<EXAMS.length;i++) if(EXAMS[i].status==='published'&&EXAMS[i].classes.indexOf(SI.cls)>-1) avail.push(EXAMS[i]);
     el('s-welcome').innerHTML='Welcome, <b>'+esc(SI.name)+'</b> · '+esc(SI.cls);
-    var h='';
-    if(!avail.length){
-      h='<div class="card" style="text-align:center;padding:2rem"><div style="font-size:1.5rem;margin-bottom:.5rem">📋</div><b style="color:var(--slate)">No assessments assigned to your class.</b><p style="font-size:.82rem;color:var(--muted);margin-top:.5rem">Ask your teacher if an exam has been published for <b>'+esc(SI.cls)+'</b>.</p></div>';
-    } else {
-      for(var i=0;i<avail.length;i++){
-        var e=avail[i];
-        h+='<div class="exam-lcard" style="border-left-color:'+atColor(e.atype)+'" onclick="G.selectExam('+e.id+')">';
-        h+='<div style="display:flex;justify-content:space-between;align-items:flex-start">';
-        h+='<div><div style="font-size:.7rem;font-family:\'DM Mono\',monospace;color:var(--muted);text-transform:uppercase;margin-bottom:.25rem">'+e.atype+' 📝</div>';
-        h+='<div style="font-family:\'Syne\',sans-serif;font-weight:700;font-size:1.05rem">'+esc(e.title)+'</div>';
-        h+='<div style="font-size:.82rem;color:var(--slate);margin-top:.2rem">'+(Array.isArray(e.questions)?e.questions.length:e.questions)+' questions · Due '+esc(e.due)+'</div></div>';
-        h+='<span class="bdg bg">Available</span></div>';
-        h+='<button class="btn btn-b sm" style="margin-top:.9rem">Begin '+atLabel(e.atype)+' →</button>';
-        h+='</div>';
-      }
-    }
-    el('s-examlist').innerHTML=h;
+    el('s-examlist').innerHTML='<div style="text-align:center;padding:2rem;color:var(--muted)">⏳ Loading available assessments…</div>';
     show('s-slist');
+    apiLoadExams(function(){
+      var avail=[];
+      for(var i=0;i<EXAMS.length;i++) if(EXAMS[i].status==='published'&&EXAMS[i].classes.indexOf(SI.cls)>-1) avail.push(EXAMS[i]);
+      var h='';
+      if(!avail.length){
+        h='<div class="card" style="text-align:center;padding:2rem"><div style="font-size:1.5rem;margin-bottom:.5rem">📋</div><b style="color:var(--slate)">No assessments assigned to your class yet.</b><p style="font-size:.82rem;color:var(--muted);margin-top:.5rem">Ask your teacher if an exam has been published for <b>'+esc(SI.cls)+'</b>.</p></div>';
+      } else {
+        for(var i=0;i<avail.length;i++){
+          var e=avail[i];
+          h+='<div class="exam-lcard" style="border-left-color:'+atColor(e.atype)+'" onclick="G.selectExam('+e.id+')">';
+          h+='<div style="display:flex;justify-content:space-between;align-items:flex-start">';
+          h+='<div><div style="font-size:.7rem;font-family:\'DM Mono\',monospace;color:var(--muted);text-transform:uppercase;margin-bottom:.25rem">'+e.atype+' 📝</div>';
+          h+='<div style="font-family:\'Syne\',sans-serif;font-weight:700;font-size:1.05rem">'+esc(e.title)+'</div>';
+          h+='<div style="font-size:.82rem;color:var(--slate);margin-top:.2rem">'+(Array.isArray(e.questions)?e.questions.length:e.questions)+' questions · Due '+esc(e.due)+'</div></div>';
+          h+='<span class="bdg bg">Available</span></div>';
+          h+='<button class="btn btn-b sm" style="margin-top:.9rem">Begin '+atLabel(e.atype)+' →</button>';
+          h+='</div>';
+        }
+      }
+      el('s-examlist').innerHTML=h;
+    });
   }
 
   function selectExam(id){
@@ -1345,7 +1386,7 @@ var G = (function(){
       status: hasEssay ? 'pending-essay' : 'graded'
     };
     ATTEMPTS.push(attempt);
-    dbSave();
+    apiSaveAttempt(attempt);
     LOGINS.push({name:SI.name,sid:SI.sid,cls:SI.cls,time:submittedAt,action:'Submitted: '+SE.title+(pct!==null?' — Score: '+pct+'%':'')});
 
     // ── Send score to Netlify Forms → Zapier → Google Sheets ──
