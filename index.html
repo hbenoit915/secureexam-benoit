@@ -1114,28 +1114,32 @@ var G = (function(){
       h+='</div>';
     }
 
-    // Essay responses — teacher can grade
+    // Essay responses — teacher can read and grade
     var essayResults=[];
     for(var i=0;i<attempt.results.length;i++) if(attempt.results[i].type==='essay') essayResults.push(attempt.results[i]);
     if(essayResults.length>0){
-      h+='<div class="card"><div class="ct">✏️ Essay Responses — Grading</div>';
+      h+='<div class="card" id="essay-grading-card"><div class="ct">✏️ Essay Responses — Teacher Grading</div>';
       for(var i=0;i<essayResults.length;i++){
         var r=essayResults[i];
+        var savedScore=attempt.essayScores&&attempt.essayScores[r.q.id]!==undefined?attempt.essayScores[r.q.id]:'';
+        var savedComment=attempt.essayComments&&attempt.essayComments[r.q.id]?attempt.essayComments[r.q.id]:'';
         h+='<div style="margin-bottom:1.25rem;padding-bottom:1.25rem;border-bottom:1px solid var(--rule)">';
-        h+='<div style="font-family:\'DM Mono\',monospace;font-size:.72rem;color:var(--muted);margin-bottom:.35rem">Essay Q · '+r.q.points+' pts max</div>';
+        h+='<div style="font-family:\'DM Mono\',monospace;font-size:.72rem;color:var(--muted);margin-bottom:.35rem">Essay Question · '+r.q.points+' pts max</div>';
         h+='<div style="font-weight:600;margin-bottom:.5rem;font-size:.9rem">'+esc(r.q.prompt)+'</div>';
-        h+='<div style="background:var(--cream);border-radius:6px;padding:.9rem;font-size:.9rem;line-height:1.6;color:#2a2d3a;margin-bottom:.65rem;min-height:3rem">';
+        h+='<div style="background:var(--cream);border-radius:6px;padding:.9rem;font-size:.9rem;line-height:1.7;color:#2a2d3a;margin-bottom:.65rem;min-height:3rem;white-space:pre-wrap">';
         h+=r.resp?esc(r.resp):'<span style="color:var(--muted);font-style:italic">No response submitted</span>';
         h+='</div>';
         h+='<div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">';
         h+='<label style="font-size:.82rem;font-weight:600">Score:</label>';
-        h+='<input type="number" min="0" max="'+r.q.points+'" placeholder="0–'+r.q.points+'" style="width:90px;padding:.35rem .5rem;font-size:.9rem">';
+        h+='<input id="essay-score-'+r.q.id+'" type="number" min="0" max="'+r.q.points+'" value="'+savedScore+'" placeholder="0–'+r.q.points+'" style="width:90px;padding:.35rem .5rem;font-size:.9rem;border:1px solid var(--rule);border-radius:6px">';
         h+='<span style="font-size:.82rem;color:var(--muted)">out of '+r.q.points+' pts</span>';
-        h+='<input type="text" placeholder="Optional comment…" style="flex:1;min-width:180px;padding:.35rem .6rem;font-size:.85rem">';
-        h+='<button class="btn btn-g sm">Save</button>';
+        h+='<input id="essay-comment-'+r.q.id+'" type="text" value="'+esc(savedComment)+'" placeholder="Optional feedback for student…" style="flex:1;min-width:180px;padding:.35rem .6rem;font-size:.85rem;border:1px solid var(--rule);border-radius:6px">';
         h+='</div></div>';
       }
-      h+='</div>';
+      h+='<div style="display:flex;align-items:center;gap:.75rem;margin-top:.5rem">';
+      h+='<button class="btn btn-g" id="save-essay-grades-btn" onclick="G.saveEssayGrades('+attempt.id+')">💾 Save Essay Grades</button>';
+      h+='<span id="essay-grade-status" style="font-size:.82rem;color:var(--green)"></span>';
+      h+='</div></div>';
     }
 
     // Security events
@@ -1154,6 +1158,64 @@ var G = (function(){
     // Wire pgAtlog back button
     var backBtn=pg.querySelector('button');
     if(backBtn) backBtn.onclick=function(){ pgAtlog(); };
+  }
+
+  function saveEssayGrades(attemptId){
+    // Find the attempt
+    var attempt=null;
+    for(var i=0;i<ATTEMPTS.length;i++) if(ATTEMPTS[i].id===attemptId){attempt=ATTEMPTS[i];break;}
+    if(!attempt) return;
+
+    // Collect scores and comments from inputs
+    var essayResults=[];
+    for(var i=0;i<attempt.results.length;i++) if(attempt.results[i].type==='essay') essayResults.push(attempt.results[i]);
+
+    var scores={};
+    var comments={};
+    var totalEssayPts=0;
+    for(var i=0;i<essayResults.length;i++){
+      var qid=essayResults[i].q.id;
+      var scoreEl=el('essay-score-'+qid);
+      var commentEl=el('essay-comment-'+qid);
+      var pts=scoreEl?+scoreEl.value:0;
+      scores[qid]=pts;
+      comments[qid]=commentEl?commentEl.value:'';
+      totalEssayPts+=pts;
+    }
+
+    // Update attempt in memory
+    attempt.essayScores=scores;
+    attempt.essayComments=comments;
+    attempt.status='graded';
+    var mcEarned=attempt.earned||0;
+    var totalPossible=(attempt.mcPossible||0)+(attempt.essayPossible||0);
+    if(totalPossible>0){
+      attempt.score=Math.round((mcEarned+totalEssayPts)/totalPossible*100);
+    }
+
+    // Save to database
+    var btn=el('save-essay-grades-btn');
+    var status=el('essay-grade-status');
+    if(btn){btn.textContent='Saving…';btn.disabled=true;}
+
+    fetch('/api/attempts?action=grade',{
+      method:'PATCH',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({id:attemptId, essayScores:scores, comments:comments})
+    })
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(btn){btn.textContent='💾 Save Essay Grades';btn.disabled=false;}
+      if(status){
+        status.textContent=d.ok?'✅ Grades saved successfully!':'⚠️ Could not save — try again';
+        status.style.color=d.ok?'var(--green)':'var(--danger)';
+        setTimeout(function(){if(status)status.textContent='';},4000);
+      }
+    })
+    .catch(function(){
+      if(btn){btn.textContent='💾 Save Essay Grades';btn.disabled=false;}
+      if(status){status.textContent='⚠️ Network error — try again';status.style.color='var(--danger)';}
+    });
   }
 
   function pgGrade(){
@@ -1507,7 +1569,7 @@ var G = (function(){
     renderStep4:renderStep4, togSet:togSet, doPublish:doPublish,
     toggleStatus:toggleStatus,
     studentGo:studentGo, showExamList:showExamList, selectExam:selectExam, beginExam:beginExam,
-    viewAttempt:viewAttempt, pgAtlog:pgAtlog
+    viewAttempt:viewAttempt, pgAtlog:pgAtlog, saveEssayGrades:saveEssayGrades
   };
 })();
 
