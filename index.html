@@ -170,8 +170,72 @@ textarea{resize:vertical;min-height:80px}
 .evrow{display:flex;gap:.75rem;padding:.35rem 0;border-bottom:1px solid var(--rule)}
 .evt{color:var(--muted);width:78px;flex-shrink:0}.evty{color:var(--red);width:145px;flex-shrink:0}.evd{color:var(--slate)}
 
+/* ── DB SOURCE INDICATOR ── */
+.db-badge{display:inline-flex;align-items:center;gap:.35rem;font-family:'DM Mono',monospace;font-size:.65rem;padding:.2rem .55rem;border-radius:4px;font-weight:600;letter-spacing:.03em;flex-shrink:0}
+.db-neon{background:#e6f5ec;color:var(--green);border:1px solid #90d0aa}
+.db-local{background:#fff8e6;color:var(--orange);border:1px solid #f0d070}
+.db-dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0}
+.db-dot-neon{background:var(--green);box-shadow:0 0 4px var(--green)}
+.db-dot-local{background:var(--orange)}
+
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--rule);border-radius:3px}
 @media(max-width:700px){.sidebar{display:none}.g2{grid-template-columns:1fr}.land-cards{flex-direction:column;align-items:center}}
+
+/* ══════════════════════════════════════════════
+   CROSSWORD — TEACHER BUILDER
+══════════════════════════════════════════════ */
+.cw-builder-grid{display:inline-grid;border:2px solid var(--ink);background:var(--ink);gap:2px;margin:0 auto;user-select:none}
+.cw-cell{width:36px;height:36px;background:#fff;position:relative;cursor:pointer;transition:background .1s}
+.cw-cell.blocked{background:var(--ink);cursor:pointer}
+.cw-cell.highlighted{background:#dce8ff}
+.cw-cell.active{background:#b0cbff}
+.cw-cell input.cw-input{position:absolute;inset:0;width:100%;height:100%;border:none;background:transparent;text-align:center;font-family:'DM Mono',monospace;font-size:1rem;font-weight:700;text-transform:uppercase;cursor:pointer;padding:0;color:var(--ink)}
+.cw-cell input.cw-input:focus{outline:none}
+.cw-cell .cw-num{position:absolute;top:1px;left:2px;font-family:'DM Mono',monospace;font-size:.5rem;line-height:1;color:var(--slate);pointer-events:none;z-index:2}
+.cw-cell.blocked input,.cw-cell.blocked .cw-num{display:none}
+.cw-clue-panel{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+.cw-clue-section{background:#fff;border:1px solid var(--rule);border-radius:8px;padding:1rem}
+.cw-clue-section h4{font-family:'DM Mono',monospace;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.6rem}
+.cw-clue-item{display:flex;align-items:flex-start;gap:.5rem;margin-bottom:.5rem;font-size:.85rem}
+.cw-clue-item .cw-clue-n{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--blue);width:26px;flex-shrink:0;padding-top:2px}
+.cw-clue-item input{flex:1;padding:.3rem .5rem;border:1px solid var(--rule);border-radius:4px;font-size:.82rem}
+.cw-clue-item.active-clue .cw-clue-n{color:#fff;background:var(--blue);border-radius:3px;text-align:center;padding:1px 2px}
+.cw-grid-wrap{overflow-x:auto;text-align:center;padding:1rem 0}
+.cw-toolbar{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem}
+.cw-size-ctrl{display:flex;align-items:center;gap:.4rem;font-size:.82rem}
+.cw-size-ctrl button{width:26px;height:26px;border-radius:4px;border:1px solid var(--rule);background:#fff;cursor:pointer;font-weight:700;font-size:1rem;line-height:1;display:flex;align-items:center;justify-content:center}
+.cw-size-ctrl button:hover{background:var(--cream)}
+.cw-mode-lbl{font-size:.75rem;font-family:'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+
+/* ══════════════════════════════════════════════
+   CROSSWORD — STUDENT PLAY SCREEN
+══════════════════════════════════════════════ */
+#s-crossword{background:#f0ede6;overflow-y:auto}
+.cw-play-wrap{display:flex;gap:1.5rem;padding:1.5rem;max-width:1100px;margin:0 auto;align-items:flex-start;flex-wrap:wrap}
+.cw-play-grid-col{flex-shrink:0}
+.cw-play-clues-col{flex:1;min-width:260px;max-width:340px}
+.cw-play-grid{display:inline-grid;border:2px solid #1a1c23;background:#1a1c23;gap:2px}
+.cw-play-cell{width:38px;height:38px;background:#fff;position:relative;cursor:pointer;transition:background .1s}
+.cw-play-cell.blocked{background:#1a1c23;cursor:default}
+.cw-play-cell.highlighted{background:#dce8ff}
+.cw-play-cell.active-cell{background:#4a7fff}
+.cw-play-cell .cw-play-num{position:absolute;top:1px;left:2px;font-family:'DM Mono',monospace;font-size:.48rem;line-height:1;color:#555;pointer-events:none;z-index:2}
+.cw-play-cell .cw-play-letter{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:1.05rem;font-weight:700;text-transform:uppercase;color:#1a1c23;pointer-events:none}
+.cw-play-cell.correct-cell .cw-play-letter{color:var(--green)}
+.cw-play-cell.wrong-cell .cw-play-letter{color:var(--danger)}
+.cw-play-clue-box{background:#fff;border:1px solid var(--rule);border-radius:8px;padding:1rem;margin-bottom:.75rem;max-height:360px;overflow-y:auto}
+.cw-play-clue-box h4{font-family:'DM Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.6rem;position:sticky;top:0;background:#fff;padding-bottom:.3rem}
+.cw-play-clue-row{display:flex;gap:.5rem;padding:.28rem .3rem;border-radius:4px;cursor:pointer;font-size:.83rem;line-height:1.4;transition:background .1s}
+.cw-play-clue-row:hover{background:var(--cream)}
+.cw-play-clue-row.active-clue-row{background:#e0ecff;font-weight:600}
+.cw-play-clue-row .cn{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--blue);width:22px;flex-shrink:0;padding-top:1px}
+.cw-play-topbar{background:var(--ink);color:#fff;padding:.7rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.cw-play-topbar .title{font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem}
+.cw-play-actions{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem}
+.cw-score-reveal{background:#fff;border:2px solid var(--green);border-radius:8px;padding:1rem;text-align:center;margin-bottom:.75rem}
+.cw-hint-active{background:#fff9e6;border:1px solid #f0d070;border-radius:6px;padding:.5rem .75rem;font-size:.82rem;color:#7a5200;margin-bottom:.75rem}
+/* hidden input trick for mobile keyboard */
+#cw-hidden-input{position:fixed;opacity:0;pointer-events:none;width:1px;height:1px;top:0;left:0}
 </style>
 </head>
 <body>
@@ -313,7 +377,22 @@ textarea{resize:vertical;min-height:80px}
   <div class="rpage" id="r-content"></div>
 </div>
 
-<!-- Hidden Netlify Form — DO NOT REMOVE — captures exam scores → Zapier → Google Sheets -->
+<!-- CROSSWORD PLAY SCREEN -->
+<div id="s-crossword" class="screen">
+  <div class="cw-play-topbar">
+    <div class="title" id="cw-play-title">Crossword Puzzle</div>
+    <div style="display:flex;align-items:center;gap:.75rem">
+      <span id="cw-play-student" style="font-size:.8rem;opacity:.7"></span>
+      <button style="background:transparent;border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:4px;padding:.28rem .7rem;font-size:.78rem;cursor:pointer" onclick="G.cwSaveProgress()">💾 Save Progress</button>
+      <button style="background:var(--green);border:none;color:#fff;border-radius:4px;padding:.28rem .9rem;font-size:.78rem;cursor:pointer;font-weight:600" onclick="G.cwSubmit()">Submit ✓</button>
+    </div>
+  </div>
+  <div id="cw-directions-bar" style="display:none;background:#fff8e6;border-bottom:1px solid #f0d070;padding:.5rem 1.5rem;font-size:.84rem;color:#7a5200"></div>
+  <input id="cw-hidden-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" style="position:fixed;opacity:0;pointer-events:none;width:1px;height:1px;top:0;left:0">
+  <div class="cw-play-wrap" id="cw-play-wrap"></div>
+</div>
+
+<!-- Netlify Form — secondary backup only (primary = Neon DB + localStorage) -->
 <form name="exam-scores" netlify netlify-honeypot="bot-field" hidden>
   <input type="hidden" name="form-name" value="exam-scores">
   <input type="text"   name="bot-field"> <!-- honeypot spam trap -->
@@ -334,11 +413,21 @@ textarea{resize:vertical;min-height:80px}
 // ══════════════════════════════════════════════
 var G = (function(){
 
-  // ── ACCOUNTS ──
-  var ACCOUNTS = {
-    hbenoit: {pw:'benoit47', name:'Mr. Benoit'},
-    EPISD:   {pw:'TEA2026',  name:'EPISD Admin'}
-  };
+  // ── TEACHER AUTH STATE ──
+  // Credentials are NEVER stored in the front end.
+  // Login posts to /api/auth and receives a session token.
+  // That token is kept in memory and sent with every teacher API call.
+  // On logout the token is discarded from memory (no localStorage — teachers
+  // should re-authenticate each session for security).
+  var AUTH_TOKEN = null;   // set on successful login, cleared on logout
+
+  // ── Build auth headers for all teacher API calls ──
+  function authHeaders(extra) {
+    var h = Object.assign({'Content-Type': 'application/json'}, extra || {});
+    if (AUTH_TOKEN) h['X-Auth-Token'] = AUTH_TOKEN;
+    return h;
+  }
+
 
   // ── CLASSES ──
   var CLASSES = ['Practicum M','Practicum A','Law Enforcement 2','Court Systems','Law Enforcement 1','Criminal Justice'];
@@ -359,7 +448,32 @@ var G = (function(){
 
   // ── LIVE ATTEMPTS (grows as students submit) ──
   var ATTEMPTS = [];
-  var nextAID = 1;
+
+  // ── Flag threshold — attempts with this many suspicious events show in pgFlags ──
+  // Only events that represent a suspicious action are counted (page_hidden, paste_blocked).
+  // page_visible (student returning) is NOT counted — logging it once for the record is fine
+  // but counting it would double-count every tab switch.
+  var FLAG_THRESHOLD = 3;
+  function suspiciousEventCount(events) {
+    if (!events || !events.length) return 0;
+    var count = 0;
+    for (var i = 0; i < events.length; i++) {
+      var ty = events[i].ty || '';
+      // Only count departures and direct violations, not the paired "returned" event
+      if (ty === 'page_hidden' || ty === 'paste_blocked' || ty === 'fullscreen_exit') count++;
+    }
+    return count;
+  }
+
+  // Generate a collision-resistant client-side attempt ID.
+  // Format: timestamp_ms + underscore + 6 padded random hex chars.
+  // The backend will assign its own permanent ID on save and promote it.
+  function genAttemptId() {
+    // Math.floor ensures we get a clean integer before converting to hex,
+    // padStart ensures we always get exactly 6 hex characters.
+    var rand = Math.floor(Math.random() * 0xFFFFFF).toString(16).padStart(6, '0');
+    return Date.now() + '_' + rand;
+  }
 
   // ── SAMPLE ATTEMPTS (demo data) ──
   var SA = [
@@ -373,63 +487,487 @@ var G = (function(){
     {t:'09:22:17',ty:'paste_blocked',d:'Paste attempt intercepted'}
   ];
 
-  // ── PERSISTENT STORAGE — shared database via Netlify Blobs API ──
-  // ALL teachers and students share the same data — works across all browsers/devices
-  function dbSave(){
-    // No-op — saving is now done via API calls in doPublish, toggleStatus, finishExam
+  // ══════════════════════════════════════════════════════════════
+  // THREE-LAYER DATA PERSISTENCE
+  // Layer 1: Neon DB (primary)   — survives forever, all devices
+  // Layer 2: localStorage        — survives refresh, same device
+  // Layer 3: In-memory (LOGINS)  — live session UI only
+  // ══════════════════════════════════════════════════════════════
+
+  // ── Neon DB endpoint (your Netlify serverless functions) ──
+  var NEON_URL = '/api';   // same endpoints as before — no change needed server-side
+
+  // ── Data source tracking (shown in teacher dashboard) ──
+  var DB_SOURCE = 'unknown';  // 'neon' | 'local' | 'empty'
+
+  // ── localStorage keys ──
+  var LS_ATTEMPTS  = 'se_attempts_v3';
+  var LS_LOGINS    = 'se_logins_v3';
+  var LS_EXAMS     = 'se_exams_v3';
+  var LS_CW_DRAFTS = 'se_cw_drafts_v3';  // crossword in-progress drafts
+
+  // ── localStorage helpers ──
+  function lsGet(key) {
+    try { var v = localStorage.getItem(key); return v ? JSON.parse(v) : null; } catch(e) { return null; }
   }
-  function dbLoad(){
-    // No-op — loading is now done via API calls in pgExams, pgAtlog, showExamList
+  function lsSet(key, val) {
+    try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {}
+  }
+  function lsMergeAttempts(incoming) {
+    // Merge Neon array into localStorage with a clear precedence rule:
+    //   - Neon wins for: id, score, status, essayScores, essayComments (authoritative server fields)
+    //   - Local wins for: results, events, studentGrid, cwResults (only exist locally)
+    //   - clientKey is the stable dedup key; falls back to name|examId|submittedTs or submittedAt
+    var existing = lsGet(LS_ATTEMPTS) || [];
+
+    // Index existing by clientKey for O(1) lookup
+    var byKey = {};
+    existing.forEach(function(a, idx){
+      var k = a.clientKey || (a.name + '|' + a.examId + '|' + (a.submittedTs || a.submittedAt));
+      byKey[k] = idx;
+    });
+
+    incoming.forEach(function(neonRec) {
+      var k = neonRec.clientKey || (neonRec.name + '|' + neonRec.examId + '|' + (neonRec.submittedTs || neonRec.submittedAt));
+      if (k in byKey) {
+        // Record exists locally — merge: Neon fields win for server-managed data
+        var local = existing[byKey[k]];
+        existing[byKey[k]] = {
+          // Keep local-only fields that Neon never stores
+          results:     local.results     || neonRec.results,
+          events:      local.events      || neonRec.events,
+          studentGrid: local.studentGrid || neonRec.studentGrid,
+          cwResults:   local.cwResults   || neonRec.cwResults,
+          // Neon wins for everything else (ID promotion, grading, score)
+          id:           neonRec.id           || local.id,
+          clientKey:    local.clientKey      || neonRec.clientKey,
+          submittedTs:  local.submittedTs    || neonRec.submittedTs,
+          name:         neonRec.name,
+          sid:          neonRec.sid,
+          cls:          neonRec.cls,
+          examId:       neonRec.examId,
+          examTitle:    neonRec.examTitle,
+          atype:        neonRec.atype,
+          submittedAt:  neonRec.submittedAt  || local.submittedAt,
+          score:        neonRec.score        !== undefined ? neonRec.score        : local.score,
+          earned:       neonRec.earned       !== undefined ? neonRec.earned       : local.earned,
+          mcPossible:   neonRec.mcPossible   !== undefined ? neonRec.mcPossible   : local.mcPossible,
+          essayPossible:neonRec.essayPossible!== undefined ? neonRec.essayPossible: local.essayPossible,
+          totalPossible:neonRec.totalPossible!== undefined ? neonRec.totalPossible: local.totalPossible,
+          hasEssay:     neonRec.hasEssay,
+          essayCount:   neonRec.essayCount,
+          essayScores:  neonRec.essayScores  || local.essayScores,
+          essayComments:neonRec.essayComments|| local.essayComments,
+          status:       neonRec.status       || local.status,
+        };
+      } else {
+        // New record from Neon — add it
+        existing.push(neonRec);
+        byKey[k] = existing.length - 1;
+      }
+    });
+
+    lsSet(LS_ATTEMPTS, existing);
+    return existing;
+  }
+  function lsMergeExams(incoming) {
+    var existing = lsGet(LS_EXAMS) || [];
+    var byId = {};
+    existing.forEach(function(e){ byId[e.id] = e; });
+    incoming.forEach(function(e){ byId[e.id] = e; }); // incoming wins
+    var merged = Object.keys(byId).map(function(k){ return byId[k]; });
+    lsSet(LS_EXAMS, merged);
+    return merged;
   }
 
-  // Load exams from shared database — called when teacher views exams or student logs in
-  function apiLoadExams(cb){
-    fetch('/api/exams?action=list')
+  // ── Save a login event to localStorage + Neon ──
+  // loginObj must have: name, sid, cls, time (human string), action.
+  // ts (epoch ms) is added here if missing — used as the stable dedup key.
+  function lsSaveLogin(loginObj) {
+    // Always stamp with ts so dedup and sorting work correctly
+    if (!loginObj.ts) loginObj.ts = Date.now();
+
+    var logins = lsGet(LS_LOGINS) || [];
+    // Dedup by ts: if an event with the same timestamp already exists, skip
+    var exists = false;
+    for (var i=0; i<logins.length; i++) {
+      if (logins[i].ts && logins[i].ts === loginObj.ts) { exists=true; break; }
+    }
+    if (!exists) {
+      logins.push(loginObj);
+      if (logins.length > 500) logins = logins.slice(-500); // cap to 500 most recent
+      lsSet(LS_LOGINS, logins);
+    }
+
+    // Also push to Neon silently for cross-device visibility
+    try {
+      fetch(NEON_URL + '/logins?action=save', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(loginObj)
+      }).catch(function(){});
+    } catch(e) {}
+  }
+
+  // ── Load logins from Neon (cross-device) — fallback to localStorage ──
+  // Backend must return: { ok: true, logins: [ {name, sid, cls, time, ts, action}, … ] }
+  function apiLoadLogins(cb) {
+    fetch(NEON_URL + '/logins?action=list')
       .then(function(r){ return r.json(); })
-      .then(function(d){ if(d.ok && d.exams){ EXAMS = d.exams; } if(cb) cb(); })
-      .catch(function(){ if(cb) cb(); });
+      .then(function(d){
+        if (d.ok && d.logins && d.logins.length) {
+          // Merge Neon logins with local, dedup by ts
+          var merged = [];
+          var seen = {};
+          // Process Neon first (it has more complete cross-device history)
+          d.logins.forEach(function(l){
+            var k = l.ts ? String(l.ts) : (l.name+'|'+l.time);
+            if (!seen[k]) { merged.push(l); seen[k]=true; }
+          });
+          // Add any local-only entries Neon doesn't have yet
+          var local = lsGet(LS_LOGINS) || [];
+          local.forEach(function(l){
+            var k = l.ts ? String(l.ts) : (l.name+'|'+l.time);
+            if (!seen[k]) { merged.push(l); seen[k]=true; }
+          });
+          // Sort newest first
+          merged.sort(function(a,b){ return (b.ts||0)-(a.ts||0); });
+          if (merged.length > 500) merged = merged.slice(0, 500);
+          LOGINS = merged;
+          lsSet(LS_LOGINS, merged);
+        } else {
+          // Neon empty or unavailable — use localStorage, sort newest first
+          var local2 = lsGet(LS_LOGINS) || LOGINS;
+          local2.sort(function(a,b){ return (b.ts||0)-(a.ts||0); });
+          LOGINS = local2;
+        }
+        if (cb) cb();
+      })
+      .catch(function(){
+        var local3 = lsGet(LS_LOGINS) || LOGINS;
+        local3.sort(function(a,b){ return (b.ts||0)-(a.ts||0); });
+        LOGINS = local3;
+        if (cb) cb();
+      });
   }
 
-  // Load attempts from shared database — called when teacher views attempt log
-  function apiLoadAttempts(cb){
-    fetch('/api/attempts?action=list')
+  // ── Save a single attempt to localStorage immediately ──
+  // Primary dedup key: attempt.clientKey (set at creation, locale-independent).
+  // Fallback: name|examId|submittedTs — uses epoch ms, not locale string.
+  // Second fallback: name|examId|submittedAt — for records predating submittedTs.
+  function lsSaveAttempt(attempt) {
+    var existing = lsGet(LS_ATTEMPTS) || [];
+    var stableKey = attempt.clientKey ||
+                    (attempt.name + '|' + attempt.examId + '|' + (attempt.submittedTs || attempt.submittedAt));
+    var found = false;
+    for (var i = 0; i < existing.length; i++) {
+      var existKey = existing[i].clientKey ||
+                     (existing[i].name + '|' + existing[i].examId + '|' + (existing[i].submittedTs || existing[i].submittedAt));
+      if (existKey === stableKey) { existing[i] = attempt; found = true; break; }
+    }
+    if (!found) existing.push(attempt);
+    lsSet(LS_ATTEMPTS, existing);
+  }
+
+  // ── Crossword draft persistence ──
+  // Draft key is unique per student + exam so multiple students on the same device
+  // never clobber each other, and one student can have drafts for different puzzles.
+  function cwDraftKey(studentInfo, examId) {
+    // Sanitise: strip characters that could break localStorage keys
+    var name = (studentInfo.name || '').replace(/[^a-zA-Z0-9]/g, '_').slice(0, 30);
+    var sid  = (studentInfo.sid  || '').replace(/[^a-zA-Z0-9]/g, '_').slice(0, 12);
+    return LS_CW_DRAFTS + '|' + name + '|' + sid + '|' + examId;
+  }
+
+  // Write current CWP.studentGrid to localStorage immediately (synchronous)
+  // and push to Neon silently in the background.
+  function cwWriteDraft() {
+    if (!CWP || !CWP.cwData || CWP.submitted) return;
+    var key = cwDraftKey(SI, SE.id);
+    var draft = {
+      examId:      SE.id,
+      examTitle:   SE.title,
+      studentName: SI.name,
+      studentSid:  SI.sid,
+      studentCls:  SI.cls,
+      savedAt:     new Date().toLocaleString(),
+      savedTs:     Date.now(),
+      studentGrid: CWP.studentGrid   // the 2-D letter array
+    };
+    // Layer 2 — localStorage (instant, always works)
+    try { localStorage.setItem(key, JSON.stringify(draft)); } catch(e) {}
+
+    // Layer 1 — Neon (fire-and-forget, silent on failure)
+    try {
+      fetch(NEON_URL + '/crossword-drafts?action=save', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(draft)
+      }).catch(function(){});   // never interrupt the student
+    } catch(e) {}
+  }
+
+  // Load any existing draft for the current student + exam.
+  // Returns the draft object if found and not stale (< 7 days old), otherwise null.
+  function cwLoadDraft(studentInfo, examId) {
+    var key = cwDraftKey(studentInfo, examId);
+    try {
+      var raw = localStorage.getItem(key);
+      if (!raw) return null;
+      var draft = JSON.parse(raw);
+      // Expire drafts older than 7 days so old work doesn't haunt students forever
+      var age = Date.now() - (draft.savedTs || 0);
+      if (age > 7 * 24 * 60 * 60 * 1000) {
+        localStorage.removeItem(key);
+        return null;
+      }
+      return draft;
+    } catch(e) { return null; }
+  }
+
+  // Clear the draft after final submission or discard.
+  // Removes from localStorage immediately and fires a silent DELETE to Neon
+  // so the student is never shown a stale "progress restored" banner.
+  function cwClearDraft() {
+    if (!SI || !SE) return;
+    // Layer 2: localStorage — instant
+    try { localStorage.removeItem(cwDraftKey(SI, SE.id)); } catch(e) {}
+    // Layer 1: Neon — fire-and-forget, silent on failure
+    try {
+      fetch(NEON_URL + '/crossword-drafts?action=clear', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          studentName: SI.name,
+          studentSid:  SI.sid,
+          examId:      SE.id
+        })
+      }).catch(function(){});
+    } catch(e) {}
+  }
+
+  // ── DB badge HTML helper ──
+  function dbBadge() {
+    if (DB_SOURCE === 'neon')
+      return '<span class="db-badge db-neon"><span class="db-dot db-dot-neon"></span> NEON DB</span>';
+    if (DB_SOURCE === 'local')
+      return '<span class="db-badge db-local"><span class="db-dot db-dot-local"></span> LOCAL ONLY</span>';
+    return '';
+  }
+
+  // ══════════════════════════════════════════════════════════════
+  // LOAD EXAMS — Neon first, localStorage fallback
+  // ══════════════════════════════════════════════════════════════
+  function apiLoadExams(cb) {
+    fetch(NEON_URL + '/exams?action=list', {headers: authHeaders()})
       .then(function(r){ return r.json(); })
-      .then(function(d){ if(d.ok && d.attempts){ ATTEMPTS = d.attempts; } if(cb) cb(); })
-      .catch(function(){ if(cb) cb(); });
+      .then(function(d){
+        if (d.ok && d.exams && d.exams.length) {
+          EXAMS = d.exams;
+          lsMergeExams(d.exams);       // keep localStorage in sync
+          DB_SOURCE = 'neon';
+        } else {
+          // Neon returned empty — fall back to localStorage
+          var cached = lsGet(LS_EXAMS);
+          if (cached && cached.length) { EXAMS = cached; DB_SOURCE = 'local'; }
+          else { EXAMS = []; DB_SOURCE = 'empty'; }
+        }
+        if (cb) cb();
+      })
+      .catch(function(){
+        // Network error — fall back to localStorage silently
+        var cached = lsGet(LS_EXAMS);
+        if (cached && cached.length) { EXAMS = cached; DB_SOURCE = 'local'; }
+        else { EXAMS = []; DB_SOURCE = 'empty'; }
+        if (cb) cb();
+      });
   }
 
-  // Save exam to shared database
-  function apiSaveExam(examData, cb){
-    fetch('/api/exams?action=save', {
+  // ══════════════════════════════════════════════════════════════
+  // LOAD ATTEMPTS — Neon first, localStorage fallback
+  // ══════════════════════════════════════════════════════════════
+  function apiLoadAttempts(cb) {
+    fetch(NEON_URL + '/attempts?action=list', {headers: authHeaders()})
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        if (d.ok && d.attempts && d.attempts.length) {
+          // Merge Neon results with localStorage (localStorage may have more recent ones)
+          var merged = lsMergeAttempts(d.attempts);
+          ATTEMPTS = merged;
+          DB_SOURCE = 'neon';
+        } else {
+          var cached = lsGet(LS_ATTEMPTS);
+          if (cached && cached.length) { ATTEMPTS = cached; DB_SOURCE = 'local'; }
+          else { ATTEMPTS = []; DB_SOURCE = 'empty'; }
+        }
+        if (cb) cb();
+      })
+      .catch(function(){
+        var cached = lsGet(LS_ATTEMPTS);
+        if (cached && cached.length) { ATTEMPTS = cached; DB_SOURCE = 'local'; }
+        else { ATTEMPTS = []; DB_SOURCE = 'empty'; }
+        if (cb) cb();
+      });
+  }
+
+  // ══════════════════════════════════════════════════════════════
+  // SAVE EXAM — Neon + localStorage simultaneously
+  // ══════════════════════════════════════════════════════════════
+  function apiSaveExam(examData, cb) {
+    // Save to localStorage immediately so it's never lost
+    var tempExam = Object.assign({}, examData, {id: examData.id || (Date.now()), _localOnly: true});
+    var cached = lsGet(LS_EXAMS) || [];
+    cached.push(tempExam);
+    lsSet(LS_EXAMS, cached);
+
+    fetch(NEON_URL + '/exams?action=save', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: authHeaders(),
       body: JSON.stringify(examData)
     })
     .then(function(r){ return r.json(); })
-    .then(function(d){ if(cb) cb(d.ok ? d.exam : null); })
-    .catch(function(){ if(cb) cb(null); });
+    .then(function(d){
+      if (d.ok && d.exam) {
+        // Replace temp local entry with the server-assigned one
+        var updated = lsGet(LS_EXAMS) || [];
+        updated = updated.filter(function(e){ return e.id !== tempExam.id; });
+        updated.push(d.exam);
+        lsSet(LS_EXAMS, updated);
+        if (cb) cb(d.exam);
+      } else {
+        if (cb) cb(tempExam); // return local copy so the UI still works
+      }
+    })
+    .catch(function(){
+      if (cb) cb(tempExam); // network error — return local copy
+    });
   }
 
-  // Toggle exam open/closed in shared database
-  function apiToggleExam(id, cb){
-    fetch('/api/exams?action=toggle', {
+  // ══════════════════════════════════════════════════════════════
+  // TOGGLE EXAM — Neon + localStorage simultaneously
+  // ══════════════════════════════════════════════════════════════
+  function apiToggleExam(id, cb) {
+    // Optimistic local update immediately
+    var cached = lsGet(LS_EXAMS) || [];
+    var localExam = null;
+    for (var i=0; i<cached.length; i++) {
+      if (cached[i].id === id) {
+        cached[i].status = cached[i].status === 'published' ? 'closed' : 'published';
+        localExam = cached[i]; break;
+      }
+    }
+    lsSet(LS_EXAMS, cached);
+
+    fetch(NEON_URL + '/exams?action=toggle', {
       method: 'PATCH',
-      headers: {'Content-Type': 'application/json'},
+      headers: authHeaders(),
       body: JSON.stringify({id: id})
     })
     .then(function(r){ return r.json(); })
-    .then(function(d){ if(cb) cb(d.ok ? d.exam : null); })
-    .catch(function(){ if(cb) cb(null); });
+    .then(function(d){
+      if (d.ok && d.exam) {
+        // Sync localStorage with confirmed server state
+        var updated = lsGet(LS_EXAMS) || [];
+        for (var i=0; i<updated.length; i++) { if(updated[i].id===id){ updated[i].status=d.exam.status; break; } }
+        lsSet(LS_EXAMS, updated);
+        if (cb) cb(d.exam);
+      } else {
+        if (cb) cb(localExam);
+      }
+    })
+    .catch(function(){
+      if (cb) cb(localExam);
+    });
   }
 
-  // Save student attempt to shared database
-  function apiSaveAttempt(attemptData){
-    fetch('/api/attempts?action=save', {
+  // ══════════════════════════════════════════════════════════════
+  // SAVE ATTEMPT — Neon + localStorage simultaneously (fire-and-forget safe)
+  // ══════════════════════════════════════════════════════════════
+  function apiSaveAttempt(attemptData, cb) {
+    // Layer 2: localStorage — save immediately, synchronously
+    lsSaveAttempt(attemptData);
+
+    // Layer 1: Neon — fire async, promote backend ID on success
+    fetch(NEON_URL + '/attempts?action=save', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(attemptData)
-    }).catch(function(){});
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      // Backend may return a permanent numeric ID — pass it back to caller
+      if (cb) cb(d && d.id ? d.id : null);
+    })
+    .catch(function(){
+      // Failure is OK — data is already in localStorage
+      if (cb) cb(null);
+    });
   }
+
+  // ══════════════════════════════════════════════════════════════
+  // SAVE ESSAY GRADES — Neon + localStorage simultaneously
+  // ══════════════════════════════════════════════════════════════
+  function apiSaveEssayGrades(attemptId, scores, comments, newScore, cb) {
+    // Helper: does this attempt record match the given id?
+    // Checks both .id and .clientKey to survive ID promotion timing gaps.
+    function matchesId(a, id) {
+      return String(a.id) === String(id) || (a.clientKey && a.clientKey === String(id));
+    }
+
+    // Update localStorage immediately
+    var cached = lsGet(LS_ATTEMPTS) || [];
+    var lsUpdated = false;
+    for (var i=0; i<cached.length; i++) {
+      if (matchesId(cached[i], attemptId)) {
+        cached[i].essayScores   = scores;
+        cached[i].essayComments = comments;
+        cached[i].score         = newScore;
+        cached[i].status        = 'graded';
+        lsUpdated = true;
+        break;
+      }
+    }
+    if (lsUpdated) lsSet(LS_ATTEMPTS, cached);
+
+    // Update in-memory ATTEMPTS
+    for (var i=0; i<ATTEMPTS.length; i++) {
+      if (matchesId(ATTEMPTS[i], attemptId)) {
+        ATTEMPTS[i].essayScores   = scores;
+        ATTEMPTS[i].essayComments = comments;
+        ATTEMPTS[i].score         = newScore;
+        ATTEMPTS[i].status        = 'graded';
+        break;
+      }
+    }
+
+    // Push to Neon
+    fetch(NEON_URL + '/attempts?action=grade', {
+      method: 'PATCH',
+      headers: authHeaders(),
+      body: JSON.stringify({id: attemptId, essayScores: scores, essayComments: comments, score: newScore, status: 'graded'})
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(d){ if (cb) cb(d); })
+    .catch(function(){ if (cb) cb({ok: false}); });
+  }
+
+  // ── Restore session from localStorage on page load ──
+  function restoreSession() {
+    // Restore any logins from this device session
+    var savedLogins = lsGet(LS_LOGINS);
+    if (savedLogins && savedLogins.length) {
+      // Only restore logins from the last 12 hours
+      var cutoff = Date.now() - 12*60*60*1000;
+      LOGINS = savedLogins.filter(function(l){ return !l.ts || l.ts > cutoff; });
+    }
+  }
+
+  // Call restore on startup
+  restoreSession();
+
+  // ── PERSISTENT STORAGE stubs (kept for compatibility) ──
+  function dbSave(){ }
+  function dbLoad(){ }
 
   // ── UPLOAD STATE ──
   var UP = {};
@@ -461,9 +999,9 @@ var G = (function(){
   }
   function el(id){ return document.getElementById(id); }
   function bdg(t,c){ return '<span class="bdg '+c+'">'+t+'</span>'; }
-  function atLabel(t){ return t==='exam'?'Exam':t==='quiz'?'Quiz':'Assignment'; }
-  function atBdg(t){ return t==='exam'?bdg('Exam','br'):t==='quiz'?bdg('Quiz','bb'):bdg('Assignment','bo'); }
-  function atColor(t){ return t==='exam'?'var(--red)':t==='quiz'?'var(--blue)':'var(--orange)'; }
+  function atLabel(t){ return t==='exam'?'Exam':t==='quiz'?'Quiz':t==='crossword'?'Crossword':'Assignment'; }
+  function atBdg(t){ return t==='exam'?bdg('Exam','br'):t==='quiz'?bdg('Quiz','bb'):t==='crossword'?bdg('Crossword','bb'):bdg('Assignment','bo'); }
+  function atColor(t){ return t==='exam'?'var(--red)':t==='quiz'?'var(--blue)':t==='crossword'?'var(--green)':'var(--orange)'; }
 
   // ══════════════════════════════
   // TEACHER LOGIN
@@ -475,23 +1013,94 @@ var G = (function(){
     btn.textContent = inp.type==='password'?'Show':'Hide';
   }
 
+  // ── LOCAL TEACHER ACCOUNTS ──
+  // Used as a fallback when the /api/auth backend is not yet deployed.
+  // Once your Netlify auth function is live, this object is never reached
+  // because the backend will respond first.
+  // TO CHANGE CREDENTIALS: update this object AND your Netlify api/auth.js
+  var LOCAL_ACCOUNTS = {
+    'hbenoit': { pw: 'benoit47', name: 'Mr. Benoit' },
+    'EPISD':   { pw: 'TEA2026',  name: 'EPISD Admin' }
+  };
+
   function login(){
     var u = (el('lu').value||'').trim();
     var p = el('lp').value||'';
     var errEl = el('lerr');
     var msgEl = el('lerr-msg');
     if(!u||!p){ msgEl.textContent='Please enter your username and password.'; errEl.style.display='flex'; return; }
-    var acct = ACCOUNTS[u];
-    if(!acct||acct.pw!==p){ msgEl.textContent='Invalid username or password.'; errEl.style.display='flex'; return; }
+
+    var btn = document.querySelector('#s-tlogin .btn-r');
+    if(btn){ btn.textContent='Signing in…'; btn.disabled=true; }
     errEl.style.display='none';
-    TNAME = acct.name;
-    el('tname-disp').textContent = acct.name;
-    buildSidebar();
-    show('s-teacher');
-    navTo('dash');
+
+    function doLogin(name) {
+      AUTH_TOKEN = 'local_' + Date.now();  // in-memory session token
+      TNAME = name;
+      el('tname-disp').textContent = name;
+      el('lu').value=''; el('lp').value='';
+      buildSidebar();
+      show('s-teacher');
+      navTo('dash');
+    }
+
+    function showError(msg) {
+      if(btn){ btn.textContent='Sign In'; btn.disabled=false; }
+      msgEl.textContent = msg || 'Invalid username or password.';
+      errEl.style.display='flex';
+    }
+
+    // Try the backend first — if it responds, use it
+    fetch(NEON_URL + '/auth', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({username: u, password: p})
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(btn){ btn.textContent='Sign In'; btn.disabled=false; }
+      if(d.ok && d.token && d.name){
+        // Backend auth succeeded — use the real server token
+        AUTH_TOKEN = d.token;
+        TNAME = d.name;
+        el('tname-disp').textContent = d.name;
+        el('lu').value=''; el('lp').value='';
+        buildSidebar();
+        show('s-teacher');
+        navTo('dash');
+      } else {
+        showError(d.error || 'Invalid username or password.');
+      }
+    })
+    .catch(function(){
+      // Backend not reachable — fall back to local accounts
+      // This keeps the app working while /api/auth is being built
+      if(btn){ btn.textContent='Sign In'; btn.disabled=false; }
+      var acct = LOCAL_ACCOUNTS[u];
+      if(acct && acct.pw === p){
+        doLogin(acct.name);
+      } else {
+        showError('Invalid username or password.');
+      }
+    });
   }
 
   function logout(){
+    // Tell the backend to invalidate the token (fire-and-forget)
+    if(AUTH_TOKEN){
+      try {
+        fetch(NEON_URL + '/auth', {
+          method: 'DELETE',
+          headers: {'Content-Type': 'application/json', 'X-Auth-Token': AUTH_TOKEN},
+          body: JSON.stringify({token: AUTH_TOKEN})
+        }).catch(function(){});
+      } catch(e){}
+    }
+    // Clear all teacher state from memory immediately — no sensitive data lingers
+    AUTH_TOKEN = null;
+    TNAME = '';
+    EXAMS = [];
+    ATTEMPTS = [];
     el('lu').value=''; el('lp').value='';
     el('lerr').style.display='none';
     show('s-land');
@@ -501,14 +1110,19 @@ var G = (function(){
   // SIDEBAR
   // ══════════════════════════════
   function buildSidebar(){
+    // Count live pending essays and flagged attempts from in-memory data
+    var pendingEssays = ATTEMPTS.filter(function(a){ return a.status==='pending-essay'; }).length;
+    var flagged = ATTEMPTS.filter(function(a){ return suspiciousEventCount(a.events) >= FLAG_THRESHOLD; }).length;
+    var totalAttempts = ATTEMPTS.length;
+
     var items = [
-      {p:'dash',  lbl:'🏠 Dashboard'},
-      {p:'upload',lbl:'📤 Upload Document'},
-      {p:'bank',  lbl:'📚 Question Bank'},
-      {p:'exams', lbl:'📋 Assessments'},
-      {p:'atlog', lbl:'✅ Attempt Log', n:SA.length},
-      {p:'grade', lbl:'✏️ Grading Queue', n:2, w:true},
-      {p:'flags', lbl:'🚩 Suspicious Activity', n:1, w:true},
+      {p:'dash',   lbl:'🏠 Dashboard'},
+      {p:'upload', lbl:'📤 Upload Document'},
+      {p:'bank',   lbl:'📚 Question Bank'},
+      {p:'exams',  lbl:'📋 Assessments'},
+      {p:'atlog',  lbl:'✅ Attempt Log',         n: totalAttempts || null},
+      {p:'grade',  lbl:'✏️ Grading Queue',        n: pendingEssays || null, w: true},
+      {p:'flags',  lbl:'🚩 Suspicious Activity',  n: flagged || null,       w: true},
       {p:'reports',lbl:'📊 Reports'}
     ];
     var h = '<div class="sb-lbl">Overview</div>';
@@ -532,89 +1146,94 @@ var G = (function(){
     if(pages[p]) pages[p]();
   }
 
-  // ══════════════════════════════
-  // DASHBOARD
-  // ══════════════════════════════
   function pgDash(){
     var pg = el('tpage');
-    var openCount = 0;
-    for(var i=0;i<EXAMS.length;i++) if(EXAMS[i].status==='published') openCount++;
+    // Load exams, attempts, AND logins from Neon first so stats are accurate
+    apiLoadExams(function(){
+      apiLoadAttempts(function(){
+        apiLoadLogins(function(){
+        var openCount = 0;
+        for(var i=0;i<EXAMS.length;i++) if(EXAMS[i].status==='published') openCount++;
+        var pendingEssays = 0;
+        for(var i=0;i<ATTEMPTS.length;i++) if(ATTEMPTS[i].status==='pending-essay') pendingEssays++;
 
-    var h = '';
-    h += '<div class="ph"><div><div class="pt">Dashboard</div><div class="ps">Spring Semester 2026</div></div>';
-    h += '<button class="btn btn-r" onclick="G.navTo(\'upload\')">📤 Upload Document</button></div>';
-    h += '<div class="sg">';
-    h += '<div class="sc cr"><div class="n">'+openCount+'</div><div class="l">Open Assessments</div></div>';
-    h += '<div class="sc cb"><div class="n">'+LOGINS.length+'</div><div class="l">Student Logins</div></div>';
-    h += '<div class="sc co"><div class="n">2</div><div class="l">Essays Pending</div></div>';
-    h += '<div class="sc cg"><div class="n">6</div><div class="l">Classes</div></div>';
-    h += '</div>';
+        var h = '';
+        h += '<div class="ph"><div><div class="pt" style="display:flex;align-items:center;gap:.75rem">Dashboard '+dbBadge()+'</div><div class="ps">Spring Semester 2026</div></div>';
+        h += '<button class="btn btn-r" onclick="G.navTo(\'upload\')">📤 New Assessment</button></div>';
+        h += '<div class="sg">';
+        h += '<div class="sc cr"><div class="n">'+openCount+'</div><div class="l">Open Assessments</div></div>';
+        h += '<div class="sc cb"><div class="n">'+LOGINS.length+'</div><div class="l">Student Logins</div></div>';
+        h += '<div class="sc co"><div class="n">'+pendingEssays+'</div><div class="l">Essays Pending</div></div>';
+        h += '<div class="sc cg"><div class="n">6</div><div class="l">Classes</div></div>';
+        h += '</div>';
 
-    // Student login log
-    h += '<div class="card"><div class="ct">👤 Student Login Activity</div>';
-    if(LOGINS.length===0){
-      h += '<p style="color:var(--muted);font-size:.875rem;padding:.5rem 0">No students have logged in yet. This updates live.</p>';
-    } else {
-      h += '<div class="tw"><table><thead><tr><th>Student</th><th>ID</th><th>Class</th><th>Time</th><th>Action</th></tr></thead><tbody>';
-      var show_logins = LOGINS.slice().reverse();
-      for(var i=0;i<show_logins.length;i++){
-        var lg = show_logins[i];
-        h += '<tr><td><b>'+esc(lg.name)+'</b></td><td style="font-family:\'DM Mono\',monospace">'+esc(lg.sid)+'</td>';
-        h += '<td style="font-size:.82rem">'+esc(lg.cls)+'</td>';
-        h += '<td style="font-size:.78rem;font-family:\'DM Mono\',monospace">'+esc(lg.time)+'</td>';
-        h += '<td style="font-size:.82rem">'+esc(lg.action)+'</td></tr>';
-      }
-      h += '</tbody></table></div>';
-    }
-    h += '</div>';
+        // Student login log
+        h += '<div class="card"><div class="ct">👤 Student Login Activity</div>';
+        if(LOGINS.length===0){
+          h += '<p style="color:var(--muted);font-size:.875rem;padding:.5rem 0">No students have logged in yet. This updates live.</p>';
+        } else {
+          h += '<div class="tw"><table><thead><tr><th>Student</th><th>ID</th><th>Class</th><th>Time</th><th>Action</th></tr></thead><tbody>';
+          var show_logins = LOGINS.slice().reverse();
+          for(var i=0;i<show_logins.length;i++){
+            var lg = show_logins[i];
+            h += '<tr><td><b>'+esc(lg.name)+'</b></td><td style="font-family:\'DM Mono\',monospace">'+esc(lg.sid)+'</td>';
+            h += '<td style="font-size:.82rem">'+esc(lg.cls)+'</td>';
+            h += '<td style="font-size:.78rem;font-family:\'DM Mono\',monospace">'+esc(lg.time)+'</td>';
+            h += '<td style="font-size:.82rem">'+esc(lg.action)+'</td></tr>';
+          }
+          h += '</tbody></table></div>';
+        }
+        h += '</div>';
 
-    // Assessments with close/open
-    h += '<div class="card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem"><div class="ct" style="margin:0">📋 Assessments</div><button class="btn btn-r sm" onclick="G.navTo(\'exams\')">Manage →</button></div>';
-    h += '<div class="tw"><table><thead><tr><th>Title</th><th>Type</th><th>Classes</th><th>Status</th><th>Due</th><th>Actions</th></tr></thead><tbody>';
-    for(var i=0;i<EXAMS.length;i++){
-      var e=EXAMS[i];
-      var statBdg = e.status==='published'?'<span class="bdg bg">🟢 Open</span>':e.status==='closed'?'<span class="bdg br">🔴 Closed</span>':'<span class="bdg bgr">Draft</span>';
-      var actionBtn = e.status==='published'
-        ? '<button class="btn btn-danger sm" onclick="G.toggleStatus('+e.id+',\'dash\')">🔒 Close</button>'
-        : e.status==='closed'
-        ? '<button class="btn btn-g sm" onclick="G.toggleStatus('+e.id+',\'dash\')">🔓 Reopen</button>'
-        : '<button class="btn btn-r sm" onclick="G.toggleStatus('+e.id+',\'dash\')">🚀 Publish</button>';
-      h += '<tr><td><b>'+esc(e.title)+'</b></td><td>'+atBdg(e.atype)+'</td><td style="font-size:.8rem">'+e.classes.join(', ')+'</td>';
-      h += '<td>'+statBdg+'</td><td style="font-family:\'DM Mono\',monospace;font-size:.8rem">'+esc(e.due)+'</td>';
-      h += '<td style="display:flex;gap:.3rem">'+actionBtn+'<button class="btn btn-gh sm" onclick="G.navTo(\'atlog\')">👁</button></td></tr>';
-    }
-    h += '</tbody></table></div></div>';
+        // Assessments quick table
+        h += '<div class="card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem"><div class="ct" style="margin:0">📋 Assessments</div><button class="btn btn-r sm" onclick="G.navTo(\'exams\')">Manage →</button></div>';
+        h += '<div class="tw"><table><thead><tr><th>Title</th><th>Type</th><th>Classes</th><th>Status</th><th>Due</th><th>Actions</th></tr></thead><tbody>';
+        for(var i=0;i<EXAMS.length;i++){
+          var e=EXAMS[i];
+          var statBdg = e.status==='published'?'<span class="bdg bg">🟢 Open</span>':e.status==='closed'?'<span class="bdg br">🔴 Closed</span>':'<span class="bdg bgr">Draft</span>';
+          var actionBtn = e.status==='published'
+            ? '<button class="btn btn-danger sm" onclick="G.toggleStatus('+e.id+',\'dash\')">🔒 Close</button>'
+            : e.status==='closed'
+            ? '<button class="btn btn-g sm" onclick="G.toggleStatus('+e.id+',\'dash\')">🔓 Reopen</button>'
+            : '<button class="btn btn-r sm" onclick="G.toggleStatus('+e.id+',\'dash\')">🚀 Publish</button>';
+          h += '<tr><td><b>'+esc(e.title)+'</b></td><td>'+atBdg(e.atype)+'</td><td style="font-size:.8rem">'+e.classes.join(', ')+'</td>';
+          h += '<td>'+statBdg+'</td><td style="font-family:\'DM Mono\',monospace;font-size:.8rem">'+esc(e.due)+'</td>';
+          h += '<td style="display:flex;gap:.3rem">'+actionBtn+'<button class="btn btn-gh sm" onclick="G.navTo(\'atlog\')">👁</button></td></tr>';
+        }
+        h += '</tbody></table></div></div>';
 
-    // Recent attempts — live submissions appear here in real time
-    var liveAttempts = ATTEMPTS.slice().reverse();
-    h += '<div class="card">';
-    h += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem"><div class="ct" style="margin:0">Recent Attempts</div>';
-    h += '<span class="bdg bb">'+ATTEMPTS.length+' submitted</span></div>';
-    h += '<div class="tw"><table><thead><tr><th>Student</th><th>ID</th><th>Class</th><th>Assessment</th><th>Score</th><th>Status</th><th></th></tr></thead><tbody>';
-    if(liveAttempts.length === 0){
-      for(var i=0;i<SA.length;i++){
-        var a=SA[i];
-        h += '<tr><td><b>'+esc(a.name)+'</b></td><td style="font-family:\'DM Mono\',monospace;font-size:.8rem">'+esc(a.sid)+'</td>';
-        h += '<td style="font-size:.82rem">'+esc(a.cls)+'</td><td style="font-size:.82rem">'+esc(a.exam)+'</td>';
-        h += '<td style="font-family:\'DM Mono\',monospace">'+(a.score!==null?a.score+'%':'—')+'</td>';
-        h += '<td>'+(a.status==='graded'?bdg('graded','bg'):a.status==='flagged'?bdg('flagged','br'):bdg(a.status,'bo'))+'</td><td></td></tr>';
-      }
-    } else {
-      for(var i=0;i<liveAttempts.length;i++){
-        var a=liveAttempts[i];
-        var scoreDisp = a.score!==null ? a.score+'%' : (a.hasEssay?'essay pending':'—');
-        var scolor = a.score!==null?(a.score>=90?'var(--green)':a.score>=70?'var(--orange)':'var(--danger)'):'var(--muted)';
-        var statBdg = a.status==='graded'?bdg('graded','bg'):a.status==='pending-essay'?bdg('pending essay','bo'):bdg(a.status,'br');
-        h += '<tr><td><b>'+esc(a.name)+'</b></td><td style="font-family:\'DM Mono\',monospace;font-size:.8rem">'+esc(a.sid)+'</td>';
-        h += '<td style="font-size:.82rem">'+esc(a.cls)+'</td><td style="font-size:.82rem">'+esc(a.examTitle)+'</td>';
-        h += '<td style="font-family:\'DM Mono\',monospace;font-weight:600;color:'+scolor+'">'+scoreDisp+'</td>';
-        h += '<td>'+statBdg+'</td>';
-        h += '<td><button class="btn btn-gh sm" onclick="G.viewAttempt('+a.id+')">👁 View</button></td></tr>';
-      }
-    }
-    h += '</tbody></table></div></div>';
-
-    pg.innerHTML = h;
+        // Recent attempts
+        var liveAttempts = ATTEMPTS.slice().reverse();
+        h += '<div class="card">';
+        h += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem"><div class="ct" style="margin:0">Recent Attempts</div>';
+        h += '<span class="bdg bb">'+ATTEMPTS.length+' submitted</span></div>';
+        h += '<div class="tw"><table><thead><tr><th>Student</th><th>ID</th><th>Class</th><th>Assessment</th><th>Score</th><th>Status</th><th></th></tr></thead><tbody>';
+        if(liveAttempts.length === 0){
+          h += '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:1.5rem;font-size:.875rem">No submissions yet — data will appear here live as students complete assessments.</td></tr>';
+        } else {
+          for(var i=0;i<liveAttempts.length;i++){
+            var a=liveAttempts[i];
+            var scoreDisp = a.atype==='crossword'?(a.score!==null?a.score+'% ('+a.earned+'/'+a.mcPossible+' words)':'—'):(a.score!==null?a.score+'%':(a.hasEssay?'essay pending':'—'));
+            var scolor = a.score!==null?(a.score>=90?'var(--green)':a.score>=70?'var(--orange)':'var(--danger)'):'var(--muted)';
+            var statBdg = a.status==='graded'?bdg('graded','bg'):a.status==='pending-essay'?bdg('pending essay','bo'):bdg(a.status,'br');
+            h += '<tr><td><b>'+esc(a.name)+'</b></td><td style="font-family:\'DM Mono\',monospace;font-size:.8rem">'+esc(a.sid)+'</td>';
+            h += '<td style="font-size:.82rem">'+esc(a.cls)+'</td><td style="font-size:.82rem">'+esc(a.examTitle)+'</td>';
+            h += '<td style="font-family:\'DM Mono\',monospace;font-weight:600;color:'+scolor+'">'+scoreDisp+'</td>';
+            h += '<td>'+statBdg+'</td>';
+            h += '<td><button class="btn btn-gh sm" onclick="G.viewAttempt('+a.id+')">👁 View</button></td></tr>';
+          }
+        }
+        h += '</tbody></table></div></div>';
+        pg.innerHTML = h;
+        // Rebuild sidebar badges with live counts now that ATTEMPTS is loaded
+        buildSidebar();
+        // Re-mark the dash button as active (buildSidebar resets all)
+        var sb = el('sb-dash'); if (sb) sb.classList.add('on');
+        }); // end apiLoadLogins
+      }); // end apiLoadAttempts
+    }); // end apiLoadExams
+    // Show loading state immediately
+    pg.innerHTML = '<div class="ph"><div><div class="pt">Dashboard</div><div class="ps">Loading…</div></div></div><div style="text-align:center;padding:3rem;color:var(--muted)">⏳ Loading dashboard…</div>';
   }
 
   // ══════════════════════════════
@@ -663,6 +1282,7 @@ var G = (function(){
     h += '<button class="type-btn on" id="tb-exam" onclick="G.setAT(\'exam\')">📝 Exam</button>';
     h += '<button class="type-btn" id="tb-quiz" onclick="G.setAT(\'quiz\')">📋 Quiz</button>';
     h += '<button class="type-btn" id="tb-assignment" onclick="G.setAT(\'assignment\')">📄 Assignment</button>';
+    h += '<button class="type-btn" id="tb-crossword" onclick="G.setAT(\'crossword\')">🧩 Crossword</button>';
     h += '</div></div></div>';
     h += '<div class="card"><div class="ct">⏱️ Availability</div>';
     h += '<div class="fg" style="margin-top:.5rem"><label>Due Date</label><input type="text" id="u-due" value="Mar 21, 2026 11:59 PM"></div></div>';
@@ -684,7 +1304,7 @@ var G = (function(){
 
   function setAT(t){
     UP.atype=t;
-    var types=['exam','quiz','assignment'];
+    var types=['exam','quiz','assignment','crossword'];
     for(var i=0;i<types.length;i++){
       var b=el('tb-'+types[i]); if(b) b.className='type-btn'+(types[i]===t?' on':'');
     }
@@ -705,6 +1325,11 @@ var G = (function(){
     UP.due=(el('u-due').value||'TBD');
     UP.mcPts=+(el('u-mcp').value)||2;
     UP.essayPts=+(el('u-esp').value)||10;
+    // ── CROSSWORD BRANCH: skip PDF upload, go straight to crossword builder ──
+    if(UP.atype==='crossword'){
+      cwBuilderInit();
+      return;
+    }
     setStep(2);
     renderStep2();
   }
@@ -979,7 +1604,7 @@ var G = (function(){
         setTimeout(function(){
           var pg=el('tpage'); if(!pg) return;
           var b=document.createElement('div'); b.className='al al-s'; b.style.fontSize='.95rem';
-          b.innerHTML='✅ <b>'+esc(exam.title)+'</b> published to <b>'+exam.classes.join(', ')+'</b> — saved permanently in shared database.';
+          b.innerHTML='✅ <b>'+esc(exam.title)+'</b> published to <b>'+exam.classes.join(', ')+'</b> — saved to database and backed up locally.';
           pg.insertBefore(b,pg.firstChild); setTimeout(function(){b.remove();},9000);
         },50);
       } else {
@@ -1007,9 +1632,9 @@ var G = (function(){
 
   function pgExams(){
     var pg=el('tpage');
-    pg.innerHTML='<div class="ph"><div><div class="pt">Assessments</div><div class="ps">Loading from database…</div></div><button class="btn btn-r" onclick="G.navTo(\'upload\')">➕ New</button></div><div style="text-align:center;padding:3rem;color:var(--muted)">⏳ Loading your saved assessments…</div>';
+    pg.innerHTML='<div class="ph"><div><div class="pt">Assessments</div><div class="ps">Loading…</div></div><button class="btn btn-r" onclick="G.navTo(\'upload\')">➕ New</button></div><div style="text-align:center;padding:3rem;color:var(--muted)">⏳ Loading assessments…</div>';
     apiLoadExams(function(){
-      var h='<div class="ph"><div><div class="pt">Assessments</div><div class="ps">'+EXAMS.length+' assessment'+(EXAMS.length!==1?'s':'')+' saved in shared database</div></div><button class="btn btn-r" onclick="G.navTo(\'upload\')">➕ New</button></div>';
+      var h='<div class="ph"><div><div class="pt" style="display:flex;align-items:center;gap:.75rem">Assessments '+dbBadge()+'</div><div class="ps">'+EXAMS.length+' assessment'+(EXAMS.length!==1?'s':'')+' found</div></div><button class="btn btn-r" onclick="G.navTo(\'upload\')">➕ New</button></div>';
       if(!EXAMS.length){
         h+='<div class="card" style="text-align:center;padding:2.5rem;color:var(--muted)">No assessments yet. Click ➕ New to create your first exam, quiz, or assignment.</div>';
       } else {
@@ -1018,7 +1643,7 @@ var G = (function(){
           var e=EXAMS[i];
           var statBdg=e.status==='published'?'<span class="bdg bg">🟢 Open</span>':e.status==='closed'?'<span class="bdg br">🔴 Closed</span>':'<span class="bdg bgr">Draft</span>';
           var ab=e.status==='published'?'<button class="btn btn-danger sm" onclick="G.toggleStatus('+e.id+',\'exams\')">🔒 Close</button>':e.status==='closed'?'<button class="btn btn-g sm" onclick="G.toggleStatus('+e.id+',\'exams\')">🔓 Reopen</button>':'<button class="btn btn-r sm" onclick="G.toggleStatus('+e.id+',\'exams\')">🚀 Publish</button>';
-          h+='<tr><td><b>'+esc(e.title)+'</b></td><td>'+atBdg(e.atype)+'</td><td style="font-size:.8rem">'+e.classes.join(', ')+'</td><td>'+statBdg+'</td><td style="font-family:\'DM Mono\',monospace">'+(Array.isArray(e.questions)?e.questions.length:e.questions)+'</td><td style="font-size:.8rem">'+esc(e.due)+'</td><td style="display:flex;gap:.3rem">'+ab+'<button class="btn btn-gh sm" onclick="G.navTo(\'atlog\')">👁</button></td></tr>';
+          h+='<tr><td><b>'+esc(e.title)+'</b></td><td>'+atBdg(e.atype)+'</td><td style="font-size:.8rem">'+e.classes.join(', ')+'</td><td>'+statBdg+'</td><td style="font-family:\'DM Mono\',monospace">'+(e.atype==='crossword'?(e.cwData?((e.cwData.across||[]).length+(e.cwData.down||[]).length)+' clues':'—'):(Array.isArray(e.questions)?e.questions.length:e.questions))+'</td><td style="font-size:.8rem">'+esc(e.due)+'</td><td style="display:flex;gap:.3rem">'+ab+'<button class="btn btn-gh sm" onclick="G.navTo(\'atlog\')">👁</button></td></tr>';
         }
         h+='</tbody></table></div>';
       }
@@ -1028,18 +1653,20 @@ var G = (function(){
 
   function pgAtlog(){
     var pg=el('tpage');
-    pg.innerHTML='<div class="ph"><div><div class="pt">Attempt Log</div><div class="ps">Loading…</div></div></div><div style="text-align:center;padding:3rem;color:var(--muted)">⏳ Loading student submissions…</div>';
+    pg.innerHTML='<div class="ph"><div><div class="pt">Attempt Log</div><div class="ps">Loading…</div></div></div><div style="text-align:center;padding:3rem;color:var(--muted)">⏳ Loading submissions…</div>';
     apiLoadAttempts(function(){
-      var h='<div class="ph"><div><div class="pt">Attempt Log</div><div class="ps">'+ATTEMPTS.length+' submission'+(ATTEMPTS.length!==1?'s':'')+' — saved permanently</div></div></div>';
+      var h='<div class="ph"><div><div class="pt" style="display:flex;align-items:center;gap:.75rem">Attempt Log '+dbBadge()+'</div><div class="ps">'+ATTEMPTS.length+' submission'+(ATTEMPTS.length!==1?'s':'')+' — stored in Neon DB and localStorage</div></div></div>';
       if(!ATTEMPTS.length){
         h+='<div class="card" style="text-align:center;padding:2.5rem;color:var(--muted)">No student submissions yet. When a student completes an exam it will appear here permanently.</div>';
       } else {
         h+='<div class="tw"><table><thead><tr><th>Student</th><th>ID</th><th>Class</th><th>Assessment</th><th>Type</th><th>Submitted</th><th>Score</th><th>Status</th><th></th></tr></thead><tbody>';
         for(var i=0;i<ATTEMPTS.length;i++){
           var a=ATTEMPTS[i];
-          var scoreDisp=a.score!==null?a.score+'%':(a.hasEssay?'essay pending':'—');
+          var scoreDisp=a.atype==='crossword'?(a.score!==null?a.score+'% ('+a.earned+'/'+a.mcPossible+' words)':'—'):(a.score!==null?a.score+'%':(a.hasEssay?'essay pending':'—'));
           var scolor=a.score!==null?(a.score>=90?'var(--green)':a.score>=70?'var(--orange)':'var(--danger)'):'var(--muted)';
+          var sevCount = suspiciousEventCount(a.events);
           var statBdg=a.status==='graded'?bdg('graded','bg'):a.status==='pending-essay'?bdg('pending essay','bo'):bdg(a.status,'br');
+          if (sevCount >= FLAG_THRESHOLD) statBdg += ' '+bdg('🚩 '+sevCount+' events','br');
           var ts = a.submittedAt ? (typeof a.submittedAt === 'number' ? new Date(a.submittedAt).toLocaleString() : a.submittedAt) : '—';
           h+='<tr>';
           h+='<td><b>'+esc(a.name)+'</b></td>';
@@ -1060,8 +1687,16 @@ var G = (function(){
   }
 
   function viewAttempt(id){
+    // Convert to string for safe comparison — id may be numeric from backend
+    // or a 'timestamp_hex' string from genAttemptId().
+    var idStr = String(id);
     var attempt=null;
-    for(var i=0;i<ATTEMPTS.length;i++) if(ATTEMPTS[i].id===id){attempt=ATTEMPTS[i];break;}
+    for(var i=0;i<ATTEMPTS.length;i++){
+      if(String(ATTEMPTS[i].id)===idStr ||
+         (ATTEMPTS[i].clientKey && ATTEMPTS[i].clientKey===idStr)){
+        attempt=ATTEMPTS[i]; break;
+      }
+    }
     if(!attempt) return;
     var L='ABCDE';
     var pg=el('tpage');
@@ -1074,9 +1709,23 @@ var G = (function(){
       var sc=attempt.score>=90?'var(--green)':attempt.score>=70?'var(--orange)':'var(--danger)';
       h+='<div style="text-align:center;border:3px solid '+sc+';border-radius:10px;padding:.75rem 1.5rem;background:#fff">';
       h+='<div style="font-family:\'Syne\',sans-serif;font-weight:800;font-size:2.5rem;color:'+sc+'">'+attempt.score+'%</div>';
-      h+='<div style="font-size:.85rem;color:var(--slate)">'+attempt.earned+' / '+attempt.mcPossible+' pts</div></div>';
+      if(attempt.atype==='crossword'){
+        h+='<div style="font-size:.85rem;color:var(--slate)">'+attempt.earned+' / '+attempt.mcPossible+' words correct</div>';
+      } else {
+        h+='<div style="font-size:.85rem;color:var(--slate)">'+attempt.earned+' / '+attempt.mcPossible+' pts</div>';
+      }
+      h+='</div>';
     }
     h+='</div>';
+
+    // ── CROSSWORD: show crossword results instead of MC/essay ──
+    if (attempt.atype === 'crossword') {
+      h += cwViewAttempt(attempt);
+      pg.innerHTML = h;
+      var backBtn = pg.querySelector('button');
+      if (backBtn) backBtn.onclick = function(){ pgAtlog(); };
+      return;
+    }
 
     // Summary cards
     h+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.25rem">';
@@ -1144,11 +1793,23 @@ var G = (function(){
 
     // Security events
     if(attempt.events && attempt.events.length>0){
-      h+='<div class="card"><div class="ct">🚩 Security Events ('+attempt.events.length+')</div>';
-      h+='<div class="evlog" style="margin-top:.5rem">';
+      var sevCount = suspiciousEventCount(attempt.events);
+      h+='<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">';
+      h+='<div class="ct" style="margin:0">🚩 Security Events ('+attempt.events.length+' logged';
+      if (sevCount > 0) h+=', <span style="color:var(--danger)">'+sevCount+' suspicious</span>';
+      h+=')</div>';
+      if (sevCount >= FLAG_THRESHOLD) {
+        h+='<button class="btn btn-r sm" onclick="G.navTo(\'flags\')">View in Flags →</button>';
+      }
+      h+='</div>';
+      h+='<div class="evlog">';
       for(var i=0;i<attempt.events.length;i++){
         var ev=attempt.events[i];
-        h+='<div class="evrow"><div class="evt">'+esc(ev.t)+'</div><div class="evty">'+esc(ev.ty)+'</div><div class="evd">'+esc(ev.d)+'</div></div>';
+        var isSev = (ev.ty==='page_hidden'||ev.ty==='paste_blocked'||ev.ty==='fullscreen_exit');
+        h+='<div class="evrow" style="'+(isSev?'background:rgba(220,53,69,.06)':'')+'">';
+        h+='<div class="evt">'+esc(ev.t)+'</div>';
+        h+='<div class="evty" style="color:'+(isSev?'var(--danger)':'var(--muted)')+'">'+esc(ev.ty)+'</div>';
+        h+='<div class="evd">'+esc(ev.d)+'</div></div>';
       }
       h+='</div></div>';
     }
@@ -1161,94 +1822,275 @@ var G = (function(){
   }
 
   function saveEssayGrades(attemptId){
-    // Find the attempt
+    // Use the same matchesId helper as apiSaveEssayGrades so this works
+    // regardless of whether the attempt still has its client ID or was promoted.
+    var idStr = String(attemptId);
     var attempt=null;
-    for(var i=0;i<ATTEMPTS.length;i++) if(ATTEMPTS[i].id===attemptId){attempt=ATTEMPTS[i];break;}
+    for(var i=0;i<ATTEMPTS.length;i++){
+      var a=ATTEMPTS[i];
+      if(String(a.id)===idStr || (a.clientKey && a.clientKey===idStr)){
+        attempt=a; break;
+      }
+    }
     if(!attempt) return;
 
-    // Collect scores and comments from inputs
     var essayResults=[];
     for(var i=0;i<attempt.results.length;i++) if(attempt.results[i].type==='essay') essayResults.push(attempt.results[i]);
 
-    var scores={};
-    var comments={};
-    var totalEssayPts=0;
+    var scores={}, comments={}, totalEssayPts=0;
     for(var i=0;i<essayResults.length;i++){
       var qid=essayResults[i].q.id;
       var scoreEl=el('essay-score-'+qid);
       var commentEl=el('essay-comment-'+qid);
-      var pts=scoreEl?+scoreEl.value:0;
-      scores[qid]=pts;
-      comments[qid]=commentEl?commentEl.value:'';
+      // +value coerces "" to 0 (correct) and non-numeric to NaN — guard with isNaN
+      var rawPts = scoreEl ? parseFloat(scoreEl.value) : 0;
+      var pts = (isNaN(rawPts) || rawPts < 0) ? 0 : rawPts;
+      // Cap individual essay score at the question's max points
+      var maxPts = essayResults[i].q.points || 0;
+      pts = Math.min(pts, maxPts);
+      scores[qid]=pts; comments[qid]=commentEl?commentEl.value:'';
       totalEssayPts+=pts;
     }
 
-    // Update attempt in memory
-    attempt.essayScores=scores;
-    attempt.essayComments=comments;
-    attempt.status='graded';
-    var mcEarned=attempt.earned||0;
-    var totalPossible=(attempt.mcPossible||0)+(attempt.essayPossible||0);
-    if(totalPossible>0){
-      attempt.score=Math.round((mcEarned+totalEssayPts)/totalPossible*100);
+    var mcEarned = attempt.earned || 0;
+    // Use stored totalPossible (mc + essay max) set at submission time.
+    var totalPossible = attempt.totalPossible ||
+                        (attempt.mcPossible || 0) + (attempt.essayPossible || 0);
+    // Fallback for old records: derive from results but count ONLY essay questions
+    // (MC points are already in mcPossible — adding them again would double-count)
+    if (!totalPossible) {
+      var ep = 0;
+      for (var i=0; i<attempt.results.length; i++) {
+        if (attempt.results[i].type === 'essay' &&
+            attempt.results[i].q && attempt.results[i].q.points) {
+          ep += attempt.results[i].q.points;
+        }
+      }
+      totalPossible = (attempt.mcPossible || 0) + ep;
     }
+    var rawScore = totalPossible > 0
+      ? Math.round((mcEarned + totalEssayPts) / totalPossible * 100)
+      : attempt.score;
+    // Clamp to valid percentage range
+    var newScore = Math.max(0, Math.min(100, rawScore || 0));
 
-    // Save to database
     var btn=el('save-essay-grades-btn');
     var status=el('essay-grade-status');
     if(btn){btn.textContent='Saving…';btn.disabled=true;}
 
-    fetch('/api/attempts?action=grade',{
-      method:'PATCH',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({id:attemptId, essayScores:scores, comments:comments})
-    })
-    .then(function(r){return r.json();})
-    .then(function(d){
+    // Three-layer save: localStorage first, then Neon
+    apiSaveEssayGrades(attemptId, scores, comments, newScore, function(d){
       if(btn){btn.textContent='💾 Save Essay Grades';btn.disabled=false;}
       if(status){
-        status.textContent=d.ok?'✅ Grades saved successfully!':'⚠️ Could not save — try again';
-        status.style.color=d.ok?'var(--green)':'var(--danger)';
+        var ok = d && d.ok !== false;
+        status.textContent = ok ? '✅ Grades saved!' : '✅ Saved locally (sync pending)';
+        status.style.color = 'var(--green)';
         setTimeout(function(){if(status)status.textContent='';},4000);
       }
-    })
-    .catch(function(){
-      if(btn){btn.textContent='💾 Save Essay Grades';btn.disabled=false;}
-      if(status){status.textContent='⚠️ Network error — try again';status.style.color='var(--danger)';}
     });
   }
 
   function pgGrade(){
     var pg=el('tpage');
-    var h='<div class="ph"><div class="pt">Grading Queue</div></div><div class="al al-w">⚠️ 2 attempts have essay responses awaiting grading.</div>';
-    for(var i=0;i<SA.length;i++){
-      if(SA[i].status==='pending'||SA[i].essays){
-        h+='<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem"><div><b>'+esc(SA[i].name)+'</b> · <span style="font-size:.82rem;color:var(--slate)">'+esc(SA[i].cls)+'</span></div><span class="bdg bo">1 essay pending</span></div><button class="btn btn-r sm">Grade →</button></div>';
+    pg.innerHTML='<div class="ph"><div><div class="pt">Grading Queue</div><div class="ps">Loading…</div></div></div><div style="text-align:center;padding:2rem;color:var(--muted)">⏳ Loading…</div>';
+    apiLoadAttempts(function(){
+      var pending = ATTEMPTS.filter(function(a){ return a.status==='pending-essay'; });
+      var h='<div class="ph"><div><div class="pt">Grading Queue</div><div class="ps">'+pending.length+' essay response'+(pending.length!==1?'s':'')+' awaiting review</div></div></div>';
+      if(!pending.length){
+        h+='<div class="card" style="text-align:center;padding:2.5rem;color:var(--muted)">✅ No essays pending review. All submitted work is graded.</div>';
+      } else {
+        h+='<div class="al al-w">⚠️ '+pending.length+' attempt'+(pending.length!==1?'s':'')+' have open-ended responses that need grading.</div>';
+        for(var i=0;i<pending.length;i++){
+          var a=pending[i];
+          var ts=a.submittedAt?a.submittedAt:'—';
+          h+='<div class="card">';
+          h+='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.6rem">';
+          h+='<div><b>'+esc(a.name)+'</b> <span style="font-size:.78rem;font-family:\'DM Mono\',monospace;color:var(--muted)">'+esc(a.sid)+'</span>';
+          h+=' · <span style="font-size:.82rem;color:var(--slate)">'+esc(a.cls)+'</span></div>';
+          h+='<span class="bdg bo">'+a.essayCount+' essay pending</span></div>';
+          h+='<div style="font-size:.82rem;color:var(--muted);margin-bottom:.65rem">'+esc(a.examTitle)+' · Submitted '+esc(ts)+'</div>';
+          h+='<button class="btn btn-r sm" onclick="G.flagReview(\''+a.id+'\')">Grade →</button>';
+          h+='</div>';
+        }
       }
-    }
-    pg.innerHTML=h;
+      pg.innerHTML=h;
+    });
   }
 
   function pgFlags(){
     var pg=el('tpage');
-    var h='<div class="ph"><div class="pt">Suspicious Activity</div></div><div class="al al-d">🚩 1 attempt flagged for review.</div>';
-    h+='<div class="card"><div style="display:flex;justify-content:space-between;margin-bottom:.75rem"><div><div class="ct">Aaliyah Brooks — Law Enforcement 2</div><div style="font-size:.82rem;color:var(--slate)">Criminal Procedure Mid-Term · Mar 18 · 42 min</div></div><span class="bdg br">3 Events</span></div>';
-    h+='<div class="evlog">';
-    for(var i=0;i<SEV.length;i++) h+='<div class="evrow"><div class="evt">'+SEV[i].t+'</div><div class="evty">'+SEV[i].ty+'</div><div class="evd">'+SEV[i].d+'</div></div>';
-    h+='</div><div style="display:flex;gap:.5rem;margin-top:.75rem"><button class="btn btn-r sm">Mark Reviewed</button><button class="btn btn-o sm">Invalidate</button><button class="btn btn-gh sm">Dismiss</button></div></div>';
-    h+='<div class="card" style="background:var(--cream)"><div class="ct">About Detection</div><p style="font-size:.875rem;color:var(--slate);line-height:1.6;margin-top:.4rem">Standard security detects tab switching, fullscreen exits, paste attempts, and focus loss. It <b>cannot</b> identify specific external sites or apps. Safe Exam Browser integration coming soon.</p></div>';
-    pg.innerHTML=h;
+    pg.innerHTML='<div class="ph"><div><div class="pt">Suspicious Activity</div><div class="ps">Loading…</div></div></div><div style="text-align:center;padding:2rem;color:var(--muted)">⏳ Loading…</div>';
+    apiLoadAttempts(function(){
+      var flagged = ATTEMPTS.filter(function(a){ return suspiciousEventCount(a.events) >= FLAG_THRESHOLD; });
+      // Rebuild sidebar now that ATTEMPTS is fresh
+      buildSidebar();
+      var sb = el('sb-flags'); if (sb) sb.classList.add('on');
+
+      var h='<div class="ph"><div><div class="pt">Suspicious Activity</div>';
+      h+='<div class="ps">'+flagged.length+' attempt'+(flagged.length!==1?'s':'')+' with '+FLAG_THRESHOLD+' or more suspicious events</div></div></div>';
+
+      if (!flagged.length) {
+        h+='<div class="card" style="text-align:center;padding:2.5rem;color:var(--muted)">✅ No flagged activity detected. All attempts look clean.</div>';
+      } else {
+        h+='<div class="al al-d">🚩 '+flagged.length+' attempt'+(flagged.length!==1?'s':'')+' flagged for review.</div>';
+        for (var i=0; i<flagged.length; i++) {
+          var a=flagged[i];
+          var sevCount = suspiciousEventCount(a.events);
+          h+='<div class="card" id="flag-card-'+esc(String(a.id))+'">';
+          h+='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem">';
+          h+='<div><div class="ct" style="margin-bottom:.1rem">'+esc(a.name)+' — '+esc(a.cls)+'</div>';
+          h+='<div style="font-size:.82rem;color:var(--slate)">'+esc(a.examTitle)+' · '+esc(a.submittedAt)+'</div></div>';
+          h+='<span class="bdg br">'+sevCount+' suspicious event'+(sevCount!==1?'s':'')+'</span></div>';
+          h+='<div class="evlog">';
+          for (var j=0; j<a.events.length; j++){
+            var ev=a.events[j];
+            var isSuspicious = (ev.ty==='page_hidden'||ev.ty==='paste_blocked'||ev.ty==='fullscreen_exit');
+            h+='<div class="evrow" style="'+(isSuspicious?'background:rgba(220,53,69,.06)':'')+'">';
+            h+='<div class="evt">'+esc(ev.t)+'</div>';
+            h+='<div class="evty" style="color:'+(isSuspicious?'var(--danger)':'var(--muted)')+'">'+esc(ev.ty)+'</div>';
+            h+='<div class="evd">'+esc(ev.d)+'</div></div>';
+          }
+          h+='</div>';
+          h+='<div style="display:flex;gap:.5rem;margin-top:.75rem">';
+          // Review — loads attempts then opens viewAttempt (no fragile setTimeout)
+          h+='<button class="btn btn-r sm" onclick="G.flagReview(\''+esc(String(a.id))+'\')">👁 Review Attempt</button>';
+          // Dismiss — removes the card from this view (in-session only; no status change)
+          h+='<button class="btn btn-o sm" onclick="G.flagDismiss(\''+esc(String(a.id))+'\')">✓ Dismiss</button>';
+          h+='</div></div>';
+        }
+      }
+
+      h+='<div class="card" style="background:var(--cream)"><div class="ct">About Detection</div>';
+      h+='<p style="font-size:.875rem;color:var(--slate);line-height:1.6;margin-top:.4rem">Suspicious events are: tab switches away from the exam (<b>page_hidden</b>), paste attempts (<b>paste_blocked</b>), and fullscreen exits. ';
+      h+='Returns to the exam (<b>page_visible</b>) are logged for reference but do not count toward the flag threshold. ';
+      h+='This system <b>cannot</b> identify which external sites were opened. An attempt is flagged when it reaches '+FLAG_THRESHOLD+' or more suspicious events.</p></div>';
+      pg.innerHTML=h;
+    });
+  }
+
+  // Navigate to viewAttempt from flags page — loads data first so the lookup never fails
+  function flagReview(attemptId) {
+    apiLoadAttempts(function(){
+      navTo('atlog');
+      viewAttempt(attemptId);
+    });
+  }
+
+  // Dismiss a flag card for this session (hides it from the list without changing attempt status)
+  function flagDismiss(attemptId) {
+    var card = document.getElementById('flag-card-'+attemptId);
+    if (card) {
+      card.style.transition = 'opacity .25s';
+      card.style.opacity = '0';
+      setTimeout(function(){ if (card.parentNode) card.parentNode.removeChild(card); }, 260);
+    }
   }
 
   function pgReports(){
     var pg=el('tpage');
-    var h='<div class="ph"><div class="pt">Reports</div><div style="display:flex;gap:.5rem"><button class="btn btn-o sm">↗️ CSV</button><button class="btn btn-o sm">🖨 Print</button></div></div>';
-    h+='<div class="sg"><div class="sc cr"><div class="n">78%</div><div class="l">LE1 Avg</div></div><div class="sc cb"><div class="n">84%</div><div class="l">Court Avg</div></div><div class="sc cg"><div class="n">92%</div><div class="l">Highest</div></div><div class="sc co"><div class="n">58%</div><div class="l">Lowest</div></div></div>';
-    h+='<div class="card"><div class="ct">Class Performance</div><div class="tw" style="margin-top:.6rem"><table><thead><tr><th>Class</th><th>Students</th><th>Attempts</th><th>Avg</th></tr></thead><tbody>';
-    var rows=[['Law Enforcement 1','28','22','78%'],['Law Enforcement 2','26','20','81%'],['Court Systems','30','24','84%'],['Practicum M','18','0','—'],['Practicum A','20','0','—'],['Criminal Justice','22','0','—']];
-    for(var i=0;i<rows.length;i++) h+='<tr><td><b>'+rows[i][0]+'</b></td><td>'+rows[i][1]+'</td><td>'+rows[i][2]+'</td><td>'+rows[i][3]+'</td></tr>';
-    h+='</tbody></table></div></div>';
-    pg.innerHTML=h;
+    pg.innerHTML='<div class="ph"><div><div class="pt">Reports</div><div class="ps">Loading…</div></div></div><div style="text-align:center;padding:3rem;color:var(--muted)">⏳ Calculating…</div>';
+    apiLoadAttempts(function(){
+      // ── Calculate live stats from ATTEMPTS ──
+      var clsStats = {};
+      for (var ci=0; ci<CLASSES.length; ci++) {
+        clsStats[CLASSES[ci]] = {attempts:0, scoreSum:0, scoreCount:0, pending:0};
+      }
+      for (var i=0; i<ATTEMPTS.length; i++) {
+        var a = ATTEMPTS[i];
+        var cls = a.cls;
+        if (!clsStats[cls]) clsStats[cls] = {attempts:0, scoreSum:0, scoreCount:0, pending:0};
+        clsStats[cls].attempts++;
+        if (a.score !== null) { clsStats[cls].scoreSum += a.score; clsStats[cls].scoreCount++; }
+        else clsStats[cls].pending++;
+      }
+      // Overall stats
+      var allScores = ATTEMPTS.filter(function(a){ return a.score !== null; }).map(function(a){ return a.score; });
+      var overallAvg = allScores.length ? Math.round(allScores.reduce(function(s,v){return s+v;},0)/allScores.length) : null;
+      var highest = allScores.length ? Math.max.apply(null,allScores) : null;
+      var lowest  = allScores.length ? Math.min.apply(null,allScores) : null;
+
+      var h='<div class="ph"><div><div class="pt" style="display:flex;align-items:center;gap:.75rem">Reports '+dbBadge()+'</div>';
+      h+='<div class="ps">'+ATTEMPTS.length+' submission'+(ATTEMPTS.length!==1?'s':'')+' across all classes</div></div>';
+      h+='<div style="display:flex;gap:.5rem"><button class="btn btn-o sm" onclick="G.exportCSV()">↗️ Export CSV</button></div></div>';
+
+      h+='<div class="sg">';
+      h+='<div class="sc cr"><div class="n">'+(overallAvg!==null?overallAvg+'%':'—')+'</div><div class="l">Overall Avg</div></div>';
+      h+='<div class="sc cb"><div class="n">'+ATTEMPTS.length+'</div><div class="l">Total Attempts</div></div>';
+      h+='<div class="sc cg"><div class="n">'+(highest!==null?highest+'%':'—')+'</div><div class="l">Highest Score</div></div>';
+      h+='<div class="sc co"><div class="n">'+(lowest!==null?lowest+'%':'—')+'</div><div class="l">Lowest Score</div></div>';
+      h+='</div>';
+
+      h+='<div class="card"><div class="ct">Class Performance</div>';
+      if (!ATTEMPTS.length) {
+        h+='<p style="color:var(--muted);font-size:.875rem;padding:.5rem 0">No submissions yet. Data will appear here once students complete assessments.</p>';
+      } else {
+        h+='<div class="tw" style="margin-top:.6rem"><table><thead><tr><th>Class</th><th>Attempts</th><th>Avg Score</th><th>Pending</th><th>Top Score</th></tr></thead><tbody>';
+        for (var ci=0; ci<CLASSES.length; ci++) {
+          var cls=CLASSES[ci], st=clsStats[cls]||{attempts:0,scoreSum:0,scoreCount:0,pending:0};
+          var avg = st.scoreCount>0 ? Math.round(st.scoreSum/st.scoreCount)+'%' : '—';
+          // Highest score for this class
+          var clsScores = ATTEMPTS.filter(function(a){ return a.cls===cls&&a.score!==null; }).map(function(a){ return a.score; });
+          var top = clsScores.length ? Math.max.apply(null,clsScores)+'%' : '—';
+          var avgColor = st.scoreCount>0?(Math.round(st.scoreSum/st.scoreCount)>=80?'var(--green)':Math.round(st.scoreSum/st.scoreCount)>=65?'var(--orange)':'var(--danger)'):'var(--muted)';
+          h+='<tr><td><b>'+esc(cls)+'</b></td>';
+          h+='<td style="font-family:\'DM Mono\',monospace">'+st.attempts+'</td>';
+          h+='<td style="font-family:\'DM Mono\',monospace;font-weight:600;color:'+avgColor+'">'+avg+'</td>';
+          h+='<td style="font-size:.82rem;color:var(--muted)">'+st.pending+'</td>';
+          h+='<td style="font-family:\'DM Mono\',monospace">'+top+'</td>';
+          h+='</tr>';
+        }
+        h+='</tbody></table></div>';
+      }
+      h+='</div>';
+
+      // Per-assessment breakdown
+      if (ATTEMPTS.length) {
+        var byExam = {};
+        for (var i=0; i<ATTEMPTS.length; i++) {
+          var a=ATTEMPTS[i], key=a.examTitle||'Unknown';
+          if (!byExam[key]) byExam[key]={title:key,atype:a.atype,count:0,scores:[]};
+          byExam[key].count++;
+          if (a.score!==null) byExam[key].scores.push(a.score);
+        }
+        h+='<div class="card"><div class="ct">Assessment Breakdown</div>';
+        h+='<div class="tw" style="margin-top:.6rem"><table><thead><tr><th>Assessment</th><th>Type</th><th>Submissions</th><th>Avg</th></tr></thead><tbody>';
+        var examKeys=Object.keys(byExam);
+        for (var i=0;i<examKeys.length;i++){
+          var ex=byExam[examKeys[i]];
+          var exAvg=ex.scores.length?Math.round(ex.scores.reduce(function(s,v){return s+v;},0)/ex.scores.length)+'%':'—';
+          h+='<tr><td><b>'+esc(ex.title)+'</b></td><td>'+atBdg(ex.atype)+'</td>';
+          h+='<td style="font-family:\'DM Mono\',monospace">'+ex.count+'</td>';
+          h+='<td style="font-family:\'DM Mono\',monospace;font-weight:600">'+exAvg+'</td></tr>';
+        }
+        h+='</tbody></table></div></div>';
+      }
+
+      pg.innerHTML=h;
+    });
+  }
+
+  // ── CSV Export ──
+  function exportCSV(){
+    apiLoadAttempts(function(){
+      if(!ATTEMPTS.length){ alert('No submissions to export yet.'); return; }
+      var rows=[['Student','ID','Class','Assessment','Type','Score','Status','Submitted']];
+      for(var i=0;i<ATTEMPTS.length;i++){
+        var a=ATTEMPTS[i];
+        rows.push([
+          a.name, a.sid, a.cls, a.examTitle, a.atype||'',
+          a.score!==null?a.score+'%':'Pending',
+          a.status||'', a.submittedAt||''
+        ]);
+      }
+      var csv=rows.map(function(r){
+        return r.map(function(v){ return '"'+String(v||'').replace(/"/g,'""')+'"'; }).join(',');
+      }).join('\n');
+      var blob=new Blob([csv],{type:'text/csv'});
+      var url=URL.createObjectURL(blob);
+      var a2=document.createElement('a');
+      a2.href=url; a2.download='secureexam-results.csv'; a2.click();
+      URL.revokeObjectURL(url);
+    });
   }
 
   // ══════════════════════════════
@@ -1261,7 +2103,9 @@ var G = (function(){
     if(!n||!sid||!cls){ el('s-err').style.display='flex'; return; }
     el('s-err').style.display='none';
     SI={name:n,sid:sid,cls:cls};
-    LOGINS.push({name:n,sid:sid,cls:cls,time:new Date().toLocaleString(),action:'Logged in'});
+    var loginEntry = {name:n,sid:sid,cls:cls,time:new Date().toLocaleString(),ts:Date.now(),action:'Logged in'};
+    LOGINS.push(loginEntry);
+    lsSaveLogin(loginEntry);
     showExamList();
   }
 
@@ -1280,9 +2124,9 @@ var G = (function(){
           var e=avail[i];
           h+='<div class="exam-lcard" style="border-left-color:'+atColor(e.atype)+'" onclick="G.selectExam('+e.id+')">';
           h+='<div style="display:flex;justify-content:space-between;align-items:flex-start">';
-          h+='<div><div style="font-size:.7rem;font-family:\'DM Mono\',monospace;color:var(--muted);text-transform:uppercase;margin-bottom:.25rem">'+e.atype+' 📝</div>';
+          h+='<div><div style="font-size:.7rem;font-family:\'DM Mono\',monospace;color:var(--muted);text-transform:uppercase;margin-bottom:.25rem">'+e.atype+(e.atype==='crossword'?' 🧩':' 📝')+'</div>';
           h+='<div style="font-family:\'Syne\',sans-serif;font-weight:700;font-size:1.05rem">'+esc(e.title)+'</div>';
-          h+='<div style="font-size:.82rem;color:var(--slate);margin-top:.2rem">'+(Array.isArray(e.questions)?e.questions.length:e.questions)+' questions · Due '+esc(e.due)+'</div></div>';
+          h+='<div style="font-size:.82rem;color:var(--slate);margin-top:.2rem">'+(e.atype==='crossword'?(e.cwData&&e.cwData.across?(e.cwData.across.length+e.cwData.down.length)+' clues':'Crossword puzzle'):(Array.isArray(e.questions)?e.questions.length:e.questions)+' questions')+' · Due '+esc(e.due)+'</div></div>';
           h+='<span class="bdg bg">Available</span></div>';
           h+='<button class="btn btn-b sm" style="margin-top:.9rem">Begin '+atLabel(e.atype)+' →</button>';
           h+='</div>';
@@ -1296,6 +2140,11 @@ var G = (function(){
     SE=null;
     for(var i=0;i<EXAMS.length;i++) if(EXAMS[i].id===id){SE=EXAMS[i];break;}
     if(!SE) return;
+    // Crossword: skip the security warning, go directly to puzzle play
+    if(SE.atype==='crossword'){
+      cwPlayInit();
+      return;
+    }
     el('w-sub').textContent=SE.title+' · '+atLabel(SE.atype)+' · '+SI.cls;
     el('w-agree').checked=false;
     el('w-begin').disabled=true;
@@ -1407,7 +2256,7 @@ var G = (function(){
 
     // ── Grade ──────────────────────────────────────────
     var L='ABCDE';
-    var earned=0, mcPossible=0, essayCount=0;
+    var earned=0, mcPossible=0, essayPossible=0, essayCount=0;
     var results=[];
     for(var i=0;i<EQ.length;i++){
       var q=EQ[i];
@@ -1419,18 +2268,25 @@ var G = (function(){
         results.push({q:q,ans:ans,ok:ok,pts:pts,type:'mc'});
       } else {
         essayCount++;
+        essayPossible+=q.points;   // ← accumulate essay points possible
         results.push({q:q,resp:EEA[q.id]||'',type:'essay'});
       }
     }
+    var totalPossible = mcPossible + essayPossible;
     var pct=mcPossible>0?Math.round(earned/mcPossible*100):null;
     var hasEssay=essayCount>0;
     var submittedAt=new Date().toLocaleString();
     var aLabel=atLabel(SE.atype);
     var scoreColor=pct===null?'var(--blue)':pct>=90?'var(--green)':pct>=70?'var(--orange)':'var(--danger)';
 
-    // ── Save attempt to live ATTEMPTS array ───────────
+    // ── Save attempt — client ID first, backend ID promoted on response ──
+    // clientKey uses submittedTs (epoch ms) — locale-independent and unique per submit.
+    var submittedTs = Date.now();
+    var clientKey = SI.name + '|' + SE.id + '|' + submittedTs;
     var attempt = {
-      id: nextAID++,
+      id: genAttemptId(),
+      clientKey: clientKey,
+      submittedTs: submittedTs,        // epoch ms — used for clientKey, sort, and dedup
       name: SI.name,
       sid: SI.sid,
       cls: SI.cls,
@@ -1441,6 +2297,8 @@ var G = (function(){
       score: pct,
       earned: earned,
       mcPossible: mcPossible,
+      essayPossible: essayPossible,   // ← was always missing; now stored correctly
+      totalPossible: totalPossible,   // ← mc + essay points max, used for final score calc
       hasEssay: hasEssay,
       essayCount: essayCount,
       results: results,
@@ -1448,8 +2306,16 @@ var G = (function(){
       status: hasEssay ? 'pending-essay' : 'graded'
     };
     ATTEMPTS.push(attempt);
-    apiSaveAttempt(attempt);
-    LOGINS.push({name:SI.name,sid:SI.sid,cls:SI.cls,time:submittedAt,action:'Submitted: '+SE.title+(pct!==null?' — Score: '+pct+'%':'')});
+    apiSaveAttempt(attempt, function(savedId){
+      // If backend returned a permanent ID, promote it in memory + localStorage
+      if (savedId && savedId !== attempt.id) {
+        attempt.id = savedId;
+        lsSaveAttempt(attempt);
+      }
+    });
+    var submitLogin = {name:SI.name,sid:SI.sid,cls:SI.cls,time:submittedAt,ts:Date.now(),action:'Submitted: '+SE.title+(pct!==null?' — Score: '+pct+'%':'')};
+    LOGINS.push(submitLogin);
+    lsSaveLogin(submitLogin);
 
     // ── Send score to Netlify Forms → Zapier → Google Sheets ──
     // This fires silently in the background — student never sees it
@@ -1486,15 +2352,25 @@ var G = (function(){
     }
     h+='</div>';
 
-    // Score box
+    // Score box — shown when there are MC questions
     if(mcPossible>0){
       h+='<div style="text-align:center;background:#fff;border:3px solid '+scoreColor+';border-radius:12px;padding:1.5rem;margin-bottom:1.25rem">';
-      h+='<div style="font-family:\'DM Mono\',monospace;font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.35rem">Your Score</div>';
+      h+='<div style="font-family:\'DM Mono\',monospace;font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.35rem">';
+      // Label clearly when this is only a partial score
+      h += hasEssay ? 'MC Score (Partial)' : 'Your Score';
+      h += '</div>';
       h+='<div style="font-family:\'Syne\',sans-serif;font-weight:800;font-size:3.5rem;color:'+scoreColor+';line-height:1">'+pct+'%</div>';
-      h+='<div style="font-size:.9rem;color:var(--slate);margin-top:.35rem">'+earned+' out of '+mcPossible+' points</div>';
-      if(pct>=90) h+='<div style="color:var(--green);font-weight:600;margin-top:.4rem">🌟 Excellent work!</div>';
-      else if(pct>=70) h+='<div style="color:var(--orange);font-weight:600;margin-top:.4rem">👍 Good job — keep it up!</div>';
-      else h+='<div style="color:var(--danger);font-weight:600;margin-top:.4rem">📚 Keep studying — you can do this!</div>';
+      if(hasEssay){
+        // Show MC points and total possible so context is clear
+        h+='<div style="font-size:.9rem;color:var(--slate);margin-top:.35rem">'+earned+' out of '+mcPossible+' MC points</div>';
+        h+='<div style="font-size:.82rem;color:var(--orange);margin-top:.25rem">+ '+essayPossible+' essay point'+(essayPossible!==1?'s':'')+' pending teacher review</div>';
+        // No encouragement message yet — final score isn't known
+      } else {
+        h+='<div style="font-size:.9rem;color:var(--slate);margin-top:.35rem">'+earned+' out of '+totalPossible+' points</div>';
+        if(pct>=90) h+='<div style="color:var(--green);font-weight:600;margin-top:.4rem">🌟 Excellent work!</div>';
+        else if(pct>=70) h+='<div style="color:var(--orange);font-weight:600;margin-top:.4rem">👍 Good job — keep it up!</div>';
+        else h+='<div style="color:var(--danger);font-weight:600;margin-top:.4rem">📚 Keep studying — you can do this!</div>';
+      }
       h+='</div>';
 
       // Per-question: show ✅/❌ and student's own answer ONLY — NO correct answer shown
@@ -1559,6 +2435,1094 @@ var G = (function(){
     if(backHome) backHome.onclick=function(){ show('s-land'); };
   }
 
+  // ══════════════════════════════════════════════════════════════
+  // CROSSWORD MODULE — TEACHER BUILDER + STUDENT PLAY  v2 (fixed)
+  // ══════════════════════════════════════════════════════════════
+
+  // ── Crossword state ──
+  var CWB = {};   // builder state
+  var CWP = {};   // player state
+
+  // ── UTILITY: Standard crossword grid numbering ──
+  // A cell gets a number if it starts an Across word (left edge or blocked left,
+  // AND at least one open cell to the right) OR a Down word (top edge or blocked above,
+  // AND at least one open cell below).
+  function cwNumberGrid(grid, rows, cols) {
+    var num = 1;
+    var numbered = [];
+    for (var r = 0; r < rows; r++) {
+      numbered.push([]);
+      for (var c = 0; c < cols; c++) { numbered[r].push(0); }
+    }
+    for (var r = 0; r < rows; r++) {
+      for (var c = 0; c < cols; c++) {
+        if (grid[r][c] === '#') { numbered[r][c] = -1; continue; }
+        var leftBlocked  = (c === 0 || grid[r][c-1] === '#');
+        var rightOpen    = (c+1 < cols && grid[r][c+1] !== '#');
+        var topBlocked   = (r === 0 || grid[r-1][c] === '#');
+        var bottomOpen   = (r+1 < rows && grid[r+1][c] !== '#');
+        var startsAcross = leftBlocked && rightOpen;
+        var startsDown   = topBlocked  && bottomOpen;
+        if (startsAcross || startsDown) { numbered[r][c] = num++; }
+        else { numbered[r][c] = 0; }
+      }
+    }
+    return numbered;
+  }
+
+  // ── UTILITY: collect all cells for a word slot starting at (r,c) in dir ──
+  function cwGetWordCells(grid, rows, cols, startR, startC, dir) {
+    var cells = [];
+    if (dir === 'across') {
+      for (var c = startC; c < cols && grid[startR][c] !== '#'; c++) cells.push([startR, c]);
+    } else {
+      for (var r = startR; r < rows && grid[r][startC] !== '#'; r++) cells.push([r, startC]);
+    }
+    return cells;
+  }
+
+  // ── UTILITY: build across/down slot lists from a numbered grid ──
+  function cwBuildClueMap(grid, numbered, rows, cols) {
+    var across = [], down = [];
+    for (var r = 0; r < rows; r++) {
+      for (var c = 0; c < cols; c++) {
+        if (numbered[r][c] <= 0) continue;
+        var n = numbered[r][c];
+        var leftBlocked = (c === 0 || grid[r][c-1] === '#');
+        var rightOpen   = (c+1 < cols && grid[r][c+1] !== '#');
+        var topBlocked  = (r === 0 || grid[r-1][c] === '#');
+        var bottomOpen  = (r+1 < rows && grid[r+1][c] !== '#');
+        if (leftBlocked && rightOpen)
+          across.push({n:n, r:r, c:c, dir:'across', cells:cwGetWordCells(grid, rows, cols, r, c, 'across')});
+        if (topBlocked && bottomOpen)
+          down.push({n:n, r:r, c:c, dir:'down', cells:cwGetWordCells(grid, rows, cols, r, c, 'down')});
+      }
+    }
+    return {across:across, down:down};
+  }
+
+  // ══════════════════════════════════════════════════════════════
+  // SECTION A: TEACHER CROSSWORD BUILDER
+  // ══════════════════════════════════════════════════════════════
+
+  function cwBuilderInit() {
+    var rows = 13, cols = 13;
+    var grid = [];
+    for (var r = 0; r < rows; r++) {
+      var row = [];
+      for (var c = 0; c < cols; c++) row.push('');
+      grid.push(row);
+    }
+    CWB = {
+      rows: rows, cols: cols,
+      grid: grid,
+      clues: {across:{}, down:{}},
+      directions: '',
+      mode: 'block',
+      activeCell: null,
+      clueMap: null
+    };
+    cwRenderBuilderPage();
+  }
+
+  function cwRenderBuilderPage() {
+    var pg = el('tpage');
+    pg.innerHTML =
+      '<div class="ph"><div><div class="pt">\u{1F9E9} New Crossword Puzzle</div>' +
+      '<div class="ps">' + esc(UP.title) + ' \u00B7 Assigned to: <b>' + UP.classes.join(', ') + '</b></div></div>' +
+      '<div style="display:flex;gap:.5rem;flex-wrap:wrap">' +
+      '<button class="btn btn-o" onclick="G.cwBuilderBack()">\u2190 Back to Details</button>' +
+      '<button class="btn btn-b" onclick="G.cwBuilderPreview()">\u{1F441} Preview</button>' +
+      '<button class="btn btn-r" onclick="G.cwBuilderPublish()">\u{1F680} Publish</button>' +
+      '</div></div>' +
+      '<div class="al al-i" style="margin-bottom:1rem">\u{1F4A1} <b>Two ways to build:</b> ' +
+      '<b>Option A \u2014 Manual:</b> Use <b>Block Mode</b> to mark black squares, then <b>Letter Mode</b> to type answer letters into each cell. ' +
+      '<b>Option B \u2014 Auto:</b> Type your words (one per line) in the Auto-Place panel on the right, click \u2728 Auto-Place, then fill in clues and Publish.</div>' +
+      '<div id="cw-builder-body"></div>';
+    cwRenderBuilder();
+  }
+
+  function cwRenderBuilder() {
+    var b = CWB;
+    var numbered = cwNumberGrid(b.grid, b.rows, b.cols);
+    var clueMap  = cwBuildClueMap(b.grid, numbered, b.rows, b.cols);
+    CWB.clueMap  = clueMap;
+
+    var h = '<div style="display:flex;gap:1.5rem;align-items:flex-start;flex-wrap:wrap">';
+
+    // ── LEFT: toolbar + grid + directions ──
+    h += '<div style="flex-shrink:0">';
+
+    // Toolbar row
+    h += '<div class="cw-toolbar">';
+    h += '<span class="cw-mode-lbl">Mode:</span>';
+    h += '<button class="btn sm ' + (b.mode==='block'?'btn-r':'btn-o') + '" onclick="G.cwSetMode(\'block\')">\u{1F532} Block</button>';
+    h += '<button class="btn sm ' + (b.mode==='letter'?'btn-b':'btn-o') + '" onclick="G.cwSetMode(\'letter\')">\u{1F524} Letter</button>';
+    h += '<span style="display:inline-block;width:1px;height:20px;background:var(--rule);margin:0 .3rem;vertical-align:middle"></span>';
+    h += '<div class="cw-size-ctrl"><span>Rows:</span>';
+    h += '<button onclick="G.cwResize(\'rows\',-1)">\u2212</button>';
+    h += '<span style="min-width:22px;text-align:center;font-size:.85rem">' + b.rows + '</span>';
+    h += '<button onclick="G.cwResize(\'rows\',1)">+</button></div>';
+    h += '<div class="cw-size-ctrl" style="margin-left:.3rem"><span>Cols:</span>';
+    h += '<button onclick="G.cwResize(\'cols\',-1)">\u2212</button>';
+    h += '<span style="min-width:22px;text-align:center;font-size:.85rem">' + b.cols + '</span>';
+    h += '<button onclick="G.cwResize(\'cols\',1)">+</button></div>';
+    h += '<span style="display:inline-block;width:1px;height:20px;background:var(--rule);margin:0 .3rem;vertical-align:middle"></span>';
+    h += '<button class="btn sm btn-o" onclick="G.cwClearGrid()" title="Erase all">\u{1F5D1} Clear</button>';
+    h += '</div>';
+
+    // Grid
+    h += '<div style="overflow-x:auto"><div style="display:inline-grid;grid-template-columns:repeat(' + b.cols + ',36px);grid-template-rows:repeat(' + b.rows + ',36px);gap:2px;border:2px solid var(--ink);background:var(--ink)">';
+    for (var r = 0; r < b.rows; r++) {
+      for (var c = 0; c < b.cols; c++) {
+        var cell    = b.grid[r][c];
+        var blocked = (cell === '#');
+        var letter  = (!blocked && cell) ? cell : '';
+        var num     = (!blocked && numbered[r][c] > 0) ? numbered[r][c] : 0;
+        var isAct   = (b.activeCell && b.activeCell[0]===r && b.activeCell[1]===c);
+        var bg      = blocked ? '#0d0e12' : isAct ? '#b0cbff' : '#fff';
+        h += '<div style="width:36px;height:36px;position:relative;cursor:pointer;background:' + bg + '" onclick="G.cwCellClick(' + r + ',' + c + ')">';
+        if (!blocked) {
+          if (num > 0) h += '<div style="position:absolute;top:1px;left:2px;font-family:\'DM Mono\',monospace;font-size:.48rem;line-height:1;color:#555;pointer-events:none;z-index:2">' + num + '</div>';
+          if (b.mode === 'letter') {
+            h += '<input type="text" maxlength="1" value="' + esc(letter) + '" ' +
+                 'style="position:absolute;inset:0;width:100%;height:100%;border:none;background:transparent;text-align:center;font-family:\'DM Mono\',monospace;font-size:1rem;font-weight:700;text-transform:uppercase;cursor:text;padding:0;color:#0d0e12;outline:none;z-index:1" ' +
+                 'onclick="event.stopPropagation();G.cwCellFocus(' + r + ',' + c + ')" ' +
+                 'oninput="G.cwLetterInput(this,' + r + ',' + c + ')">';
+          } else {
+            h += '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:\'DM Mono\',monospace;font-size:1rem;font-weight:700;color:#0d0e12;pointer-events:none">' + esc(letter) + '</div>';
+          }
+        }
+        h += '</div>';
+      }
+    }
+    h += '</div></div>';
+
+    // Mode hint
+    h += '<div style="font-size:.76rem;color:var(--muted);margin-top:.35rem">';
+    if (b.mode === 'block') h += '\u{1F532} Click white cells to make them black. Click again to restore.';
+    else h += '\u{1F524} Click a cell then type. Letter auto-advances right. Tab switches Across/Down in student mode.';
+    h += '</div>';
+
+    // Directions
+    h += '<div style="margin-top:.75rem"><div class="card" style="padding:.75rem">';
+    h += '<label style="font-size:.78rem;font-weight:600;color:var(--slate);margin-bottom:.3rem;display:block">\u{1F4CB} Student Directions (optional)</label>';
+    h += '<textarea id="cw-directions" oninput="G.cwSaveDirections(this.value)" style="width:100%;min-height:50px;font-size:.85rem" ' +
+         'placeholder="e.g. Use the clues below to fill in the crossword. Words go across and down.">' +
+         esc(b.directions) + '</textarea></div></div>';
+
+    h += '</div>'; // end left col
+
+    // ── RIGHT: clues + auto-place ──
+    h += '<div style="flex:1;min-width:280px;max-width:420px">';
+
+    // Clues
+    h += '<div class="card" style="padding:.85rem;margin-bottom:.75rem">';
+    h += '<div class="ct" style="margin-bottom:.4rem;font-size:.9rem">\u{1F4DD} Clues</div>';
+    if (clueMap.across.length === 0 && clueMap.down.length === 0) {
+      h += '<p style="font-size:.82rem;color:var(--muted);padding:.5rem 0">No word slots yet. Add letters to the grid, or use Auto-Place.</p>';
+    } else {
+      h += '<p style="font-size:.76rem;color:var(--muted);margin-bottom:.6rem">Answer shown in brackets. Type the clue students will read.</p>';
+    }
+    if (clueMap.across.length > 0) {
+      h += '<div style="font-family:\'DM Mono\',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--blue);margin-bottom:.4rem">ACROSS</div>';
+      for (var i = 0; i < clueMap.across.length; i++) {
+        var slot = clueMap.across[i];
+        var ans  = slot.cells.map(function(cell){ return CWB.grid[cell[0]][cell[1]]||'_'; }).join('');
+        var saved = CWB.clues.across[slot.n] || '';
+        h += '<div style="display:flex;align-items:flex-start;gap:.5rem;margin-bottom:.4rem">';
+        h += '<span style="font-family:\'DM Mono\',monospace;font-size:.7rem;color:var(--blue);width:22px;flex-shrink:0;padding-top:6px">' + slot.n + '</span>';
+        h += '<div style="flex:1">';
+        h += '<div style="font-family:\'DM Mono\',monospace;font-size:.65rem;color:var(--muted);margin-bottom:2px">[' + esc(ans) + '] ' + slot.cells.length + ' letters</div>';
+        h += '<input type="text" placeholder="Enter clue\u2026" value="' + esc(saved) + '" ' +
+             'oninput="G.cwUpdateClue(\'across\',' + slot.n + ',this.value)" ' +
+             'style="width:100%;padding:.3rem .5rem;border:1px solid var(--rule);border-radius:4px;font-size:.82rem">';
+        h += '</div></div>';
+      }
+    }
+    if (clueMap.down.length > 0) {
+      h += '<div style="font-family:\'DM Mono\',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--slate);margin:.5rem 0 .4rem">DOWN</div>';
+      for (var i = 0; i < clueMap.down.length; i++) {
+        var slot = clueMap.down[i];
+        var ans  = slot.cells.map(function(cell){ return CWB.grid[cell[0]][cell[1]]||'_'; }).join('');
+        var saved = CWB.clues.down[slot.n] || '';
+        h += '<div style="display:flex;align-items:flex-start;gap:.5rem;margin-bottom:.4rem">';
+        h += '<span style="font-family:\'DM Mono\',monospace;font-size:.7rem;color:var(--slate);width:22px;flex-shrink:0;padding-top:6px">' + slot.n + '</span>';
+        h += '<div style="flex:1">';
+        h += '<div style="font-family:\'DM Mono\',monospace;font-size:.65rem;color:var(--muted);margin-bottom:2px">[' + esc(ans) + '] ' + slot.cells.length + ' letters</div>';
+        h += '<input type="text" placeholder="Enter clue\u2026" value="' + esc(saved) + '" ' +
+             'oninput="G.cwUpdateClue(\'down\',' + slot.n + ',this.value)" ' +
+             'style="width:100%;padding:.3rem .5rem;border:1px solid var(--rule);border-radius:4px;font-size:.82rem">';
+        h += '</div></div>';
+      }
+    }
+    h += '</div>';
+
+    // Auto-place
+    h += '<div class="card" style="padding:.85rem">';
+    h += '<div class="ct" style="margin-bottom:.4rem;font-size:.9rem">\u2728 Auto-Place Words</div>';
+    h += '<p style="font-size:.76rem;color:var(--muted);margin-bottom:.5rem">Type one word per line. The app builds the grid automatically. Then fill in clues above and Publish.</p>';
+    h += '<textarea id="cw-word-list" style="width:100%;min-height:110px;font-size:.88rem;font-family:\'DM Mono\',monospace;resize:vertical" ' +
+         'placeholder="JUSTICE\nPLAINTIFF\nVERDICT\nAPPEAL\nSUBPOENA"></textarea>';
+    h += '<button class="btn btn-b full" style="margin-top:.5rem" onclick="G.cwAutoFill()">\u2728 Auto-Place Words Now</button>';
+    h += '</div>';
+
+    h += '</div>'; // end right col
+    h += '</div>'; // end flex row
+
+    el('cw-builder-body').innerHTML = h;
+  }
+
+  // ── Builder: mode switch ──
+  function cwSetMode(mode) {
+    cwReadLettersFromDOM();
+    CWB.mode = mode;
+    CWB.activeCell = null;
+    cwRenderBuilder();
+  }
+
+  // ── Read all letter inputs from DOM back into CWB.grid ──
+  function cwReadLettersFromDOM() {
+    var inputs = document.querySelectorAll('#cw-builder-body input[type="text"][maxlength="1"]');
+    for (var i = 0; i < inputs.length; i++) {
+      var inp = inputs[i];
+      // Get parent div's onclick attr to extract r,c — simpler: we track via data attributes
+      // Since inputs fire oninput which calls cwLetterInput and saves to CWB.grid immediately,
+      // the grid is already up-to-date. This function just saves the directions textarea.
+    }
+    var da = el('cw-directions');
+    if (da) CWB.directions = da.value;
+  }
+
+  function cwSaveDirections(val) {
+    CWB.directions = val;
+  }
+
+  function cwCellClick(r, c) {
+    cwReadLettersFromDOM();
+    if (CWB.mode === 'block') {
+      CWB.grid[r][c] = (CWB.grid[r][c] === '#') ? '' : '#';
+      CWB.activeCell = null;
+      cwRenderBuilder();
+    } else {
+      CWB.activeCell = [r, c];
+      cwRenderBuilder();
+      // Focus the input inside this cell
+      setTimeout(function(){
+        var inputs = document.querySelectorAll('#cw-builder-body input[type="text"][maxlength="1"]');
+        var idx = r * CWB.cols + c;
+        if (inputs[idx]) { inputs[idx].focus(); inputs[idx].select(); }
+      }, 20);
+    }
+  }
+
+  function cwCellFocus(r, c) {
+    CWB.activeCell = [r, c];
+  }
+
+  function cwLetterInput(inp, r, c) {
+    var raw = inp.value.toUpperCase().replace(/[^A-Z]/g, '');
+    var val = raw ? raw[raw.length - 1] : '';
+    inp.value = val;
+    CWB.grid[r][c] = val;
+    if (val) {
+      // Auto-advance right, skipping blocked cells
+      var nc = c + 1;
+      while (nc < CWB.cols && CWB.grid[r][nc] === '#') nc++;
+      if (nc < CWB.cols) {
+        CWB.activeCell = [r, nc];
+        var inputs = document.querySelectorAll('#cw-builder-body input[type="text"][maxlength="1"]');
+        var idx = r * CWB.cols + nc;
+        if (inputs[idx]) { inputs[idx].focus(); inputs[idx].select(); return; }
+      }
+    }
+  }
+
+  function cwResize(dim, delta) {
+    cwReadLettersFromDOM();
+    var newVal = CWB[dim] + delta;
+    if (newVal < 5 || newVal > 21) return;
+    CWB[dim] = newVal;
+    if (dim === 'rows') {
+      while (CWB.grid.length < CWB.rows) {
+        var row = []; for (var c=0; c<CWB.cols; c++) row.push(''); CWB.grid.push(row);
+      }
+      CWB.grid = CWB.grid.slice(0, CWB.rows);
+    } else {
+      for (var r=0; r<CWB.rows; r++) {
+        while (CWB.grid[r].length < CWB.cols) CWB.grid[r].push('');
+        CWB.grid[r] = CWB.grid[r].slice(0, CWB.cols);
+      }
+    }
+    cwRenderBuilder();
+  }
+
+  function cwClearGrid() {
+    if (!confirm('Clear all letters and blocks?')) return;
+    for (var r=0; r<CWB.rows; r++)
+      for (var c=0; c<CWB.cols; c++)
+        CWB.grid[r][c] = '';
+    CWB.clues = {across:{}, down:{}};
+    CWB.activeCell = null;
+    cwRenderBuilder();
+  }
+
+  function cwUpdateClue(dir, n, val) {
+    CWB.clues[dir][n] = val;
+  }
+
+  // ── Auto-place words ──
+  function cwAutoFill() {
+    cwReadLettersFromDOM();
+    var ta = el('cw-word-list');
+    var raw = ta ? ta.value : '';
+    var words = raw.split('\n')
+      .map(function(w){ return w.trim().toUpperCase().replace(/[^A-Z]/g,''); })
+      .filter(function(w){ return w.length >= 2; });
+    if (!words.length) { alert('Please type at least one word in the Auto-Place box first.'); return; }
+
+    // Deduplicate, sort longest first
+    var seen = {};
+    words = words.filter(function(w){ if(seen[w]) return false; seen[w]=true; return true; });
+    words.sort(function(a,b){ return b.length - a.length; });
+
+    var ROWS = Math.max(CWB.rows, 15), COLS = Math.max(CWB.cols, 15);
+    // Work grid: '#' = blocked, '' = available, letter = occupied
+    var grid = [];
+    for (var r=0; r<ROWS; r++) { grid.push([]); for (var c=0; c<COLS; c++) grid[r].push('#'); }
+
+    var placed = [];
+
+    function canPlace(word, r, c, dir) {
+      var len = word.length;
+      for (var i=0; i<len; i++) {
+        var tr = dir==='across' ? r     : r+i;
+        var tc = dir==='across' ? c+i   : c;
+        if (tr<0||tr>=ROWS||tc<0||tc>=COLS) return false;
+        var cur = grid[tr][tc];
+        if (cur !== '#' && cur !== word[i]) return false;
+        // If placing a new cell (not a shared intersection), check no parallel neighbors
+        if (cur === '#') {
+          if (dir === 'across') {
+            if (tr > 0       && grid[tr-1][tc] !== '#') return false;
+            if (tr < ROWS-1  && grid[tr+1][tc] !== '#') return false;
+          } else {
+            if (tc > 0       && grid[tr][tc-1] !== '#') return false;
+            if (tc < COLS-1  && grid[tr][tc+1] !== '#') return false;
+          }
+        }
+      }
+      // No word continuation before/after
+      if (dir==='across') {
+        if (c > 0       && grid[r][c-1]     !== '#') return false;
+        if (c+len < COLS && grid[r][c+len]  !== '#') return false;
+      } else {
+        if (r > 0       && grid[r-1][c]     !== '#') return false;
+        if (r+len < ROWS && grid[r+len][c]  !== '#') return false;
+      }
+      return true;
+    }
+
+    function doPlace(word, r, c, dir) {
+      for (var i=0; i<word.length; i++) {
+        var tr = dir==='across' ? r : r+i;
+        var tc = dir==='across' ? c+i : c;
+        grid[tr][tc] = word[i];
+      }
+      placed.push({word:word, r:r, c:c, dir:dir});
+    }
+
+    // Place first word across in center
+    var fw = words[0];
+    var sr = Math.floor(ROWS/2);
+    var sc = Math.max(1, Math.floor((COLS - fw.length)/2));
+    doPlace(fw, sr, sc, 'across');
+
+    // Place remaining words
+    for (var wi=1; wi<words.length; wi++) {
+      var word = words[wi];
+      var best = null, bestScore = -1;
+      for (var pi=0; pi<placed.length; pi++) {
+        var p = placed[pi];
+        var tryDir = (p.dir === 'across') ? 'down' : 'across';
+        for (var li=0; li<p.word.length; li++) {
+          for (var wli=0; wli<word.length; wli++) {
+            if (word[wli] !== p.word[li]) continue;
+            var anchorR = (p.dir==='across') ? p.r     : p.r+li;
+            var anchorC = (p.dir==='across') ? p.c+li  : p.c;
+            var newR    = (tryDir==='across') ? anchorR        : anchorR-wli;
+            var newC    = (tryDir==='across') ? anchorC-wli    : anchorC;
+            if (!canPlace(word, newR, newC, tryDir)) continue;
+            // Score = number of shared cells (intersections)
+            var score = 0;
+            for (var k=0; k<word.length; k++) {
+              var tr2 = tryDir==='across' ? newR : newR+k;
+              var tc2 = tryDir==='across' ? newC+k : newC;
+              if (grid[tr2][tc2] !== '#') score++;
+            }
+            if (score > bestScore) { bestScore=score; best={r:newR,c:newC,dir:tryDir}; }
+          }
+        }
+      }
+      if (best) doPlace(word, best.r, best.c, best.dir);
+    }
+
+    if (!placed.length) { alert('Could not place any words. Try more words with shared letters.'); return; }
+
+    // Trim to bounding box + 1-cell padding
+    var minR=ROWS, maxR=0, minC=COLS, maxC=0;
+    for (var r=0; r<ROWS; r++) for (var c=0; c<COLS; c++) {
+      if (grid[r][c] !== '#') { minR=Math.min(minR,r); maxR=Math.max(maxR,r); minC=Math.min(minC,c); maxC=Math.max(maxC,c); }
+    }
+    var newRows = Math.min(Math.max(maxR-minR+3, 7), 21);
+    var newCols = Math.min(Math.max(maxC-minC+3, 7), 21);
+    var newGrid = [];
+    for (var r=0; r<newRows; r++) {
+      newGrid.push([]);
+      for (var c=0; c<newCols; c++) {
+        var or=r+minR-1, oc=c+minC-1;
+        newGrid[r].push((or>=0&&or<ROWS&&oc>=0&&oc<COLS) ? grid[or][oc] : '#');
+      }
+    }
+    CWB.rows=newRows; CWB.cols=newCols; CWB.grid=newGrid;
+    CWB.mode='letter'; CWB.activeCell=null;
+    cwRenderBuilder();
+
+    var skipped = words.length - placed.length;
+    var msg = '\u2705 Placed ' + placed.length + ' of ' + words.length + ' word' + (words.length!==1?'s':'') + '.';
+    if (skipped > 0) msg += '\n\n' + skipped + ' word'+(skipped!==1?'s':'')+' could not fit. Try adding words that share more letters with the placed words.';
+    msg += '\n\nNow fill in the clues in the panel, then click Publish.';
+    alert(msg);
+  }
+
+  // ── Assemble final cwData payload ──
+  function cwAssembleData() {
+    cwReadLettersFromDOM();
+    var numbered = cwNumberGrid(CWB.grid, CWB.rows, CWB.cols);
+    var clueMap  = cwBuildClueMap(CWB.grid, numbered, CWB.rows, CWB.cols);
+    var across = [], down = [];
+    for (var i=0; i<clueMap.across.length; i++) {
+      var slot = clueMap.across[i];
+      var ans  = slot.cells.map(function(cell){ return (CWB.grid[cell[0]][cell[1]]||'').toUpperCase(); }).join('');
+      across.push({n:slot.n, r:slot.r, c:slot.c, dir:'across', answer:ans, clue:CWB.clues.across[slot.n]||'', cells:slot.cells});
+    }
+    for (var i=0; i<clueMap.down.length; i++) {
+      var slot = clueMap.down[i];
+      var ans  = slot.cells.map(function(cell){ return (CWB.grid[cell[0]][cell[1]]||'').toUpperCase(); }).join('');
+      down.push({n:slot.n, r:slot.r, c:slot.c, dir:'down', answer:ans, clue:CWB.clues.down[slot.n]||'', cells:slot.cells});
+    }
+    return {rows:CWB.rows, cols:CWB.cols, grid:CWB.grid, across:across, down:down, directions:CWB.directions};
+  }
+
+  function cwBuilderBack() { cwReadLettersFromDOM(); pgUpload(); }
+
+  function cwBuilderPreview() {
+    cwReadLettersFromDOM();
+    var cwData = cwAssembleData();
+    if (!cwData.across.length && !cwData.down.length) { alert('No words in the grid yet.'); return; }
+    var overlay = document.createElement('div');
+    overlay.id = 'cw-preview-overlay';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:9999;overflow-y:auto;display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem';
+    var inner = document.createElement('div');
+    inner.style.cssText = 'background:#f0ede6;border-radius:12px;max-width:960px;width:100%;padding:1.5rem';
+    inner.innerHTML =
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">' +
+      '<div style="font-family:\'Syne\',sans-serif;font-weight:800;font-size:1.2rem">\u{1F441} Preview: ' + esc(UP.title) + '</div>' +
+      '<button class="btn btn-o" onclick="document.getElementById(\'cw-preview-overlay\').remove()">\u2715 Close</button></div>' +
+      '<div style="display:flex;gap:1.5rem;flex-wrap:wrap;align-items:flex-start">' +
+      cwRenderGridHTML(cwData, null, true) +
+      cwRenderClueListHTML(cwData, null, true) + '</div>';
+    overlay.appendChild(inner);
+    document.body.appendChild(overlay);
+  }
+
+  function cwBuilderPublish() {
+    cwReadLettersFromDOM();
+    var cwData = cwAssembleData();
+    var errors = [];
+    if (!cwData.across.length && !cwData.down.length) errors.push('No words placed in the grid.');
+    var incomplete = [];
+    var allSlots = cwData.across.concat(cwData.down);
+    for (var i=0; i<allSlots.length; i++) {
+      if (!allSlots[i].answer || allSlots[i].answer.indexOf('_') > -1 || /[^A-Z]/.test(allSlots[i].answer))
+        incomplete.push(allSlots[i].n + ' ' + allSlots[i].dir);
+    }
+    if (incomplete.length) errors.push('Words with empty cells: ' + incomplete.slice(0,4).join(', ') + (incomplete.length>4?' \u2026':''));
+    if (errors.length) { alert('\u26A0\uFE0F Fix before publishing:\n\n\u2022 ' + errors.join('\n\u2022 ')); return; }
+
+    var payload = {title:UP.title, atype:'crossword', classes:UP.classes.slice(), status:'published', questions:[], due:UP.due, timeLimit:0, cwData:cwData};
+    var pg = el('tpage');
+    var btn = pg ? pg.querySelector('.btn-r') : null;
+    if (btn) { btn.textContent='Publishing\u2026'; btn.disabled=true; }
+
+    apiSaveExam(payload, function(exam) {
+      if (exam) {
+        EXAMS.push(exam); navTo('exams');
+        setTimeout(function(){
+          var pg2=el('tpage'); if(!pg2) return;
+          var b=document.createElement('div'); b.className='al al-s'; b.style.fontSize='.95rem';
+          b.innerHTML='\u2705 \u{1F9E9} <b>'+esc(exam.title)+'</b> published to <b>'+exam.classes.join(', ')+'</b>';
+          pg2.insertBefore(b,pg2.firstChild); setTimeout(function(){b.remove();},8000);
+        },50);
+      } else {
+        alert('Could not save. Check your connection and try again.');
+        if (btn) { btn.textContent='\u{1F680} Publish'; btn.disabled=false; }
+      }
+    });
+  }
+
+  // ══════════════════════════════════════════════════════════════
+  // SECTION B: STUDENT CROSSWORD PLAY
+  // ══════════════════════════════════════════════════════════════
+
+  function cwPlayInit() {
+    var cwData = SE.cwData;
+    if (!cwData) { alert('Crossword data missing. Ask your teacher to re-publish.'); return; }
+
+    // Build a fresh blank student grid
+    var sg = [];
+    for (var r=0; r<cwData.rows; r++) {
+      sg.push([]);
+      for (var c=0; c<cwData.cols; c++) sg[r].push(cwData.grid[r][c]==='#' ? '#' : '');
+    }
+
+    el('cw-play-title').textContent = SE.title;
+    el('cw-play-student').textContent = SI.name + ' · ' + SI.cls;
+
+    var dirBar = el('cw-directions-bar');
+    if (cwData.directions && cwData.directions.trim()) {
+      dirBar.innerHTML = '📋 <b>Directions:</b> ' + esc(cwData.directions);
+      dirBar.style.display = 'block';
+    } else { dirBar.style.display = 'none'; }
+
+    show('s-crossword');
+    el('cw-play-wrap').innerHTML =
+      '<div style="text-align:center;padding:2rem;color:var(--muted);font-size:.9rem">⏳ Loading your progress…</div>';
+
+    var hi = el('cw-hidden-input');
+    if (hi) { hi.onkeydown = cwHandleKey; hi.oninput = function(){ this.value = ''; }; }
+
+    // Always load from localStorage first so we have something to compare against
+    var localDraft = cwLoadDraft(SI, SE.id);
+
+    // Try Neon for cross-device restore
+    var draftParams = '?studentName=' + encodeURIComponent(SI.name) +
+                      '&studentSid='  + encodeURIComponent(SI.sid) +
+                      '&examId='      + encodeURIComponent(SE.id);
+    fetch(NEON_URL + '/crossword-drafts?action=load' + draftParams)
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        var neonDraft = (d && d.ok && d.draft) ? d.draft : null;
+
+        // Pick the freshest draft: compare savedTs between Neon and localStorage.
+        // If Neon returns nothing, fall back to localStorage.
+        // If both exist, use whichever was saved more recently.
+        var bestDraft;
+        if (!neonDraft) {
+          bestDraft = localDraft;   // Neon empty — use local (fixes Issue 1)
+        } else if (!localDraft) {
+          bestDraft = neonDraft;
+        } else {
+          var neonTs  = neonDraft.savedTs  || 0;
+          var localTs = localDraft.savedTs || 0;
+          bestDraft = neonTs >= localTs ? neonDraft : localDraft;  // freshest wins (fixes Issue 4)
+        }
+
+        cwPlayInitWithDraft(cwData, sg, bestDraft);
+      })
+      .catch(function(){
+        // Network error — localStorage is our only source
+        cwPlayInitWithDraft(cwData, sg, localDraft);
+      });
+  }
+
+  // Shared init helper — called after draft load attempt resolves
+  function cwPlayInitWithDraft(cwData, blankGrid, draft) {
+    var sg = blankGrid;
+    var hasResume = false;
+
+    if (draft && draft.studentGrid) {
+      // Validate: correct number of rows, AND every row must be an array with the right column count
+      var grid = draft.studentGrid;
+      var rowsOk = grid.length === cwData.rows;
+      var colsOk = rowsOk && grid.every(function(row){
+        return Array.isArray(row) && row.length === cwData.cols;
+      });
+      if (rowsOk && colsOk) {
+        sg = grid;
+        hasResume = true;
+        // Sync the chosen draft back to localStorage so same-device future loads are instant
+        if (SI && SE) {
+          try {
+            var lsKey = cwDraftKey(SI, SE.id);
+            var syncDraft = Object.assign({}, draft, {savedTs: draft.savedTs || Date.now()});
+            localStorage.setItem(lsKey, JSON.stringify(syncDraft));
+          } catch(e) {}
+        }
+      }
+    }
+
+    CWP = {
+      cwData:      cwData,
+      studentGrid: sg,
+      selR: -1, selC: -1,
+      selDir: 'across',
+      selSlotN: null,
+      submitted: false,
+      hasResume:   hasResume,
+      resumeTime:  hasResume ? (draft.savedAt || 'a previous session') : null,
+      _autoSaveTimer: null
+    };
+
+    cwRenderPlay();
+  }
+
+  // Discard saved draft and start fresh — called from the resume banner
+  function cwDiscardDraft() {
+    // Cancel any pending auto-save first so it can't re-write the draft after we clear it
+    if (CWP._autoSaveTimer) { clearTimeout(CWP._autoSaveTimer); CWP._autoSaveTimer = null; }
+    cwClearDraft();
+    var cwData = CWP.cwData;
+    var sg = [];
+    for (var r=0; r<cwData.rows; r++) {
+      sg.push([]);
+      for (var c=0; c<cwData.cols; c++) sg[r].push(cwData.grid[r][c]==='#' ? '#' : '');
+    }
+    CWP.studentGrid = sg;
+    CWP.selR = -1; CWP.selC = -1; CWP.selSlotN = null;
+    CWP.hasResume = false;   // banner will not re-appear on next cwRenderPlay
+    CWP.resumeTime = null;
+    cwRenderPlay();
+    var hi = el('cw-hidden-input'); if (hi) hi.focus();
+  }
+  function cwRenderGridHTML(cwData, playerState, previewMode) {
+    var rows=cwData.rows, cols=cwData.cols;
+    var numbered=cwNumberGrid(cwData.grid, rows, cols);
+    var selR   = playerState ? playerState.selR   : -1;
+    var selC   = playerState ? playerState.selC   : -1;
+    var selDir = playerState ? playerState.selDir : 'across';
+    var selN   = playerState ? playerState.selSlotN : null;
+    var hiCells = {};
+    if (!previewMode && selN !== null) {
+      var arr = selDir==='across' ? cwData.across : cwData.down;
+      for (var si=0; si<arr.length; si++) {
+        if (arr[si].n !== selN) continue;
+        for (var ci=0; ci<arr[si].cells.length; ci++) hiCells[arr[si].cells[ci][0]+','+arr[si].cells[ci][1]]=true;
+        break;
+      }
+    }
+    var h = '<div style="overflow-x:auto;flex-shrink:0"><div style="display:inline-grid;grid-template-columns:repeat('+cols+',38px);grid-template-rows:repeat('+rows+',38px);gap:2px;border:2px solid #1a1c23;background:#1a1c23">';
+    for (var r=0; r<rows; r++) {
+      for (var c=0; c<cols; c++) {
+        var key=r+','+c;
+        var isBlocked=(cwData.grid[r][c]==='#');
+        var num=(!isBlocked&&numbered[r][c]>0)?numbered[r][c]:0;
+        var letter=(!previewMode&&playerState&&playerState.studentGrid[r]&&playerState.studentGrid[r][c])?playerState.studentGrid[r][c]:'';
+        var isActive=(!previewMode&&r===selR&&c===selC);
+        var isHi=(!previewMode&&hiCells[key]&&!isActive);
+        var bg=isBlocked?'#1a1c23':isActive?'#4a7fff':isHi?'#dce8ff':'#fff';
+        var lc=isActive?'#fff':'#0d0e12';
+        h+='<div style="width:38px;height:38px;background:'+bg+';position:relative'+(previewMode||isBlocked?'':';cursor:pointer')+'"'+(previewMode||isBlocked?'':' onclick="G.cwCellTap('+r+','+c+')"')+'>';
+        if (!isBlocked) {
+          if (num>0) h+='<div style="position:absolute;top:1px;left:2px;font-family:\'DM Mono\',monospace;font-size:.47rem;line-height:1;color:'+(isHi||isActive?'#445':'#555')+';pointer-events:none;z-index:2">'+num+'</div>';
+          if (letter) h+='<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:\'DM Mono\',monospace;font-size:1.05rem;font-weight:700;color:'+lc+';pointer-events:none">'+esc(letter)+'</div>';
+        }
+        h+='</div>';
+      }
+    }
+    h+='</div></div>';
+    return h;
+  }
+
+  // ── Shared clue list renderer ──
+  function cwRenderClueListHTML(cwData, playerState, previewMode) {
+    var selDir = playerState ? playerState.selDir : 'across';
+    var selN   = playerState ? playerState.selSlotN : null;
+    var h = '<div style="flex:1;min-width:220px;max-width:320px">';
+    if (cwData.across.length > 0) {
+      h += '<div style="background:#fff;border:1px solid var(--rule);border-radius:8px;padding:.85rem;margin-bottom:.6rem;max-height:340px;overflow-y:auto">';
+      h += '<div style="font-family:\'DM Mono\',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--blue);margin-bottom:.5rem;position:sticky;top:0;background:#fff;padding-bottom:.25rem">ACROSS</div>';
+      for (var i=0; i<cwData.across.length; i++) {
+        var s=cwData.across[i];
+        var ia=!previewMode&&selDir==='across'&&selN===s.n;
+        h+='<div style="display:flex;gap:.4rem;padding:.28rem .3rem;border-radius:4px;font-size:.83rem;line-height:1.35;cursor:'+(previewMode?'default':'pointer')+';'+(ia?'background:#e0ecff;font-weight:600':'')+'"'+(previewMode?'':' onclick="G.cwSelectClue(\'across\','+s.n+')"')+'>';
+        h+='<span style="font-family:\'DM Mono\',monospace;font-size:.72rem;color:var(--blue);width:20px;flex-shrink:0;padding-top:1px">'+s.n+'</span>';
+        h+='<span>'+esc(s.clue||'(no clue)')+'</span></div>';
+      }
+      h += '</div>';
+    }
+    if (cwData.down.length > 0) {
+      h += '<div style="background:#fff;border:1px solid var(--rule);border-radius:8px;padding:.85rem;max-height:340px;overflow-y:auto">';
+      h += '<div style="font-family:\'DM Mono\',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--slate);margin-bottom:.5rem;position:sticky;top:0;background:#fff;padding-bottom:.25rem">DOWN</div>';
+      for (var i=0; i<cwData.down.length; i++) {
+        var s=cwData.down[i];
+        var ia=!previewMode&&selDir==='down'&&selN===s.n;
+        h+='<div style="display:flex;gap:.4rem;padding:.28rem .3rem;border-radius:4px;font-size:.83rem;line-height:1.35;cursor:'+(previewMode?'default':'pointer')+';'+(ia?'background:#e0ecff;font-weight:600':'')+'"'+(previewMode?'':' onclick="G.cwSelectClue(\'down\','+s.n+')"')+'>';
+        h+='<span style="font-family:\'DM Mono\',monospace;font-size:.72rem;color:var(--slate);width:20px;flex-shrink:0;padding-top:1px">'+s.n+'</span>';
+        h+='<span>'+esc(s.clue||'(no clue)')+'</span></div>';
+      }
+      h += '</div>';
+    }
+    h += '</div>';
+    return h;
+  }
+
+  function cwRenderPlay() {
+    var wrap = el('cw-play-wrap');
+    var h = '';
+
+    // ── Resume banner — shown until student dismisses it ──
+    if (CWP.hasResume) {
+      h += '<div id="cw-resume-banner" style="width:100%;background:#e6f5ec;border:1px solid #90d0aa;' +
+           'border-radius:7px;padding:.6rem 1rem;margin-bottom:.75rem;display:flex;align-items:center;' +
+           'justify-content:space-between;font-size:.83rem;color:var(--green);flex-wrap:wrap;gap:.5rem">';
+      h += '<span>✅ <b>Progress restored</b> — your work from ' + esc(CWP.resumeTime || '') + ' was reloaded.</span>';
+      h += '<button class="btn btn-o sm" onclick="G.cwDiscardDraft()" ' +
+           'style="color:var(--danger);border-color:var(--danger);font-size:.75rem">🗑 Start Fresh</button>';
+      h += '</div>';
+    }
+
+    h += cwRenderGridHTML(CWP.cwData, CWP, false);
+    h += '<div style="display:flex;flex-direction:column;gap:.5rem;padding-top:.5rem">';
+    h += '<button class="btn btn-o sm" onclick="G.cwEraseCell()">\u232B Erase</button>';
+    h += '<button class="btn btn-o sm" onclick="G.cwToggleDir()">\u2194\uFE0F\u2195\uFE0F Dir</button>';
+    if (CWP.selSlotN !== null) {
+      var arr = CWP.selDir==='across' ? CWP.cwData.across : CWP.cwData.down;
+      for (var si=0; si<arr.length; si++) {
+        if (arr[si].n !== CWP.selSlotN) continue;
+        h += '<div style="background:#fff;border:1px solid var(--rule);border-radius:6px;padding:.5rem .6rem;font-size:.78rem;max-width:160px">';
+        h += '<div style="font-family:\'DM Mono\',monospace;font-size:.65rem;color:var(--blue);margin-bottom:.2rem">'+CWP.selSlotN+' '+CWP.selDir.toUpperCase()+'</div>';
+        h += esc(arr[si].clue||'(no clue)') + '</div>';
+        break;
+      }
+    }
+    h += '</div>';
+    h += cwRenderClueListHTML(CWP.cwData, CWP, false);
+    wrap.innerHTML = h;
+    setTimeout(function(){
+      var actRow = wrap.querySelector('[style*="background:#e0ecff"]');
+      if (actRow) actRow.scrollIntoView({block:'nearest',behavior:'smooth'});
+    }, 60);
+  }
+
+  function cwCellTap(r, c) {
+    if (CWP.submitted) return;
+    if (CWP.cwData.grid[r][c]==='#') return;
+    if (CWP.selR===r && CWP.selC===c) {
+      CWP.selDir = CWP.selDir==='across' ? 'down' : 'across';
+    } else {
+      CWP.selR=r; CWP.selC=c;
+    }
+    cwFindSlotForCell(CWP.selR, CWP.selC, CWP.selDir);
+    cwRenderPlay();
+    var hi=el('cw-hidden-input'); if(hi) hi.focus();
+  }
+
+  function cwFindSlotForCell(r, c, dir) {
+    var arr = dir==='across' ? CWP.cwData.across : CWP.cwData.down;
+    for (var i=0; i<arr.length; i++) {
+      for (var j=0; j<arr[i].cells.length; j++) {
+        if (arr[i].cells[j][0]===r && arr[i].cells[j][1]===c) { CWP.selSlotN=arr[i].n; return true; }
+      }
+    }
+    var other=dir==='across'?'down':'across';
+    var arr2=other==='across'?CWP.cwData.across:CWP.cwData.down;
+    for (var i=0; i<arr2.length; i++) {
+      for (var j=0; j<arr2[i].cells.length; j++) {
+        if (arr2[i].cells[j][0]===r && arr2[i].cells[j][1]===c) { CWP.selDir=other; CWP.selSlotN=arr2[i].n; return true; }
+      }
+    }
+    CWP.selSlotN=null; return false;
+  }
+
+  function cwToggleDir() {
+    CWP.selDir=CWP.selDir==='across'?'down':'across';
+    if (CWP.selR>=0) cwFindSlotForCell(CWP.selR, CWP.selC, CWP.selDir);
+    cwRenderPlay();
+    var hi=el('cw-hidden-input'); if(hi) hi.focus();
+  }
+
+  function cwEraseCell() {
+    if (CWP.selR<0||CWP.submitted) return;
+    CWP.studentGrid[CWP.selR][CWP.selC]='';
+    cwRenderPlay();
+    cwScheduleAutoSave();
+    var hi=el('cw-hidden-input'); if(hi) hi.focus();
+  }
+
+  function cwSelectClue(dir, n) {
+    if (CWP.submitted) return;
+    CWP.selDir=dir; CWP.selSlotN=n;
+    var arr=dir==='across'?CWP.cwData.across:CWP.cwData.down;
+    for (var i=0; i<arr.length; i++) {
+      if (arr[i].n!==n) continue;
+      var target=arr[i].cells[0];
+      for (var j=0; j<arr[i].cells.length; j++) {
+        if (!CWP.studentGrid[arr[i].cells[j][0]][arr[i].cells[j][1]]) { target=arr[i].cells[j]; break; }
+      }
+      CWP.selR=target[0]; CWP.selC=target[1]; break;
+    }
+    cwRenderPlay();
+    var hi=el('cw-hidden-input'); if(hi) hi.focus();
+  }
+
+  function cwHandleKey(e) {
+    if (CWP.submitted) return;
+    var key=e.key;
+    if (key==='Tab') { e.preventDefault(); cwToggleDir(); return; }
+    if (key==='Escape') { CWP.selR=-1; CWP.selC=-1; CWP.selSlotN=null; cwRenderPlay(); return; }
+    if (CWP.selR<0) return;
+    if (key==='Backspace'||key==='Delete') {
+      e.preventDefault();
+      if (CWP.studentGrid[CWP.selR][CWP.selC]) {
+        CWP.studentGrid[CWP.selR][CWP.selC]=''; cwRenderPlay();
+        cwScheduleAutoSave();
+      } else cwStepCell(-1);
+      return;
+    }
+    if (key==='ArrowRight') { e.preventDefault(); CWP.selDir='across'; cwStepToCell(CWP.selR,CWP.selC+1); return; }
+    if (key==='ArrowLeft')  { e.preventDefault(); CWP.selDir='across'; cwStepToCell(CWP.selR,CWP.selC-1); return; }
+    if (key==='ArrowDown')  { e.preventDefault(); CWP.selDir='down';   cwStepToCell(CWP.selR+1,CWP.selC); return; }
+    if (key==='ArrowUp')    { e.preventDefault(); CWP.selDir='down';   cwStepToCell(CWP.selR-1,CWP.selC); return; }
+    if (/^[a-zA-Z]$/.test(key)) {
+      e.preventDefault();
+      CWP.studentGrid[CWP.selR][CWP.selC]=key.toUpperCase();
+      cwStepCell(1); cwRenderPlay();
+      // Auto-save draft after 1.5s of inactivity
+      cwScheduleAutoSave();
+    }
+  }
+
+  function cwStepCell(delta) {
+    var nr=CWP.selDir==='down'?CWP.selR+delta:CWP.selR;
+    var nc=CWP.selDir==='across'?CWP.selC+delta:CWP.selC;
+    cwStepToCell(nr,nc);
+  }
+
+  function cwStepToCell(r,c) {
+    var d=CWP.cwData;
+    if (r<0||r>=d.rows||c<0||c>=d.cols||d.grid[r][c]==='#') return;
+    CWP.selR=r; CWP.selC=c;
+    cwFindSlotForCell(r,c,CWP.selDir);
+    cwRenderPlay();
+  }
+
+  // ── Auto-save: debounce so we don't write on every single keypress ──
+  function cwScheduleAutoSave() {
+    if (!CWP || CWP.submitted) return;
+    if (CWP._autoSaveTimer) clearTimeout(CWP._autoSaveTimer);
+    CWP._autoSaveTimer = setTimeout(function() {
+      cwWriteDraft();
+      // Show a subtle "auto-saved" indicator in the topbar without flashing the Save button
+      var indicator = document.getElementById('cw-autosave-indicator');
+      if (!indicator) {
+        indicator = document.createElement('span');
+        indicator.id = 'cw-autosave-indicator';
+        indicator.style.cssText = 'font-size:.7rem;color:rgba(255,255,255,.45);font-family:"DM Mono",monospace;transition:opacity .3s';
+        var topbar = document.querySelector('#s-crossword .cw-play-topbar > div');
+        if (!topbar) topbar = document.querySelector('#s-crossword .cw-play-topbar');
+        if (topbar) topbar.insertBefore(indicator, topbar.firstChild);
+      }
+      indicator.textContent = '● auto-saved';
+      indicator.style.opacity = '1';
+      setTimeout(function(){ if(indicator) indicator.style.opacity = '0'; }, 2500);
+    }, 1500);
+  }
+
+  function cwSaveProgress() {
+    if (CWP.submitted) return;
+    // Cancel any pending auto-save — this is an explicit save
+    if (CWP._autoSaveTimer) { clearTimeout(CWP._autoSaveTimer); CWP._autoSaveTimer = null; }
+
+    // Write to localStorage + Neon
+    cwWriteDraft();
+
+    // Show confirmation on the Save button with timestamp
+    var saveTime = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    var btns = document.querySelectorAll('#s-crossword button');
+    for (var i=0; i<btns.length; i++) {
+      if (btns[i].textContent.indexOf('Save') > -1) {
+        var b = btns[i];
+        var origText = b.textContent;
+        var origBg   = b.style.background;
+        var origColor = b.style.color;
+        b.textContent  = '✅ Saved ' + saveTime;
+        b.style.background = 'var(--green)';
+        b.style.color = '#fff';
+        setTimeout(function(btn, t, bg, col){
+          btn.textContent = t; btn.style.background = bg; btn.style.color = col;
+        }(b, origText, origBg, origColor), 3000);
+        break;
+      }
+    }
+  }
+
+  function cwGrade() {
+    var d=CWP.cwData;
+    var allSlots=d.across.concat(d.down);
+    var correct=0, total=0, results=[];
+    for (var i=0; i<allSlots.length; i++) {
+      var slot=allSlots[i];
+      // Guard: skip slots with no answer (teacher left the word empty)
+      if (!slot.answer || !slot.answer.trim()) continue;
+      var ans=slot.answer.toUpperCase();
+      // Guard: infer direction from position in combined array if slot.dir missing
+      var dir = slot.dir || (i < d.across.length ? 'across' : 'down');
+      var student='';
+      for (var j=0; j<slot.cells.length; j++) {
+        var cr=slot.cells[j][0], cc=slot.cells[j][1];
+        student+=(CWP.studentGrid[cr]&&CWP.studentGrid[cr][cc])?CWP.studentGrid[cr][cc].toUpperCase():'_';
+      }
+      var ok=(student===ans);
+      total++; if(ok) correct++;
+      results.push({n:slot.n, dir:dir, clue:slot.clue||'', answer:ans, studentAnswer:student, correct:ok});
+    }
+    return {correct:correct, total:total, pct:total>0?Math.round(correct/total*100):0, results:results};
+  }
+
+  function cwSubmit() {
+    if (CWP.submitted) return;
+    var d=CWP.cwData;
+    var filled=0, totalCells=0;
+    for (var r=0; r<d.rows; r++) for (var c=0; c<d.cols; c++) {
+      if (d.grid[r][c]!=='#') { totalCells++; if(CWP.studentGrid[r][c]) filled++; }
+    }
+    var pctFilled=totalCells>0?Math.round(filled/totalCells*100):0;
+    if (pctFilled<25 && !confirm('Only '+pctFilled+'% filled. Submit anyway?')) return;
+
+    // Cancel any pending auto-save and clear the draft — final submission takes over
+    if (CWP._autoSaveTimer) { clearTimeout(CWP._autoSaveTimer); CWP._autoSaveTimer = null; }
+    cwClearDraft();
+
+    CWP.submitted=true;
+
+    var grade=cwGrade();
+    var submittedAt=new Date().toLocaleString();
+    var submittedTs=Date.now();
+    var sc=grade.pct>=90?'var(--green)':grade.pct>=70?'var(--orange)':'var(--danger)';
+
+    var cwClientKey = SI.name + '|' + SE.id + '|' + submittedTs;
+    var attempt={
+      id:genAttemptId(),
+      clientKey: cwClientKey,
+      submittedTs: submittedTs,
+      name:SI.name, sid:SI.sid, cls:SI.cls,
+      examId:SE.id, examTitle:SE.title, atype:'crossword',
+      submittedAt:submittedAt,
+      score:grade.pct,
+      earned:grade.correct,
+      mcPossible:grade.total,    // kept for compatibility with shared display logic
+      totalWords:grade.total,    // semantic name for crossword — words graded, not points
+      hasEssay:false, essayCount:0,
+      results:grade.results.map(function(res){
+        return {type:'crossword',q:{id:res.n,prompt:res.n+' '+res.dir+': '+res.clue,points:1,correct:res.answer},ans:res.studentAnswer,ok:res.correct,pts:res.correct?1:0};
+      }),
+      cwResults:grade.results, studentGrid:CWP.studentGrid, events:[], status:'graded'
+    };
+    ATTEMPTS.push(attempt);
+    apiSaveAttempt(attempt, function(savedId){
+      if (savedId && savedId !== attempt.id) { attempt.id = savedId; lsSaveAttempt(attempt); }
+    });
+    var cwSubmitLogin = {name:SI.name, sid:SI.sid, cls:SI.cls, time:submittedAt, ts:Date.now(),
+                         action:'Submitted crossword: '+SE.title+' — '+grade.pct+'%'};
+    LOGINS.push(cwSubmitLogin);
+    lsSaveLogin(cwSubmitLogin);   // ← was missing: also saves to LS + Neon
+
+    try {
+      var fd=new FormData();
+      fd.append('form-name','exam-scores'); fd.append('student-name',SI.name);
+      fd.append('student-id',SI.sid); fd.append('class',SI.cls);
+      fd.append('exam-title',SE.title); fd.append('exam-type','Crossword');
+      fd.append('score-percent',grade.pct+'%'); fd.append('points-earned',grade.correct+' / '+grade.total+' words');
+      fd.append('has-essay','No'); fd.append('submitted-at',submittedAt);
+      fetch('/',{method:'POST',body:fd});
+    } catch(e){}
+
+    var h='<div style="text-align:center;margin-bottom:1.5rem;padding-top:.5rem">';
+    h+='<div style="font-size:2.8rem;margin-bottom:.4rem">\u{1F9E9}</div>';
+    h+='<div style="font-family:\'Syne\',sans-serif;font-weight:800;font-size:1.5rem">Crossword Submitted!</div>';
+    h+='<div style="color:var(--slate);font-size:.88rem;margin-top:.25rem">'+esc(SE.title)+'</div></div>';
+    h+='<div style="background:var(--cream);border-radius:8px;padding:1rem;margin-bottom:1.25rem">';
+    h+='<div style="font-family:\'DM Mono\',monospace;font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem">Submission Details</div>';
+    var dets=[['Student',SI.name],['ID',SI.sid],['Class',SI.cls],['Assessment',SE.title],['Submitted',submittedAt]];
+    for (var i=0;i<dets.length;i++){
+      h+='<div style="display:flex;justify-content:space-between;padding:.3rem 0;border-bottom:1px solid var(--rule);font-size:.875rem">';
+      h+='<span style="color:var(--muted)">'+dets[i][0]+'</span><b>'+esc(String(dets[i][1]))+'</b></div>';
+    }
+    h+='</div>';
+    h+='<div style="text-align:center;background:#fff;border:3px solid '+sc+';border-radius:12px;padding:1.5rem;margin-bottom:1.25rem">';
+    h+='<div style="font-family:\'DM Mono\',monospace;font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.35rem">Your Score</div>';
+    h+='<div style="font-family:\'Syne\',sans-serif;font-weight:800;font-size:3.5rem;color:'+sc+';line-height:1">'+grade.pct+'%</div>';
+    h+='<div style="font-size:.9rem;color:var(--slate);margin-top:.35rem">'+grade.correct+' of '+grade.total+' words correct</div>';
+    if(grade.pct>=90) h+='<div style="color:var(--green);font-weight:600;margin-top:.4rem">\u{1F31F} Excellent work!</div>';
+    else if(grade.pct>=70) h+='<div style="color:var(--orange);font-weight:600;margin-top:.4rem">\u{1F44D} Good job!</div>';
+    else h+='<div style="color:var(--danger);font-weight:600;margin-top:.4rem">\u{1F4DA} Keep studying \u2014 you can do this!</div>';
+    h+='</div>';
+    h+='<div style="margin-bottom:1.25rem">';
+    h+='<div style="font-family:\'DM Mono\',monospace;font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.45rem">Word Results</div>';
+    for (var i=0; i<grade.results.length; i++) {
+      var res=grade.results[i];
+      var dirLabel = res.dir ? (res.dir.charAt(0).toUpperCase()+res.dir.slice(1)) : '';
+      h+='<div style="display:flex;align-items:flex-start;gap:.55rem;padding:.45rem 0;border-bottom:1px solid var(--rule);font-size:.82rem">';
+      h+='<span style="flex-shrink:0">'+(res.correct?'\u2705':'\u274C')+'</span>';
+      h+='<div style="flex:1">';
+      h+='<div style="color:#2a2d3a;margin-bottom:.1rem"><b>'+res.n+' '+dirLabel+':</b> '+esc(res.clue)+'</div>';
+      h+='<div style="color:var(--muted)">You typed: <b style="color:'+(res.correct?'var(--green)':'var(--danger)')+'">'+esc(res.studentAnswer)+'</b></div>';
+      // Show correct answer for wrong words — safe to reveal after submission
+      if (!res.correct) {
+        h+='<div style="color:var(--muted)">Correct answer: <b style="color:var(--green)">'+esc(res.answer)+'</b></div>';
+      }
+      h+='</div>';
+      h+='<div style="font-family:\'DM Mono\',monospace;flex-shrink:0;color:'+(res.correct?'var(--green)':'var(--danger)')+'">'+(res.correct?'\u2713':'\u2717')+'</div></div>';
+    }
+    h+='</div>';
+    h+='<div style="display:flex;flex-direction:column;gap:.65rem;margin-top:1rem;padding-bottom:2rem">';
+    h+='<button id="back-to-list-btn" class="btn btn-b full" style="padding:.75rem;font-size:1rem">\u2190 Back to My Assessments</button>';
+    h+='<button id="back-to-home-btn" class="btn btn-o full" style="padding:.65rem">Return to Home Screen</button></div>';
+
+    el('r-content').innerHTML=h; show('s-done');
+    var bl=document.getElementById('back-to-list-btn'); if(bl) bl.onclick=function(){if(SI) showExamList(); else show('s-sstart');};
+    var bh=document.getElementById('back-to-home-btn'); if(bh) bh.onclick=function(){show('s-land');};
+  }
+
+  function cwViewAttempt(attempt) {
+    var sc=attempt.score>=90?'var(--green)':attempt.score>=70?'var(--orange)':'var(--danger)';
+    var totalW = attempt.totalWords || attempt.mcPossible || 0;
+    var h='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.25rem">';
+    var si2=[['Score',attempt.score+'%'],['Words Correct',attempt.earned+' / '+totalW],['Student',attempt.name],['Class',attempt.cls]];
+    for (var i=0;i<si2.length;i++){
+      h+='<div style="background:#fff;border:1px solid var(--rule);border-radius:8px;padding:.9rem">';
+      h+='<div style="font-family:\'DM Mono\',monospace;font-size:.66rem;color:var(--muted);text-transform:uppercase;margin-bottom:.25rem">'+si2[i][0]+'</div>';
+      h+='<div style="font-weight:700;font-size:1rem;color:'+(i===0?sc:'inherit')+'">'+esc(String(si2[i][1]))+'</div></div>';
+    }
+    h+='</div>';
+    if (attempt.cwResults&&attempt.cwResults.length) {
+      h+='<div class="card"><div class="ct">\u{1F9E9} Word-by-Word Results</div>';
+      h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-top:.5rem">';
+      for (var i=0;i<attempt.cwResults.length;i++){
+        var r=attempt.cwResults[i];
+        // Guard against missing dir field (older published crosswords)
+        var dir = r.dir || '';
+        h+='<div style="display:flex;gap:.4rem;align-items:flex-start;font-size:.8rem;padding:.35rem .45rem;border-radius:5px;background:'+(r.correct?'#e6f5ec':'#fce8ea')+'">';
+        h+='<span>'+(r.correct?'\u2705':'\u274C')+'</span>';
+        h+='<div><b>'+r.n+' '+dir+':</b> '+esc(r.clue||'');
+        if(!r.correct){
+          h+='<div style="color:var(--muted);font-size:.75rem">Wrote: <b style="color:var(--danger)">'+esc(r.studentAnswer)+'</b></div>';
+          h+='<div style="color:var(--muted);font-size:.75rem">Answer: <b style="color:var(--green)">'+esc(r.answer||'')+'</b></div>';
+        }
+        h+='</div></div>';
+      }
+      h+='</div></div>';
+    }
+    return h;
+  }
+
+  // ══════════════════════════════════════════════════════════════
+  // END CROSSWORD MODULE
+  // ══════════════════════════════════════════════════════════════
+
+  // ══════════════════════════════════════════════════════════════
+
   // Public API
   return {
     show:show, togglePw:togglePw, login:login, logout:logout,
@@ -1569,7 +3533,20 @@ var G = (function(){
     renderStep4:renderStep4, togSet:togSet, doPublish:doPublish,
     toggleStatus:toggleStatus,
     studentGo:studentGo, showExamList:showExamList, selectExam:selectExam, beginExam:beginExam,
-    viewAttempt:viewAttempt, pgAtlog:pgAtlog, saveEssayGrades:saveEssayGrades
+    viewAttempt:viewAttempt, pgAtlog:pgAtlog, saveEssayGrades:saveEssayGrades,
+    pgGrade:pgGrade, pgFlags:pgFlags, flagReview:flagReview, flagDismiss:flagDismiss,
+    // ── Crossword Teacher Builder ──
+    cwBuilderBack:cwBuilderBack, cwBuilderPreview:cwBuilderPreview, cwBuilderPublish:cwBuilderPublish,
+    cwSetMode:cwSetMode, cwCellClick:cwCellClick, cwCellFocus:cwCellFocus, cwLetterInput:cwLetterInput,
+    cwResize:cwResize, cwClearGrid:cwClearGrid, cwAutoFill:cwAutoFill, cwUpdateClue:cwUpdateClue,
+    // ── Crossword Student Play ──
+    cwCellTap:cwCellTap, cwToggleDir:cwToggleDir, cwEraseCell:cwEraseCell,
+    cwSelectClue:cwSelectClue, cwSaveProgress:cwSaveProgress, cwSubmit:cwSubmit,
+    // ── Crossword misc ──
+    cwSaveDirections:cwSaveDirections, cwDiscardDraft:cwDiscardDraft,
+    cwPlayInitWithDraft:cwPlayInitWithDraft,
+    // ── Reports ──
+    exportCSV:exportCSV
   };
 })();
 
