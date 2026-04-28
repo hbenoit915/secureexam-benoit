@@ -2102,8 +2102,10 @@ var G = (function(){
     var cls=el('s-cls').value;
     if(!n||!sid||!cls){ el('s-err').style.display='flex'; return; }
     el('s-err').style.display='none';
-    SI={name:n,sid:sid,cls:cls};
-    var loginEntry = {name:n,sid:sid,cls:cls,time:new Date().toLocaleString(),ts:Date.now(),action:'Logged in'};
+   var _lts=Date.now();
+    var _ltm=new Date().toLocaleString('en-US',{month:'2-digit',day:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
+    SI={name:n,sid:sid,cls:cls,loginTs:_lts,loginTime:_ltm};
+    var loginEntry = {name:n,sid:sid,cls:cls,time:_ltm,ts:_lts,action:'Logged in'};
     LOGINS.push(loginEntry);
     lsSaveLogin(loginEntry);
     showExamList();
