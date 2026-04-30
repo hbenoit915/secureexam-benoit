@@ -1675,7 +1675,8 @@ var G = (function(){
           h+='<td style="font-size:.82rem">'+esc(a.cls)+'</td>';
           h+='<td style="font-size:.82rem">'+esc(a.examTitle)+'</td>';
           h+='<td>'+atBdg(a.atype)+'</td>';
-          var loginTs = ''; for(var ll=0;ll<LOGINS.length;ll++){   if(LOGINS[ll].sid===a.sid&&LOGINS[ll].action==='Logged in'){loginTs=LOGINS[ll].time;break;} } h+='<td style="font-size:.78rem;font-family:\'DM Mono\',monospace">'+esc(loginTs)+'</td>'; h+='<td style="font-size:.78rem;font-family:\'DM Mono\',monospace">'+esc(ts)+'</td>';
+var loginTs = a.loginTime || '—';
+h+='<td style="font-size:.78rem;font-family:\'DM Mono\',monospace">'+esc(loginTs)+'</td>';
           h+='<td style="font-family:\'DM Mono\',monospace;font-weight:600;color:'+scolor+'">'+scoreDisp+'</td>';
           h+='<td>'+statBdg+'</td>';
           h+='<td><button class="btn btn-b sm" onclick="G.viewAttempt('+a.id+')">👁 View</button></td>';
