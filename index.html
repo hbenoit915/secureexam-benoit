@@ -2079,8 +2079,13 @@ function pgRecords(){ navTo('reports'); }
       var rows=[['Student','ID','Class','Assessment','Type','Login Time','Score','Status','Submitted']];
       for(var i=0;i<ATTEMPTS.length;i++){
         var a=ATTEMPTS[i];
-        rows.push([
+        var lTime='';
+for(var ll=0;ll<LOGINS.length;ll++){
+  if(LOGINS[ll].sid===a.sid&&LOGINS[ll].action==='Logged in'){lTime=LOGINS[ll].time;break;}
+}
+rows.push([
           a.name, a.sid, a.cls, a.examTitle, a.atype||'',
+          lTime,
           a.score!==null?a.score+'%':'Pending',
           a.status||'', a.submittedAt||''
         ]);
