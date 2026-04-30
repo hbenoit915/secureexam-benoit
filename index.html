@@ -2120,7 +2120,7 @@ function pgRecords(){ navTo('reports'); }
     show('s-slist');
     apiLoadExams(function(){
       var avail=[];
-      for(var i=0;i<EXAMS.length;i++) if(EXAMS[i].status==='published'&&EXAMS[i].classes.indexOf(SI.cls)>-1) avail.push(EXAMS[i]);
+      for(var i=0;i<EXAMS.length;i++){   if(EXAMS[i].status==='published'&&EXAMS[i].classes.indexOf(SI.cls)>-1){     var alreadyDone=false;     for(var j=0;j<ATTEMPTS.length;j++){       if(ATTEMPTS[j].examId===EXAMS[i].id&&ATTEMPTS[j].sid===SI.sid) { alreadyDone=true; break; }     }     if(!alreadyDone) avail.push(EXAMS[i]);   } }
       var h='';
       if(!avail.length){
         h='<div class="card" style="text-align:center;padding:2rem"><div style="font-size:1.5rem;margin-bottom:.5rem">📋</div><b style="color:var(--slate)">No assessments assigned to your class yet.</b><p style="font-size:.82rem;color:var(--muted);margin-top:.5rem">Ask your teacher if an exam has been published for <b>'+esc(SI.cls)+'</b>.</p></div>';
