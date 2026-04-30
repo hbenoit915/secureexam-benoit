@@ -2291,9 +2291,10 @@ rows.push([
 
     // ── Save attempt — client ID first, backend ID promoted on response ──
     // clientKey uses submittedTs (epoch ms) — locale-independent and unique per submit.
-    var submittedTs = Date.now();
-    var clientKey = SI.name + '|' + SE.id + '|' + submittedTs;
-    var attempt = {
+var submittedTs = Date.now();
+var clientKey = SI.name + '|' + SE.id + '|' + submittedTs;
+var attempt = {
+  loginTime: SI.loginTime || '',
       id: genAttemptId(),
       clientKey: clientKey,
       submittedTs: submittedTs,        // epoch ms — used for clientKey, sort, and dedup
