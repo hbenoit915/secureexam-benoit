@@ -2076,7 +2076,7 @@ function pgRecords(){ navTo('reports'); }
   function exportCSV(){
     apiLoadAttempts(function(){
       if(!ATTEMPTS.length){ alert('No submissions to export yet.'); return; }
-      var rows=[['Student','ID','Class','Assessment','Type','Score','Status','Submitted']];
+      var rows=[['Student','ID','Class','Assessment','Type','Login Time','Score','Status','Submitted']];
       for(var i=0;i<ATTEMPTS.length;i++){
         var a=ATTEMPTS[i];
         rows.push([
