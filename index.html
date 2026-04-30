@@ -3412,8 +3412,9 @@ var attempt = {
     var submittedTs=Date.now();
     var sc=grade.pct>=90?'var(--green)':grade.pct>=70?'var(--orange)':'var(--danger)';
 
-    var cwClientKey = SI.name + '|' + SE.id + '|' + submittedTs;
-    var attempt={
+var cwClientKey = SI.name + '|' + SE.id + '|' + submittedTs;
+var attempt={
+  loginTime: SI.loginTime || '',
       id:genAttemptId(),
       clientKey: cwClientKey,
       submittedTs: submittedTs,
