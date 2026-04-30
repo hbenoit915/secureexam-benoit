@@ -1660,7 +1660,7 @@ var G = (function(){
       if(!ATTEMPTS.length){
         h+='<div class="card" style="text-align:center;padding:2.5rem;color:var(--muted)">No student submissions yet. When a student completes an exam it will appear here permanently.</div>';
       } else {
-        h+='<div class="tw"><table><thead><tr><th>Student</th><th>ID</th><th>Class</th><th>Assessment</th><th>Type</th><th>Submitted</th><th>Score</th><th>Status</th><th></th></tr></thead><tbody>';
+        h+='<div class="tw"><table><thead><tr><th>Student</th><th>ID</th><th>Class</th><th>Assessment</th><th>Type</th><th>Login Time</th><th>Submitted</th><th>Score</th><th>Status</th><th></th></tr></thead><tbody>';
         for(var i=0;i<ATTEMPTS.length;i++){
           var a=ATTEMPTS[i];
           var scoreDisp=a.atype==='crossword'?(a.score!==null?a.score+'% ('+a.earned+'/'+a.mcPossible+' words)':'—'):(a.score!==null?a.score+'%':(a.hasEssay?'essay pending':'—'));
