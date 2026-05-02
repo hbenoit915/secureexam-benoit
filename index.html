@@ -2338,6 +2338,8 @@ ta.oninput=function(){ EEA[q.id]=this.value; };
   function finishExam(){
     clearInterval(ETI);
     document.removeEventListener('visibilitychange',visChange);
+    document.removeEventListener('copy',copyBlock);
+    document.removeEventListener('cut',copyBlock);
 
     // ── Grade ──────────────────────────────────────────
     var L='ABCDE';
