@@ -2260,6 +2260,13 @@ rows.push([
     document.addEventListener('copy',copyBlock);
     document.addEventListener('cut',copyBlock);
   }
+  function copyBlock(e){
+    if(document.getElementById('s-exam').classList.contains('on')){
+      e.preventDefault();
+      EEV.push({t:new Date().toLocaleTimeString(),ty:'copy_blocked',d:'Copy/cut attempt intercepted'});
+      var b=el('e-alert');if(b){b.textContent='⚠️ Copy and cut are disabled during this exam.';b.style.display='block';setTimeout(function(){b.style.display='none';},3000);}
+    }
+  }
   function visChange(){
     var msg=document.hidden?'Exam window lost focus':'Exam window regained focus';
     var type=document.hidden?'page_hidden':'page_visible';
