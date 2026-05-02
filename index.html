@@ -2148,8 +2148,6 @@ function pgRecords(){ navTo('reports'); }
 
   // ── CSV Export ──
   function exportCSV(){
-  // ── CSV Export ──
-  function exportCSV(){
     apiLoadAttempts(function(){
       if(!ATTEMPTS.length){ alert('No submissions to export yet.'); return; }
       var rows=[['Student','ID','Class','Assessment','Type','Login Time','Score','Status','Submitted']];
