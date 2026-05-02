@@ -2265,8 +2265,14 @@ document.addEventListener('copy',copyBlock);
 document.addEventListener('cut',copyBlock);
   }
 
-  function copyBlock(e){   var active = document.activeElement;   if(active && (active.id==='eq-ta' || active.closest && active.closest('#s-exam'))){     e.preventDefault();     EEV.push({t:new Date().toLocaleTimeString(),ty:'copy_blocked',d:'Copy/cut attempt intercepted'});     var b=el('e-alert'); if(b){b.textContent='⚠️ Copy and cut are disabled during this exam.';b.style.display='block';setTimeout(function(){b.style.display='none';},3000);}   } }
-    var msg=document.hidden?'Exam window lost focus':'Exam window regained focus';
+function copyBlock(e){
+  var active = document.activeElement;
+  if(active && (active.id==='eq-ta' || active.closest && active.closest('#s-exam'))){
+    e.preventDefault();
+    EEV.push({t:new Date().toLocaleTimeString(),ty:'copy_blocked',d:'Copy/cut attempt intercepted'});
+    var b=el('e-alert'); if(b){b.textContent='⚠️ Copy and cut are disabled during this exam.';b.style.display='block';setTimeout(function(){b.style.display='none';},3000);}
+  }
+}
     var type=document.hidden?'page_hidden':'page_visible';
     EEV.push({t:new Date().toLocaleTimeString(),ty:type,d:msg});
     var b=el('e-alert'); b.textContent='⚠️ '+msg; b.style.display='block';
