@@ -2250,9 +2250,11 @@ rows.push([
     // Essay auto-save
     var ta=document.getElementById('eq-ta');
     if(ta){
-      ta.onpaste=function(e){ e.preventDefault(); EEV.push({t:new Date().toLocaleTimeString(),ty:'paste_blocked',d:'Paste intercepted'}); };
-      ta.oncontextmenu=function(e){ e.preventDefault(); };
-      ta.oninput=function(){ EEA[q.id]=this.value; };
+ta.onpaste=function(e){ e.preventDefault(); EEV.push({t:new Date().toLocaleTimeString(),ty:'paste_blocked',d:'Paste intercepted'}); };
+ta.oncontextmenu=function(e){ e.preventDefault(); };
+ta.oncopy=function(e){ e.preventDefault(); EEV.push({t:new Date().toLocaleTimeString(),ty:'copy_blocked',d:'Copy attempt intercepted'}); };
+ta.oncut=function(e){ e.preventDefault(); EEV.push({t:new Date().toLocaleTimeString(),ty:'cut_blocked',d:'Cut attempt intercepted'}); };
+ta.oninput=function(){ EEA[q.id]=this.value; };
     }
   }
 
