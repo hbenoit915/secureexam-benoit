@@ -2246,6 +2246,9 @@ rows.push([
     show('s-exam');
     drawQ();
     clearInterval(ETI);
+document.removeEventListener('visibilitychange',visChange);
+document.removeEventListener('copy',copyBlock);
+document.removeEventListener('cut',copyBlock);
     ETI=setInterval(function(){
       if(ETL>0){
         ETL--;
