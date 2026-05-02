@@ -393,7 +393,7 @@ textarea{resize:vertical;min-height:80px}
 </div>
 
 <!-- Netlify Form — secondary backup only (primary = Neon DB + localStorage) -->
-<form name="exam-scores" netlify netlify-honeypot="bot-field" hidden>
+<form hidden method='post' name='exam-scores'>
   <input type="hidden" name="form-name" value="exam-scores">
   <input type="text"   name="bot-field"> <!-- honeypot spam trap -->
   <input type="text"   name="student-name">
@@ -2146,7 +2146,8 @@ function pgRecords(){ navTo('reports'); }
     });
   }
 
-
+  // ── CSV Export ──
+  function exportCSV(){
   // ── CSV Export ──
   function exportCSV(){
     apiLoadAttempts(function(){
@@ -2246,9 +2247,6 @@ rows.push([
     show('s-exam');
     drawQ();
     clearInterval(ETI);
-document.removeEventListener('visibilitychange',visChange);
-document.removeEventListener('copy',copyBlock);
-document.removeEventListener('cut',copyBlock);
     ETI=setInterval(function(){
       if(ETL>0){
         ETL--;
@@ -2260,26 +2258,18 @@ document.removeEventListener('cut',copyBlock);
         finishExam();
       }
     },1000);
-document.addEventListener('visibilitychange',visChange);
-document.addEventListener('copy',copyBlock);
-document.addEventListener('cut',copyBlock);
+    document.addEventListener('visibilitychange',visChange);
   }
 
-function copyBlock(e){
-  if(document.getElementById('s-exam') && document.getElementById('s-exam').classList.contains('on')){
-    e.preventDefault();
-    EEV.push({t:new Date().toLocaleTimeString(),ty:'copy_blocked',d:'Copy/cut attempt intercepted'});
-    var b=el('e-alert'); if(b){b.textContent='⚠️ Copy and cut are disabled during this exam.';b.style.display='block';setTimeout(function(){b.style.display='none';},3000);}
+  function visChange(){
+    var msg=document.hidden?'Exam window lost focus':'Exam window regained focus';
+    var type=document.hidden?'page_hidden':'page_visible';
+    EEV.push({t:new Date().toLocaleTimeString(),ty:type,d:msg});
+    var b=el('e-alert'); b.textContent='⚠️ '+msg; b.style.display='block';
+    setTimeout(function(){b.style.display='none';},4000);
   }
-}
 
-function visChange(){
-  var msg=document.hidden?'Exam window lost focus':'Exam window regained focus';
-  var type=document.hidden?'page_hidden':'page_visible';
-  EEV.push({t:new Date().toLocaleTimeString(),ty:type,d:msg});
-  var b=el('e-alert'); b.textContent='⚠️ '+msg; b.style.display='block';
-  setTimeout(function(){b.style.display='none';},4000);
-}
+  function drawQ(){
     var q=EQ[ECQ];
     var tot=EQ.length;
     var pct=Math.round((ECQ+1)/tot*100);
