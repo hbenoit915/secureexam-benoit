@@ -2074,7 +2074,80 @@ h+='<div id="ai-detect-result" style="margin-top:.75rem"></div>';
   }
 function pgRecords(){ navTo('reports'); }
   function viewRecordDetail(id){ viewAttempt(id); }
+// ── AI Writing Detection ──
+  function runAIDetection(attemptId) {
+    var idStr = String(attemptId);
+    var attempt = null;
+    for (var i=0; i<ATTEMPTS.length; i++) {
+      if (String(ATTEMPTS[i].id)===idStr || (ATTEMPTS[i].clientKey && ATTEMPTS[i].clientKey===idStr)) {
+        attempt = ATTEMPTS[i]; break;
+      }
+    }
+    if (!attempt) return;
 
+    var essayResults = [];
+    for (var i=0; i<attempt.results.length; i++) {
+      if (attempt.results[i].type==='essay') essayResults.push(attempt.results[i]);
+    }
+    if (!essayResults.length) {
+      var rd = el('ai-detect-result');
+      if (rd) rd.innerHTML = '<div class="al al-w">⚠️ No essay responses found to analyze.</div>';
+      return;
+    }
+
+    var btn = el('ai-detect-btn');
+    var resultDiv = el('ai-detect-result');
+    if (btn) { btn.textContent = '🤖 Analyzing…'; btn.disabled = true; }
+    if (resultDiv) resultDiv.innerHTML = '<div style="color:var(--muted);font-size:.85rem;padding:.5rem 0">⏳ Running AI analysis…</div>';
+
+    var essayTexts = essayResults.map(function(r, idx) {
+      return 'Question ' + (idx+1) + ': ' + r.q.prompt + '\nStudent Response: ' + (r.resp || '(no response)');
+    }).join('\n\n');
+
+    fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{
+          role: 'user',
+          content: 'You are an AI writing detector for a high school Criminal Justice classroom. Analyze the following student essay response(s) and determine the likelihood they were written by AI. Look for: unnaturally perfect grammar, overly formal language for a high schooler, generic phrasing, lack of personal voice, suspiciously comprehensive answers.\n\nRespond ONLY in JSON with no markdown:\n{"likelihood": "Low/Medium/High", "score": 0-100, "reasoning": "2-3 sentence explanation", "flags": ["specific phrases or patterns that seem AI-generated"]}\n\n' + essayTexts
+        }]
+      })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (btn) { btn.textContent = '🤖 Check for AI Writing'; btn.disabled = false; }
+      var text = d.content && d.content[0] ? d.content[0].text : '';
+      try {
+        var clean = text.replace(/```json|```/g, '').trim();
+        var result = JSON.parse(clean);
+        var color = result.likelihood==='High' ? 'var(--danger)' : result.likelihood==='Medium' ? 'var(--orange)' : 'var(--green)';
+        var bgColor = result.likelihood==='High' ? '#fce8ea' : result.likelihood==='Medium' ? '#fff8e6' : '#e6f5ec';
+        var h = '<div style="background:'+bgColor+';border:1px solid '+color+';border-radius:8px;padding:1rem;margin-top:.5rem">';
+        h += '<div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem">';
+        h += '<div style="font-family:\'Syne\',sans-serif;font-weight:800;font-size:1rem">🤖 AI Detection Result</div>';
+        h += '<span style="background:'+color+';color:#fff;border-radius:4px;padding:.15rem .6rem;font-family:\'DM Mono\',monospace;font-size:.75rem;font-weight:600">'+result.likelihood+' Likelihood ('+result.score+'%)</span>';
+        h += '</div>';
+        h += '<div style="font-size:.875rem;color:#2a2d3a;margin-bottom:.5rem">'+result.reasoning+'</div>';
+        if (result.flags && result.flags.length) {
+          h += '<div style="font-size:.8rem;color:var(--slate)"><b>Flagged patterns:</b> ' + result.flags.map(function(f){ return '"'+f+'"'; }).join(', ') + '</div>';
+        }
+        h += '</div>';
+        if (resultDiv) resultDiv.innerHTML = h;
+      } catch(e) {
+        if (resultDiv) resultDiv.innerHTML = '<div class="al al-w">⚠️ Could not parse AI analysis result.</div>';
+      }
+    })
+    .catch(function(){
+      if (btn) { btn.textContent = '🤖 Check for AI Writing'; btn.disabled = false; }
+      if (resultDiv) resultDiv.innerHTML = '<div class="al al-d">❌ AI detection failed. Check your connection.</div>';
+    });
+  }
+
+  // ── CSV Export ──
+  function exportCSV(){
   // ── CSV Export ──
   function exportCSV(){
     apiLoadAttempts(function(){
