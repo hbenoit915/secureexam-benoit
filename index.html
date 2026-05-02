@@ -2257,8 +2257,9 @@ rows.push([
       }
     },1000);
     document.addEventListener('visibilitychange',visChange);
+    document.addEventListener('copy',copyBlock);
+    document.addEventListener('cut',copyBlock);
   }
-
   function visChange(){
     var msg=document.hidden?'Exam window lost focus':'Exam window regained focus';
     var type=document.hidden?'page_hidden':'page_visible';
