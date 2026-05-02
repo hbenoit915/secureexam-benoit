@@ -1788,8 +1788,10 @@ h+='<td style="font-size:.78rem;font-family:\'DM Mono\',monospace">'+esc(loginTs
         h+='</div></div>';
       }
       h+='<div style="display:flex;align-items:center;gap:.75rem;margin-top:.5rem">';
-      h+='<button class="btn btn-g" id="save-essay-grades-btn" onclick="G.saveEssayGrades('+attempt.id+')">💾 Save Essay Grades</button>';
-      h+='<span id="essay-grade-status" style="font-size:.82rem;color:var(--green)"></span>';
+h+='<button class="btn btn-g" id="save-essay-grades-btn" onclick="G.saveEssayGrades('+attempt.id+')">💾 Save Essay Grades</button>';
+h+='<button class="btn btn-b" id="ai-detect-btn" onclick="G.runAIDetection('+attempt.id+')">🤖 Check for AI Writing</button>';
+h+='<span id="essay-grade-status" style="font-size:.82rem;color:var(--green)"></span>';
+h+='<div id="ai-detect-result" style="margin-top:.75rem"></div>';
       h+='</div></div>';
     }
 
