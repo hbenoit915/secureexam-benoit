@@ -347,7 +347,7 @@ function buildSidebar(){
 function navTo(p){var btns=document.querySelectorAll('.sb-btn');for(var i=0;i<btns.length;i++)btns[i].classList.remove('on');var sb=el('sb-'+p);if(sb)sb.classList.add('on');el('tpage').innerHTML='';var pages={dash:pgDash,upload:pgUpload,bank:pgBank,exams:pgExams,atlog:pgAtlog,grade:pgGrade,flags:pgFlags,records:pgRecords,reports:pgReports};if(pages[p])pages[p]();}
 function pgDash(){
   var pg=el('tpage');
-  pg.innerHTML='<div class="ph"><div><div class="pt">Dashboard</div><div class="ps">Loading…</div></div></div><div style="text-align:center;padding:3rem;color:var(--muted)">⏳ Loading dashboard…</div>';
+  pg.innerHTML='<div style="background:#2a2d3a;color:#6fcf97;font-family:\'DM Mono\',monospace;font-size:.7rem;padding:.3rem 1rem;letter-spacing:.05em">🔧 Build: Step4-EssayFix-v3 · 2026-05-07</div><div class="ph"><div><div class="pt">Dashboard</div><div class="ps">Loading…</div></div></div><div style="text-align:center;padding:3rem;color:var(--muted)">⏳ Loading dashboard…</div>';
   apiLoadExams(function(){apiLoadAttempts(function(){apiLoadLogins(function(){
     var openCount=0;for(var i=0;i<EXAMS.length;i++)if(EXAMS[i].status==='published')openCount++;
     var pendingEssays=0;for(var i=0;i<ATTEMPTS.length;i++)if(ATTEMPTS[i].status==='pending-essay')pendingEssays++;
@@ -372,6 +372,7 @@ function pgDash(){
 }
 function toggleStatus(id,returnPage){apiToggleExam(id,function(exam){if(exam){for(var i=0;i<EXAMS.length;i++){if(EXAMS[i].id===id){EXAMS[i].status=exam.status;break;}}}navTo(returnPage||'exams');});}
 function pgUpload(){
+  console.log('[SecureExam] pgUpload() called');
   UP={title:'',atype:'exam',classes:[],mcPts:2,essayPts:10,due:'Mar 21, 2026 11:59 PM',questions:[],fileName:''};window._boldLines=null;
   var pg=el('tpage');
   pg.innerHTML='<div class="ph"><div><div class="pt">Upload Document</div><div class="ps">Step 1 of 4 — Assessment Details</div></div></div>'+
@@ -379,7 +380,7 @@ function pgUpload(){
     '<div id="u-s1"></div><div id="u-s2" style="display:none"></div><div id="u-s3" style="display:none"></div><div id="u-s4" style="display:none"></div>';
   renderStep1();
 }
-function setStep(n){for(var i=1;i<=4;i++){var se=el('step-'+i);if(!se)continue;se.className='step'+(i<n?' done':i===n?' now':'');var div=el('u-s'+i);if(div)div.style.display=(i===n?'block':'none');}var ps=el('tpage').querySelector('.ps');if(ps){var lbls=['Assessment Details','Upload your PDF','Review Questions','Publish to Students'];ps.textContent='Step '+n+' of 4 — '+lbls[n-1];}}
+function setStep(n){console.log('[SecureExam] setStep('+n+') called. u-s4 exists:', !!document.getElementById(\'u-s4\'));for(var i=1;i<=4;i++){var se=el('step-'+i);if(!se)continue;se.className='step'+(i<n?' done':i===n?' now':'');var div=el('u-s'+i);if(div)div.style.display=(i===n?'block':'none');}var ps=el('tpage').querySelector('.ps');if(ps){var lbls=['Assessment Details','Upload your PDF','Review Questions','Publish to Students'];ps.textContent='Step '+n+' of 4 — '+lbls[n-1];}}
 function renderStep1(){
   var h='<div class="g2"><div><div class="card"><div class="ct">📋 Assessment Details</div>';
   h+='<div class="fg" style="margin-top:.5rem"><label>Title <span style="color:var(--danger)">*</span></label><input type="text" id="u-title" placeholder="e.g. Traffic Accidents Unit 1 — Arrival Assessment"></div>';
@@ -409,7 +410,7 @@ function step1next(){
   if(UP.atype==='crossword'){cwBuilderInit();return;}
   if(UP.atype==='matching'){matchBuilderInit();return;}
   if(UP.atype==='wordbank'){wbBuilderInit();return;}
-  setStep(2);renderStep2();
+  console.log('[SecureExam] step1next -> setStep(2), atype=',UP.atype);setStep(2);renderStep2();
 }
 function renderStep2(){var h='<div class="al al-i">📋 <b>'+esc(UP.title)+'</b> · '+atLabel(UP.atype)+' · Assigned to: <b>'+UP.classes.join(', ')+'</b> &nbsp;<button class="btn btn-gh sm" onclick="G.setStep(1);G.renderStep1()">✏️ Change</button></div>';h+='<div id="u-s2-err" class="al al-d" style="display:none"></div>';h+='<div id="u-upload-zone"><div class="card"><div class="uz" onclick="document.getElementById(\'u-file\').click()"><div style="font-size:2.5rem;margin-bottom:.5rem">📄</div><div style="font-size:1rem;font-weight:600;color:#2a2d3a">Click to upload your PDF</div><div style="font-size:.82rem;color:var(--muted);margin-top:.35rem">Supports .pdf — questions and bold correct answers extracted automatically</div><input type="file" id="u-file" accept=".pdf,.docx" style="display:none" onchange="G.handleFile(this.files[0])"></div></div></div>';h+='<div id="u-loading" style="display:none"><div class="card" style="text-align:center;padding:3rem"><div style="font-size:2rem;margin-bottom:.75rem" id="u-load-icon">📄</div><div class="pt" style="font-size:1.3rem;margin-bottom:.4rem" id="u-load-title">Reading PDF…</div><div style="color:var(--slate);font-size:.9rem" id="u-load-msg">Extracting text…</div><div class="dot-row"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div></div>';h+='<button class="btn btn-gh sm" style="margin-top:.75rem" onclick="G.setStep(1);G.renderStep1()">← Back to Details</button>';el('u-s2').innerHTML=h;}
 async function handleFile(file){if(!file)return;UP.fileName=file.name;el('u-s2-err').style.display='none';el('u-upload-zone').style.display='none';el('u-loading').style.display='block';try{if(file.name.toLowerCase().endsWith('.pdf')){await readPDF(file);}else{var text=await readText(file);UP.rawText=text;window._boldLines=new Set();}parseAndNext();}catch(err){el('u-s2-err').textContent='⚠️ Could not read file: '+err.message;el('u-s2-err').style.display='flex';el('u-loading').style.display='none';el('u-upload-zone').style.display='block';}}
@@ -418,7 +419,7 @@ function readText(file){return new Promise(function(res,rej){var r=new FileReade
 function loadScript(src){return new Promise(function(res,rej){if(document.querySelector('script[src="'+src+'"]')){res();return;}var s=document.createElement('script');s.src=src;s.onload=res;s.onerror=function(){rej(new Error('Failed to load '+src));};document.head.appendChild(s);});}
 function parseAndNext(){el('u-load-icon').textContent='✨';el('u-load-title').textContent='Extracting Questions…';el('u-load-msg').textContent='Identifying questions and bold correct answers…';setTimeout(function(){try{var qs=parseQuestions(UP.rawText,UP.mcPts,UP.essayPts,window._boldLines||new Set());if(!qs.length)throw new Error('No numbered questions found. Make sure questions are formatted as: 1. Question text');UP.questions=qs;setStep(3);renderStep3();}catch(err){el('u-s2-err').textContent='⚠️ '+err.message;el('u-s2-err').style.display='flex';el('u-loading').style.display='none';el('u-upload-zone').style.display='block';setStep(2);}},100);}
 function parseQuestions(raw,mcPts,essayPts,boldSet){var lines=raw.split('\n');var trimmed=[];for(var i=0;i<lines.length;i++){var l=lines[i].trim();if(l)trimmed.push(l);}var qs=[];var i=0;var qRe=/^(\d+)[.)]\s+(.+)/;var cRe=/^([A-Da-d])[.)]\s+(.+)/;while(i<trimmed.length){var qm=trimmed[i].match(qRe);if(!qm){i++;continue;}var prompt=qm[2];i++;while(i<trimmed.length&&!trimmed[i].match(qRe)&&!trimmed[i].match(cRe)){prompt+=' '+trimmed[i];i++;}prompt=prompt.replace(/\s+/g,' ').trim();if(prompt.length<4)continue;var choices=[];var choiceLines=[];while(i<trimmed.length&&choices.length<5){var cm=trimmed[i].match(cRe);if(!cm)break;var ct=cm[2];choiceLines.push(trimmed[i]);i++;while(i<trimmed.length&&!trimmed[i].match(cRe)&&!trimmed[i].match(qRe)){ct+=' '+trimmed[i];i++;}choices.push(ct.replace(/\s+/g,' ').trim());}var correct=null;if(boldSet.size>0){for(var ci=0;ci<choices.length;ci++){var cl=choiceLines[ci]||'';var ct2=choices[ci];if(boldSet.has(cl)||boldSet.has(ct2)){correct=ci;break;}boldSet.forEach(function(b){if(correct===null&&b.indexOf(ct2)>-1&&ct2.length>4)correct=ci;});}}var type=choices.length>=2?'mc':'essay';qs.push({id:qs.length+1,type:type,prompt:prompt,choices:type==='mc'?choices:[],correct:correct,points:type==='mc'?mcPts:essayPts,topic:'General'});}return qs;}
-function renderStep3(){var qs=UP.questions;var noAns=0;for(var i=0;i<qs.length;i++)if(qs[i].type==='mc'&&(qs[i].correct===null||qs[i].correct===undefined))noAns++;var h='<div class="al al-s">✅ <b>'+qs.length+' question'+(qs.length!==1?'s':'')+' imported</b> from <b>'+esc(UP.fileName)+'</b>. Assigned to: <b>'+UP.classes.join(', ')+'</b></div>';if(noAns>0)h+='<div class="al al-w">⚠️ <b>'+noAns+' question'+(noAns!==1?'s':'')+' have no correct answer detected</b>. Click ✏️ to set manually.</div>';h+='<div id="s3-qlist">';for(var i=0;i<qs.length;i++)h+=renderQCard(qs[i],i);h+='</div>';
+function renderStep3(){console.log('[SecureExam] renderStep3() called, questions:', UP&&UP.questions&&UP.questions.length);var qs=UP.questions;var noAns=0;for(var i=0;i<qs.length;i++)if(qs[i].type==='mc'&&(qs[i].correct===null||qs[i].correct===undefined))noAns++;var h='<div class="al al-s">✅ <b>'+qs.length+' question'+(qs.length!==1?'s':'')+' imported</b> from <b>'+esc(UP.fileName)+'</b>. Assigned to: <b>'+UP.classes.join(', ')+'</b></div>';if(noAns>0)h+='<div class="al al-w">⚠️ <b>'+noAns+' question'+(noAns!==1?'s':'')+' have no correct answer detected</b>. Click ✏️ to set manually.</div>';h+='<div id="s3-qlist">';for(var i=0;i<qs.length;i++)h+=renderQCard(qs[i],i);h+='</div>';
 h+='<div style="margin:.75rem 0;display:flex;gap:.5rem;flex-wrap:wrap"><button class="btn btn-o sm" onclick="G.addNewQuestion(\'mc\')">➕ MC</button><button class="btn btn-o sm" onclick="G.addNewQuestion(\'essay\')">➕ Essay</button><button class="btn btn-o sm" onclick="G.addNewQuestion(\'matching\')">➕ 🔗 Matching</button><button class="btn btn-o sm" onclick="G.addNewQuestion(\'wordbank\')">➕ 📦 Word Bank</button></div>';
 h+='<div style="display:flex;justify-content:space-between;margin-top:.75rem"><button class="btn btn-gh" onclick="G.setStep(2);G.renderStep2()">← Upload Different File</button><button class="btn btn-r" style="padding:.6rem 2rem;font-size:1rem" onclick="G.setStep(4);G.renderStep4()">Next: Publish Settings →</button></div>';el('u-s3').innerHTML=h;}
 function addNewQuestion(type){var newId=Date.now();var q={id:newId,type:type,prompt:type==='matching'?'Match each term to its correct definition.':type==='wordbank'?'Fill in the blank: [BLANK]':'',points:type==='mc'?UP.mcPts:type==='essay'?UP.essayPts:UP.mcPts,topic:'General'};if(type==='mc'){q.choices=['','','',''];q.correct=null;}if(type==='matching'){q.matchPairs=[{term:'',def:''},{term:'',def:''}];}if(type==='wordbank'){q.wbWords=[];q.wbAnswer='';}UP.questions.push(q);renderStep3();setTimeout(function(){var card=document.getElementById('qc-'+newId);if(card)card.scrollIntoView({behavior:'smooth',block:'center'});G.editQ(newId);},80);}
@@ -434,7 +435,63 @@ function removeMatchPair(qId,pi){for(var i=0;i<UP.questions.length;i++){if(UP.qu
 function upChoice(id,ci,v){for(var i=0;i<UP.questions.length;i++)if(UP.questions[i].id===id){UP.questions[i].choices[ci]=v;break;}}
 function setCorrect(id,ci){for(var i=0;i<UP.questions.length;i++)if(UP.questions[i].id===id){UP.questions[i].correct=ci;break;}editQ(id);}
 function saveQ(){renderStep3();}
-function renderStep4(){try{var totalPts=0;for(var i=0;i<UP.questions.length;i++)totalPts+=(UP.questions[i].points||0);var mcCount=0,essCount=0,matchCount=0,wbCount=0;for(var i=0;i<UP.questions.length;i++){var qt=(UP.questions[i]&&UP.questions[i].type)||'';if(qt==='mc')mcCount++;else if(qt==='essay')essCount++;else if(qt==='matching')matchCount++;else if(qt==='wordbank')wbCount++;}var typeSummary=[];if(mcCount)typeSummary.push(mcCount+' MC');if(essCount)typeSummary.push(essCount+' Essay');if(matchCount)typeSummary.push(matchCount+' Matching');if(wbCount)typeSummary.push(wbCount+' Word Bank');var h='<div class="al al-s">✅ Ready to publish <b>'+esc(UP.title)+'</b> · '+UP.questions.length+' questions · '+atLabel(UP.atype)+' → <b>'+UP.classes.join(', ')+'</b></div><div class="g2"><div><div class="card"><div class="ct">📋 Summary</div><div style="font-size:.875rem;color:var(--slate);line-height:2"><div><b>Title:</b> '+esc(UP.title)+'</div><div><b>Type:</b> '+atLabel(UP.atype)+'</div><div><b>Questions:</b> '+UP.questions.length+' ('+typeSummary.join(', ')+')</div><div><b>Total Points:</b> '+totalPts+'</div><div><b>Due:</b> '+esc(UP.due)+'</div><div><b>Classes:</b> '+UP.classes.join(', ')+'</div></div></div><div class="card"><div class="ct">⏱️ Timer</div><div class="fg" style="margin-top:.5rem"><label>Time Limit (minutes)</label><input type="number" id="u-tl" value="45" style="width:100px"></div></div></div><div><div class="card"><div class="ct">🔒 Security</div>';var toggs=[{k:'fullscreen',l:'Require Fullscreen'},{k:'pasteBlock',l:'Block Paste'},{k:'strictRestart',l:'Strict Restart on Exit'},{k:'timer',l:'Enable Timer'}];for(var i=0;i<toggs.length;i++){var t=toggs[i];h+='<div class="tog-r"><span style="font-size:.875rem;color:#2a2d3a">'+t.l+'</span><button class="tog'+(SETTINGS[t.k]?' on':'')+'" id="ptog-'+t.k+'" onclick="G.togSet(\''+t.k+'\')"></button></div>';}h+='</div></div></div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:1.25rem"><button class="btn btn-gh" onclick="G.setStep(3);G.renderStep3()">← Back to Review</button><button class="btn btn-r" style="padding:.7rem 2.5rem;font-size:1.05rem" onclick="G.doPublish()">🚀 Publish to Students Now</button></div>';el('u-s4').innerHTML=h;}catch(err){console.error('renderStep4 error:',err);el('u-s4').innerHTML='<div class="al al-d">⚠️ Could not render publish settings. Error: '+err.message+'<br><br><button class="btn btn-gh" onclick="G.setStep(3);G.renderStep3()">← Back to Review</button></div>';}}
+function renderStep4(){
+  console.log('[SecureExam] renderStep4() called. UP.atype=',UP&&UP.atype,'UP.questions=',(UP&&UP.questions&&UP.questions.length)||'none');
+  var s4el=el('u-s4');
+  console.log('[SecureExam] u-s4 element:', s4el?'FOUND':'NULL - pgUpload may not have run');
+  if(!s4el){
+    console.error('[SecureExam] u-s4 is null - cannot render step 4');
+    var fallback=el('tpage');
+    if(fallback)fallback.innerHTML+='<div class="al al-d" style="margin-top:1rem">❌ <b>Build: Step4-EssayFix-v3 · 2026-05-07</b><br>Step 4 container (u-s4) not found in DOM. pgUpload may not have initialized correctly.<br><br><button class="btn btn-gh" onclick="G.navTo(\'upload\')">← Restart Upload</button></div>';
+    return;
+  }
+  s4el.innerHTML='<div style="padding:1rem;font-size:.82rem;color:var(--slate)">⏳ <b>Build: Step4-EssayFix-v3 · 2026-05-07</b> — Step 4 renderer reached, building summary…</div>';
+  try{
+    console.log('[SecureExam] renderStep4 try block starting');
+    var totalPts=0;
+    for(var i=0;i<UP.questions.length;i++) totalPts+=(UP.questions[i].points||0);
+    var mcCount=0,essCount=0,matchCount=0,wbCount=0;
+    for(var i=0;i<UP.questions.length;i++){
+      var qt=(UP.questions[i]&&UP.questions[i].type)||'';
+      if(qt==='mc')mcCount++;else if(qt==='essay')essCount++;else if(qt==='matching')matchCount++;else if(qt==='wordbank')wbCount++;
+    }
+    var typeSummary=[];
+    if(mcCount)typeSummary.push(mcCount+' MC');
+    if(essCount)typeSummary.push(essCount+' Essay');
+    if(matchCount)typeSummary.push(matchCount+' Matching');
+    if(wbCount)typeSummary.push(wbCount+' Word Bank');
+    var h='<div class="al al-s">✅ Ready to publish <b>'+esc(UP.title)+'</b> · '+UP.questions.length+' questions · '+atLabel(UP.atype)+' → <b>'+UP.classes.join(', ')+'</b></div>';
+    h+='<div class="g2"><div>';
+    h+='<div class="card"><div class="ct">📋 Summary</div><div style="font-size:.875rem;color:var(--slate);line-height:2">';
+    h+='<div><b>Title:</b> '+esc(UP.title)+'</div>';
+    h+='<div><b>Type:</b> '+atLabel(UP.atype)+'</div>';
+    h+='<div><b>Questions:</b> '+UP.questions.length+' ('+typeSummary.join(', ')+')</div>';
+    h+='<div><b>Total Points:</b> '+totalPts+'</div>';
+    h+='<div><b>Due:</b> '+esc(UP.due)+'</div>';
+    h+='<div><b>Classes:</b> '+UP.classes.join(', ')+'</div>';
+    h+='</div></div>';
+    h+='<div class="card"><div class="ct">⏱️ Timer</div><div class="fg" style="margin-top:.5rem"><label>Time Limit (minutes)</label><input type="number" id="u-tl" value="45" style="width:100px"></div></div>';
+    h+='</div><div>';
+    h+='<div class="card"><div class="ct">🔒 Security</div>';
+    var toggs=[{k:'fullscreen',l:'Require Fullscreen'},{k:'pasteBlock',l:'Block Paste'},{k:'strictRestart',l:'Strict Restart on Exit'},{k:'timer',l:'Enable Timer'}];
+    for(var i=0;i<toggs.length;i++){
+      var t=toggs[i];
+      h+='<div class="tog-r"><span style="font-size:.875rem;color:#2a2d3a">'+t.l+'</span><button class="tog'+(SETTINGS[t.k]?' on':'')+'" id="ptog-'+t.k+'" onclick="G.togSet(\''+t.k+'\')"></button></div>';
+    }
+    h+='</div></div></div>';
+    h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-top:1.25rem">';
+    h+='<button class="btn btn-gh" onclick="G.setStep(3);G.renderStep3()">← Back to Review</button>';
+    h+='<button class="btn btn-r" style="padding:.7rem 2.5rem;font-size:1.05rem" onclick="G.doPublish()">🚀 Publish to Students Now</button>';
+    h+='</div>';
+    console.log('[SecureExam] renderStep4 HTML built successfully, assigning to u-s4');
+    s4el.innerHTML=h;
+    console.log('[SecureExam] renderStep4 complete');
+  }catch(err){
+    console.error('[SecureExam] renderStep4 CRASH:',err);
+    var errMsg='Build: Step4-EssayFix-v3 · 2026-05-07<br>renderStep4 crashed: '+err.message+'<br><pre style="font-size:.72rem;overflow-x:auto;white-space:pre-wrap">'+String(err.stack||'').replace(/</g,'&lt;')+'</pre>';
+    s4el.innerHTML='<div class="al al-d" style="margin:1rem">❌ <b>Publish Settings could not load</b><br><br>'+errMsg+'<br><br><button class="btn btn-gh" onclick="G.setStep(3);G.renderStep3()">← Back to Review</button></div>';
+  }
+}
 function togSet(k){SETTINGS[k]=!SETTINGS[k];var b=el('ptog-'+k);if(b)b.classList.toggle('on',SETTINGS[k]);}
 function doPublish(){var tl=el('u-tl');var timeLimit=tl?+tl.value:45;var payload={title:UP.title,atype:UP.atype,classes:UP.classes.slice(),status:'published',questions:UP.questions.slice(),due:UP.due,timeLimit:timeLimit};var btn=el('u-s4')?el('u-s4').querySelector('button.btn-r'):null;if(btn){btn.textContent='Publishing…';btn.disabled=true;}apiSaveExam(payload,function(exam){if(exam){EXAMS.push(exam);navTo('exams');setTimeout(function(){var pg=el('tpage');if(!pg)return;var b=document.createElement('div');b.className='al al-s';b.style.fontSize='.95rem';b.innerHTML='✅ <b>'+esc(exam.title)+'</b> published to <b>'+exam.classes.join(', ')+'</b> — saved to database and backed up locally.';pg.insertBefore(b,pg.firstChild);setTimeout(function(){b.remove();},9000);},50);}else{alert('Could not save exam. Check your internet connection.');if(btn){btn.textContent='🚀 Publish to Students Now';btn.disabled=false;}}});}
 function pgBank(){var pg=el('tpage');var h='<div class="ph"><div class="pt">Question Bank</div><button class="btn btn-r">➕ Add Question</button></div>';for(var i=0;i<SQ.length;i++){var q=SQ[i];h+='<div class="qcard"><div class="qn">Q'+(i+1)+' · <span class="bdg bb">MC</span> · '+q.points+' pts · '+esc(q.topic)+'</div><div class="qp">'+esc(q.prompt)+'</div><div class="opts">';for(var ci=0;ci<q.choices.length;ci++)h+='<div class="opt"><div class="olet'+(ci===q.correct?' ok':'')+'">'+('ABCD'[ci])+'</div>'+esc(q.choices[ci])+'</div>';h+='</div></div>';}pg.innerHTML=h;}
