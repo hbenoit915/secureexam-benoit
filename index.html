@@ -379,7 +379,7 @@ function pgUpload(){
     '<div id="u-s1"></div><div id="u-s2" style="display:none"></div><div id="u-s3" style="display:none"></div><div id="u-s4" style="display:none"></div>';
   renderStep1();
 }
-function setStep(n){console.log('[SecureExam] setStep('+n+') called. u-s4 exists:', !!document.getElementById(\'u-s4\'));for(var i=1;i<=4;i++){var se=el('step-'+i);if(!se)continue;se.className='step'+(i<n?' done':i===n?' now':'');var div=el('u-s'+i);if(div)div.style.display=(i===n?'block':'none');}var ps=el('tpage').querySelector('.ps');if(ps){var lbls=['Assessment Details','Upload your PDF','Review Questions','Publish to Students'];ps.textContent='Step '+n+' of 4 — '+lbls[n-1];}}
+function setStep(n){console.log('[SecureExam] setStep('+n+') called. u-s4 exists:', !!document.getElementById('u-s4'));for(var i=1;i<=4;i++){var se=el('step-'+i);if(!se)continue;se.className='step'+(i<n?' done':i===n?' now':'');var div=el('u-s'+i);if(div)div.style.display=(i===n?'block':'none');}var ps=el('tpage').querySelector('.ps');if(ps){var lbls=['Assessment Details','Upload your PDF','Review Questions','Publish to Students'];ps.textContent='Step '+n+' of 4 — '+lbls[n-1];}}
 function renderStep1(){
   var h='<div class="g2"><div><div class="card"><div class="ct">📋 Assessment Details</div>';
   h+='<div class="fg" style="margin-top:.5rem"><label>Title <span style="color:var(--danger)">*</span></label><input type="text" id="u-title" placeholder="e.g. Traffic Accidents Unit 1 — Arrival Assessment"></div>';
